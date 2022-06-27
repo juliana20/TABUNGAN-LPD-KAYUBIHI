@@ -7,9 +7,9 @@ use DB;
 
 class User_m extends Model
 {
-	protected $table = 'tb_user';
+	protected $table = 'm_user';
 	protected $index_key = 'id';
-	protected $index_key2 = 'id_user';
+	protected $index_key2 = 'kode_user';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,16 +18,16 @@ class User_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'id_user' => 'required',
-				'nama_user' => 'required',
-				'username' => 'required|min:6|max:100',
-				'password' => 'required|min:6',
+                'kode_user' => 'required',
+				'nama' => 'required',
+				'username' => 'required',
+				'password' => 'required',
 				'jabatan' => 'required'
             ],
 			'update' => [
-				'nama_user' => 'required',
-				'username' => 'required|min:6|max:100',
-				'password' => 'required|min:6',
+				'nama' => 'required',
+				'username' => 'required',
+				'password' => 'required',
 				'jabatan' => 'required'
             ],
         ];
@@ -72,26 +72,11 @@ class User_m extends Model
 	function gen_code( $format )
 	{
 		$max_number = self::all()->max($this->index_key2);
-		if (empty($max_number))
-		{
-			$mix = "%s%03d";
-			$gen_number = sprintf( $format, 1);
+		$noUrut = (int) substr($max_number, 5, 5);
+		$noUrut++;
+		$code = $format;
+		$no_generate = $code . sprintf("%05s", $noUrut);
 
-		} else {
-			$max_number++;
-			$gen_number = $max_number;
-		}
-
-
-		return (string) $gen_number;
-		
-		// $max_number = self::all()->max($this->index_key2);
-		// $noUrut = (int) substr($max_number, 3, 3);
-		// $noUrut++;
-		// $code = $format;
-		// $no_generate = $code . sprintf("%03s", $noUrut);
-
-		// return (string) $no_generate;
+		return (string) $no_generate;
 	}
-
 }

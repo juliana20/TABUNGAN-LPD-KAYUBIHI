@@ -11,12 +11,6 @@
 |
 */
 
-
-
-
-
-// 
-
 // RUOTE DIPAKAI =============================================================================================================
 Route::get('/',function(){
 	return view('auth.login');
@@ -26,6 +20,7 @@ Route::get('/login','Login@login');
 Route::post('/auth','Login@auth');
 Route::get('/logout', 'Login@logout');
 
+Route::group(['middleware' => ['admin']], function () {
 #USER
 Route::prefix('user')->group(function() {
     Route::get('/', 'UserController@index');
@@ -188,6 +183,6 @@ Route::prefix('nasabah')->group(function() {
 	Route::match(array('GET', 'POST'),'/pinjaman/datatables','PinjamanController@datatables_collection_pinjaman_nasabah');
 });
 
-
+});
 
 ?>

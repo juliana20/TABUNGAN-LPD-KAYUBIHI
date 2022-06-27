@@ -15,11 +15,11 @@
 
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>
-          <li class="{{ Request::is('dashboard') ? 'active':null}}"><a href="{{ url('dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+        <li class="header">MAIN MENU</li>
+          <li class="{{ Request::is('dashboard') ? 'active':null}}"><a href="{{ url('dashboard') }}"><i class="glyphicon glyphicon-home"></i> <span>Dashboard</span></a></li>
           <li class="treeview {{ Request::is('user') ? 'active':null}} {{ Request::is('akun') ? 'active':null}} {{ Request::is('nasabah') ? 'active':null}}">
             <a href="#">
-              <i class="fa fa-database" aria-hidden="true"></i>
+              <i class="glyphicon glyphicon-book" aria-hidden="true"></i>
               <span>Data Master</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 @include('themes.AdminLTE.partials.head')
-<body class="hold-transition sidebar-mini skin-green-light">
+<body class="hold-transition sidebar-mini skin-red-light">
   <div class="wrapper">
     <!-- HEADER -->
     @include('themes.AdminLTE.partials.header')
     <!-- Left side column. contains the logo and sidebar -->
-    @include('themes.AdminLTE.partials.sidebar.'.Helpers::getJabatan())
+    {{-- @include('themes.AdminLTE.partials.sidebar.'.Helpers::getJabatan()) --}}
+    @include('themes.AdminLTE.partials.sidebar.Admin')
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">

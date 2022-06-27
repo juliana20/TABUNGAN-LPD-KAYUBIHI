@@ -155,4 +155,26 @@
       });
 
     })( jQuery );
+
+    $(function(){
+      $.ajaxSetup({
+                  beforeSend: function(xhr) {
+                          $('.btn').addClass('disabled', true);
+                          $(".spinner").css("display", "");
+                  },
+                  success: function(response, status, xhr){
+                          $('.btn').removeClass('disabled', true);
+                          $(".spinner").css("display", "none");
+                  },
+                  complete: function(xhr) {
+                          $('.btn').removeClass('disabled', true);
+                          $(".spinner").css("display", "none");
+                  },
+                  error: function(error){
+                          $('.btn').removeClass('disabled', true);
+                          $.alert_error(error);
+                          return false
+                  },
+          });
+  });
 </script>

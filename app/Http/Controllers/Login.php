@@ -26,12 +26,12 @@ class Login extends Controller
             if(Hash::check($password, $data->password) AND ($data->username == $username)){
                 Session::put('username', $data->username);
                 Session::put('id', $data->id);
-                Session::put('nama', $data->nama_user);
+                Session::put('nama', $data->nama);
                 Session::put('jabatan', $data->jabatan);
                 Session::put('login',TRUE);
 
                 alert()->success('Success', 'Login Berhasil!');
-                return redirect('/dashboard');                  
+                return redirect('/user');                  
             }   
             else{
                 alert()->error('Login gagal, Silahkan cek username, password atau jabatan anda!', 'Perhatian!')->persistent('Tutup');
