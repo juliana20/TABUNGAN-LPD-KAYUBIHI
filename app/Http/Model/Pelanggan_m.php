@@ -5,11 +5,11 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class Akun_m extends Model
+class Pelanggan_m extends Model
 {
-	protected $table = 'm_akun';
+	protected $table = 'm_pelanggan';
 	protected $index_key = 'id';
-	protected $index_key2 = 'kode_akun';
+	protected $index_key2 = 'kode';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,13 +18,13 @@ class Akun_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'kode_akun' => "required|unique:{$this->table}",
-				'nama_akun' => 'required',
-				'kelompok' => 'required',
+                'kode' => "required|unique:{$this->table}",
+				'nama' => 'required',
+				'alamat' => 'required',
             ],
 			'update' => [
-				'nama_akun' => 'required',
-				'kelompok' => 'required',
+				'nama' => 'required',
+				'alamat' => 'required',
             ],
         ];
 	}
@@ -32,18 +32,6 @@ class Akun_m extends Model
     function get_all()
     {
         return self::get();
-    }
-
-	function get_all_lookup($params)
-    {
-		$query = DB::table("{$this->table}")
-				->select('*');
-
-		if(!empty($params['kelompok'])){
-			$query->where('kelompok', $params['kelompok']);
-		}
-
-		return $query->get();
     }
 
     function insert_data($data)

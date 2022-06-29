@@ -5,6 +5,7 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="{{ url('themes/AdminLTE-2.4.3/bower_components/font-awesome/css/font-awesome.min.css') }}">
      <link rel="shortcut icon" href="{{url('themes/default/images/favicon.ico')}}">
      <link rel="stylesheet" type="text/css" href="{{ url('themes/login/css/bootstrap.min.css')}}">
      <link rel="stylesheet" type="text/css" href="{{ url('themes/login/css/AdminLTE.min.css')}}">

@@ -17,7 +17,7 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
           <li class="{{ Request::is('dashboard') ? 'active':null}}"><a href="{{ url('dashboard') }}"><i class="glyphicon glyphicon-home"></i> <span>Dashboard</span></a></li>
-          <li class="treeview {{ Request::is('user') ? 'active':null}} {{ Request::is('akun') ? 'active':null}} {{ Request::is('nasabah') ? 'active':null}}">
+          <li class="treeview {{ Request::is('user') ? 'active':null}} {{ Request::is('akun') ? 'active':null}} {{ Request::is('pelanggan') ? 'active':null}}">
             <a href="#">
               <i class="glyphicon glyphicon-book" aria-hidden="true"></i>
               <span>Data Master</span>
@@ -27,8 +27,8 @@
             </a>
             <ul class="treeview-menu">
               <li class="{{ Request::is('user') ? 'active':null}}"><a href="{{ url('user') }}"><i class="fa fa-circle-o"></i> <span> User</span></a></li>
+              <li class="{{ Request::is('pelanggan') ? 'active':null}}"><a href="{{ url('pelanggan') }}"><i class="fa fa-circle-o"></i> <span> Pelanggan</span></a></li>
               <li class="{{ Request::is('akun') ? 'active':null}}"><a href="{{ url('akun') }}"><i class="fa fa-circle-o"></i> <span> Akun</span></a></li>
-              <li class="{{ Request::is('nasabah') ? 'active':null}}"><a href="{{ url('nasabah') }}"><i class="fa fa-circle-o"></i> <span> Nasabah</span></a></li>
             </ul>
           </li>
           <li class="{{ Request::is('simpanan-anggota') ? 'active':null}}"><a href="{{ url('simpanan-anggota') }}"><i class="fa fa-money"></i> <span>Simpanan Anggota</span></a></li>

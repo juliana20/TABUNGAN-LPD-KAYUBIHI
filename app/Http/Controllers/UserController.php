@@ -32,7 +32,8 @@ class UserController extends Controller
    {
         $data = array(
             'nameroutes'        => $this->nameroutes,
-            'title'             => 'Data User',
+            'title'             => 'User',
+            'header'            => 'Data User',
             'breadcrumb'        => 'List Data User',
             'headerModalTambah' => 'TAMBAH DATA USER',
             'headerModalEdit'   => 'UBAH DATA USER',

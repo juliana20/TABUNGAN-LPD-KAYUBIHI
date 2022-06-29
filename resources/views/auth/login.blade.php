@@ -25,7 +25,7 @@
                     </div>
                     <!-- /.col -->
                     <div class="col-xs-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat" style="background-color: #277242!important;border-color: #277242!important;"> Login</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-flat" style="background-color: #277242!important;border-color: #277242!important;"> Login <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></button>
                     </div>
                     <!-- /.col -->
                 </div>

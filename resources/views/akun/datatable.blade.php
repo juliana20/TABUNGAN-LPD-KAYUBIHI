@@ -10,33 +10,26 @@
 @endsection
 @section('content')  
     <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">{{ @$title }}</h3>
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ @$header }}</h3>
         <div class="box-tools pull-right">
             <div class="btn-group">
-              <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-              Tindakan <i class="fa fa-wrench"></i></button>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="" id="modalCreate"><i class="fa fa-plus" aria-hidden="true"></i> Tambah Baru</a></li>
-              </ul>
+              <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
             </div>
-          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
           </button>
         </div>
       </div>
       <!-- /.box-header -->
-      <div class="box-body">
-        <table class="table table-striped table-bordered table-hover" id="{{ $idDatatables }}" width="100%">   
+      <div class="box-body table-responsive">
+        <table class="table table-hover" id="{{ $idDatatables }}" width="100%">   
             <thead>
               <tr>
                 <th class="no-sort">No</th>
-                <th>No Nasabah</th>
-                <th>Nama Nasabah</th>
-                <th>Alamat</th>
-                <th>Telepon</th>
-                <th>Tanggal Daftar</th>
-                <th>Anggota</th>
-                <th>Status</th>
+                <th>Kode Akun</th>
+                <th>Nama Akun</th>
+                <th>Golongan</th>
+                <th>Kelompok</th>
+                <th>Normal Pos</th>
                 <th class="no-sort">Aksi</th>
               </tr>
             </thead>
@@ -74,6 +67,7 @@
 
 										}
 								},
+                order:[ 1, 'asc'],
               columns: [
                           {
                               data: "id",
@@ -83,51 +77,33 @@
                               }
                           },
                           { 
-                                data: "id_nasabah", 
+                                data: "kode_akun", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "nama_nasabah", 
+                                data: "nama_akun", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "alamat_nasabah", 
+                                data: "golongan", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "no_telp", 
+                                data: "kelompok", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "tanggal_daftar", 
+                                data: "normal_pos", 
                                 render: function ( val, type, row ){
                                     return val
-                                  }
-                          },
-                          { 
-                                data: "anggota", 
-                                render: function ( val, type, row ){
-                                    var button_success = `<label class="label label-success">Anggota</label>`;
-                                        button_danger  = `<label class="label label-danger">Non Anggota</label>`;
-
-                                        return (val == 1) ? button_success : button_danger
-                                  }
-                          },
-                          { 
-                                data: "aktif", 
-                                render: function ( val, type, row ){
-                                    var button_success = `<label class="label label-success">Aktif</label>`;
-                                        button_danger  = `<label class="label label-danger">Non Aktif</label>`;
-
-                                        return (val == 1) ? button_success : button_danger
                                   }
                           },
                           { 
@@ -135,7 +111,7 @@
                                 className: "text-center",
                                 render: function ( val, type, row ){
                                     var buttons = '<div class="btn-group" role="group">';
-                                      buttons += '<a class=\"btn btn-info btn-xs modalEdit\"><i class=\"fa fa-pencil\"></i> Ubah</a>';
+                                      buttons += '<a class=\"btn btn-info btn-xs modalEdit\"><i class=\"glyphicon glyphicon-pencil\"></i> Ubah</a>';
                                       buttons += "</div>";
                                     return buttons
                                   }

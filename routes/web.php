@@ -36,13 +36,12 @@ Route::prefix('akun')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','AkunController@edit');
 	Route::match(array('GET', 'POST'),'/lookup_collection','AkunController@lookup_collection');
 });
-#NASABAH
-Route::prefix('nasabah')->group(function() {
-    Route::get('/', 'NasabahController@index');
-	Route::match(array('GET', 'POST'),'/datatables','NasabahController@datatables_collection');
-	Route::match(array('GET', 'POST'),'/datatables_no_tabungan','NasabahController@datatables_collection_no_tabungan');
-	Route::match(array('GET', 'POST'),'/create','NasabahController@create');
-	Route::match(array('GET', 'POST'),'/edit/{id}','NasabahController@edit');
+#PELANGGAN
+Route::prefix('pelanggan')->group(function() {
+    Route::get('/', 'PelangganController@index');
+	Route::match(array('GET', 'POST'),'/datatables','PelangganController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','PelangganController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','PelangganController@edit');
 });
 #SIMPANAN ANGGOTA
 Route::prefix('simpanan-anggota')->group(function() {

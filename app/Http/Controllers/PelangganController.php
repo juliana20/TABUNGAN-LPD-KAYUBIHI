@@ -3,47 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Model\Akun_m;
+use App\Http\Model\Pelanggan_m;
 use Validator;
 use DataTables;
 use Illuminate\Validation\Rule;
 use DB;
 use Response;
 
-class AkunController extends Controller
+class PelangganController extends Controller
 {
-    protected $golongan = [
-        ['id' => 'Aktiva', 'desc' => 'Aktiva','level' => 1],
-        ['id' => 'Hutang', 'desc' => 'Hutang', 'level' => 2],
-        ['id' => 'Modal', 'desc' => 'Modal', 'level' => 3],
-        ['id' => 'Pendapatan', 'desc' => 'Pendapatan', 'level' => 4],
-        ['id' => 'HPP', 'desc' => 'HPP', 'level' => 5],
-        ['id' => 'Biaya', 'desc' => 'Biaya', 'level' => 6],
-    ];
-
-    protected $kelompok = [
-        ['id' => 'Aktiva Lancar', 'desc' => 'Aktiva Lancar'],
-        ['id' => 'Pendapatan Operasional', 'desc' => 'Pendapatan Operasional'],
-        ['id' => 'Pendapatan Non Operasional', 'desc' => 'Pendapatan Non Operasional'],
-        ['id' => 'Hutang Lancar', 'desc' => 'Hutang Lancar'],
-        ['id' => 'Modal', 'desc' => 'Modal'],
-        ['id' => 'Biaya Operasional', 'desc' => 'Biaya Operasional'],
-        ['id' => 'Biaya Non Operasional', 'desc' => 'Biaya Non Operasional'],
-        ['id' => 'Piutang', 'desc' => 'Piutang'],
-        ['id' => 'Aktiva Tetap', 'desc' => 'Aktiva Tetap'],
-        ['id' => 'Ekuitas', 'desc' => 'Ekuitas'],
-    ];
-
-    protected $normal_pos = [
-        ['id' => 'Debit', 'desc' => 'Debit'],
-        ['id' => 'Kredit', 'desc' => 'Kredit'],
+    protected $jenis_kelamin = [
+        ['id' => 'Laki-Laki', 'desc' => 'Laki-Laki'],
+        ['id' => 'Perempuan', 'desc' => 'Perempuan'],
     ];
 
     protected $model;
-    public function __construct(Akun_m $model)
+    public function __construct(Pelanggan_m $model)
     {
         $this->model = $model;
-        $this->nameroutes = 'akun';
+        $this->nameroutes = 'pelanggan';
     }
     /**
      * Display a listing of the resource.
@@ -54,30 +32,28 @@ class AkunController extends Controller
    {
             $data = array(
                 'nameroutes'        => $this->nameroutes,
-                'title'             => 'Akun',
-                'header'            => 'Data Akun',
-                'breadcrumb'        => 'List Data Akun',
-                'headerModalTambah' => 'TAMBAH DATA AKUN',
-                'headerModalEdit'   => 'UBAH DATA AKUN',
-                'urlDatatables'     => 'akun/datatables',
-                'idDatatables'      => 'dt_akun'
+                'title'             => 'Pelanggan',
+                'header'            => 'Data Pelanggan',
+                'breadcrumb'        => 'List Data Pelanggan',
+                'headerModalTambah' => 'TAMBAH DATA PELANGGAN',
+                'headerModalEdit'   => 'UBAH DATA PELANGGAN',
+                'urlDatatables'     => 'pelanggan/datatables',
+                'idDatatables'      => 'dt_pelanggan'
             );
-            return view('akun.datatable',$data);
+            return view('pelanggan.datatable',$data);
     }
 
     public function create(Request $request)
     {
         $item = [
-            'nama_akun' => null,
+            'kode' => $this->model->gen_code('PL')
         ];
 
         $data = array(
             'item'                  => (object) $item,
             'submit_url'            => url()->current(),
             'is_edit'               => FALSE,
-            'option_golongan'       => $this->golongan,
-            'option_kelompok'       => $this->kelompok,
-            'option_normal_pos'     => $this->normal_pos,
+            'option_jenis_kelamin'  => $this->jenis_kelamin,
             'nameroutes'            => $this->nameroutes,
         );
 
@@ -85,6 +61,7 @@ class AkunController extends Controller
         if($request->post())
         {
             $header = $request->input('f');
+            $header['kode'] = $this->model->gen_code('PL');
             $validator = Validator::make( $header, $this->model->rules['insert']);
             if ($validator->fails()) {
                 $response = [
@@ -101,7 +78,7 @@ class AkunController extends Controller
                 DB::commit();
     
                 $response = [
-                    "message" => 'Data akun berhasil dibuat',
+                    "message" => 'Data pelanggan berhasil dibuat',
                     'status' => 'success',
                     'code' => 200,
                 ];
@@ -119,7 +96,7 @@ class AkunController extends Controller
             return Response::json($response);
         }
 
-        return view('akun.form', $data);
+        return view('pelanggan.form', $data);
 
     }
 
@@ -149,9 +126,7 @@ class AkunController extends Controller
             'item'                      => $get_data,
             'is_edit'                   => TRUE,
             'submit_url'                => url()->current(),
-            'option_golongan'          => $this->golongan,
-            'option_kelompok'       => $this->kelompok,
-            'option_normal_pos'     => $this->normal_pos,
+            'option_jenis_kelamin'      => $this->jenis_kelamin,
             'nameroutes'                => $this->nameroutes,
         ];
 
@@ -160,19 +135,19 @@ class AkunController extends Controller
         {
             //request dari view
             $header = $request->input('f');
-           //validasi dari model
-           $validator = Validator::make( $header,[
-                'kode_akun' => ['required', Rule::unique('m_akun')->ignore($get_data->kode_akun, 'kode_akun')],
-                'nama_akun' => ['required'],
-           ]);
-           if ($validator->fails()) {
-               $response = [
-                   'message' => $validator->errors()->first(),
-                   'status' => 'error',
-                   'code' => 500,
-               ];
-               return Response::json($response);
-           }
+            //validasi dari model
+            $validator = Validator::make( $header, [
+                'kode' => [Rule::unique('m_pelanggan')->ignore($get_data->kode, 'kode')],
+            ]);
+            if ($validator->fails()) {
+                $response = [
+                    'message' => $validator->errors()->first(),
+                    'status' => 'error',
+                    'code' => 500,
+                ];
+                return Response::json($response);
+            }
+                      
             //insert data
             DB::beginTransaction();
             try {
@@ -180,7 +155,7 @@ class AkunController extends Controller
                 DB::commit();
 
                 $response = [
-                    "message" => 'Data akun berhasil diperbarui',
+                    "message" => 'Data pelanggan berhasil diperbarui',
                     'status' => 'success',
                     'code' => 200,
                 ];
@@ -197,19 +172,12 @@ class AkunController extends Controller
             return Response::json($response); 
         }
         
-        return view('akun.form', $data);
+        return view('pelanggan.form', $data);
     }
 
     public function datatables_collection()
     {
         $data = $this->model->get_all();
-        return Datatables::of($data)->make(true);
-    }
-
-    public function lookup_collection()
-    {
-        $params = request()->all();
-        $data = $this->model->get_all_lookup($params);
         return Datatables::of($data)->make(true);
     }
 

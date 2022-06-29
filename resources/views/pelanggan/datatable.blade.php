@@ -25,11 +25,11 @@
             <thead>
               <tr>
                 <th class="no-sort">No</th>
-                <th>Kode User</th>
-                <th>Nama</th>
-                <th>Username</th>
+                <th>Kode Pelanggan</th>
+                <th>Nama Pelanggan</th>
+                <th>Jenis Kelamin</th>
+                <th>Alamat</th>
                 <th>Telepon</th>
-                <th>Jabatan</th>
                 <th class="no-sort">Aksi</th>
               </tr>
             </thead>
@@ -76,7 +76,7 @@
                               }
                           },
                           { 
-                                data: "kode_user", 
+                                data: "kode", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
@@ -88,19 +88,19 @@
                                   }
                           },
                           { 
-                                data: "username", 
+                                data: "jenis_kelamin", 
+                                render: function ( val, type, row ){
+                                    return val
+                                  }
+                          },
+                          { 
+                                data: "alamat", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
                                 data: "no_telepon", 
-                                render: function ( val, type, row ){
-                                    return val
-                                  }
-                          },
-                          { 
-                                data: "jabatan", 
                                 render: function ( val, type, row ){
                                     return val
                                   }

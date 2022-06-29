@@ -22,15 +22,21 @@ DROP TABLE IF EXISTS `m_akun`;
 
 CREATE TABLE `m_akun` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `kode` varchar(15) NOT NULL,
-  `nama` varchar(100) NOT NULL,
+  `kode_akun` varchar(15) NOT NULL,
+  `nama_akun` varchar(100) NOT NULL,
+  `golongan` varchar(50) DEFAULT NULL,
+  `kelompok` varchar(50) NOT NULL,
+  `normal_pos` varchar(50) DEFAULT NULL,
   `saldo_awal` float DEFAULT NULL,
   `saldo_akhir` float DEFAULT NULL,
-  `golongan` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`,`kode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`,`kode_akun`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_akun` */
+
+insert  into `m_akun`(`id`,`kode_akun`,`nama_akun`,`golongan`,`kelompok`,`normal_pos`,`saldo_awal`,`saldo_akhir`) values 
+(1,'10001','Kas','Aktiva','Aktiva Lancar','Debit',0,NULL),
+(2,'10002','Bank Koperasi','Aktiva','Aktiva Lancar','Debit',0,NULL);
 
 /*Table structure for table `m_pelanggan` */
 
@@ -39,15 +45,17 @@ DROP TABLE IF EXISTS `m_pelanggan`;
 CREATE TABLE `m_pelanggan` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `kode` varchar(15) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
   `nama` varchar(100) NOT NULL,
   `alamat` varchar(100) DEFAULT NULL,
   `jenis_kelamin` varchar(20) DEFAULT NULL,
   `no_telepon` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`,`kode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_pelanggan` */
+
+insert  into `m_pelanggan`(`id`,`kode`,`nama`,`alamat`,`jenis_kelamin`,`no_telepon`) values 
+(1,'PL001','I Made Susila Putra','Denpasar Timur','Laki-Laki','081788787222');
 
 /*Table structure for table `m_user` */
 
