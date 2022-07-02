@@ -31,7 +31,7 @@
               <li class="{{ Request::is('akun') ? 'active':null}}"><a href="{{ url('akun') }}"><i class="fa fa-circle-o"></i> <span> Akun</span></a></li>
             </ul>
           </li>
-          <li class="{{ Request::is('simpanan-anggota') ? 'active':null}}"><a href="{{ url('simpanan-anggota') }}"><i class="fa fa-money"></i> <span>Simpanan Anggota</span></a></li>
+          <li class="{{ Request::is('transaksi-retribusi-sampah') ? 'active':null}}"><a href="{{ url('transaksi-retribusi-sampah') }}"><i class="fa fa-money"></i> <span>Transaksi Retribusi Sampah</span></a></li>
           <li class="{{ Request::is('tabungan') ? 'active':null}}"><a href="{{ url('tabungan') }}"><i class="fa fa-book"></i> <span>Tabungan Sukarela</span></a></li>
           <li class="{{ Request::is('tabungan-berjangka') ? 'active':null}}"><a href="{{ url('tabungan-berjangka') }}"><i class="fa fa-archive"></i> <span>Tabungan Berjangka</span></a></li>
           <li class="{{ Request::is('pinjaman') ? 'active':null}}"><a href="{{ url('pinjaman') }}"><i class="fa fa-handshake-o"></i> <span> Data Pinjaman</span></a></li>
@@ -97,8 +97,10 @@
               <li class="{{ Request::is('laporan/tunggakan-gedung') ? 'active':null}}"><a href="{{ url('laporan/tunggakan-gedung') }}"><i class="fa fa-file-text-o"></i> Tunggakan Uang Gedung</a></li>
             </ul>
           </li> --}}
-       
+          <li class="header">SETTING</li>
+          <li class="{{ Request::is('setting-parameter') ? 'active':null}}"><a href="{{ url('setting-parameter') }}"><i class="glyphicon glyphicon-cog"></i> <span>Biaya Sampah</span></a></li>
         </ul>
+
     </section>
     <!-- /.sidebar -->
   </aside>

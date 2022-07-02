@@ -43,6 +43,21 @@ Route::prefix('pelanggan')->group(function() {
 	Route::match(array('GET', 'POST'),'/create','PelangganController@create');
 	Route::match(array('GET', 'POST'),'/edit/{id}','PelangganController@edit');
 });
+#SETTING PARAMETER
+Route::prefix('setting-parameter')->group(function() {
+    Route::match(array('GET', 'POST'),'/', 'SettingParameterController@form');
+});
+#TRANSAKSI RETRIBUSI SAMPAH
+Route::prefix('transaksi-retribusi-sampah')->group(function() {
+    Route::get('/', 'TransaksiSampahController@index');
+	Route::match(array('GET', 'POST'),'/datatables','TransaksiSampahController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','TransaksiSampahController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSampahController@edit');
+	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSampahController@show');
+	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSampahController@cetak_nota');
+});
+
+
 #SIMPANAN ANGGOTA
 Route::prefix('simpanan-anggota')->group(function() {
     Route::get('/', 'SimpananAnggotaController@index');
@@ -63,22 +78,7 @@ Route::prefix('simpanan-anggota')->group(function() {
 	Route::match(array('GET', 'POST'),'/tarik/{id}','SimpananAnggotaController@tarik');
 	Route::match(array('GET'),'/cetak/{id}','SimpananAnggotaController@cetak');
 });
-#TABUNGAN
-Route::prefix('tabungan')->group(function() {
-    Route::get('/', 'TabunganController@index');
-	Route::match(array('GET', 'POST'),'/datatables','TabunganController@datatables_collection');
-	Route::match(array('GET', 'POST'),'/create','TabunganController@create');
-	Route::match(array('GET', 'POST'),'/edit/{id}','TabunganController@edit');
-	Route::match(array('GET'),'/setoran/{id}','TabunganController@lookup_form_setoran');
-	Route::match(array('GET'),'/penarikan/{id}','TabunganController@lookup_form_penarikan');
-	Route::match(array('POST'),'/simpan-tabungan','TabunganController@simpan_tabungan');
-	Route::match(array('GET', 'POST'),'/datatables-tabungan','TabunganController@datatables_collection_tabungan');
-	Route::match(array('GET', 'POST'),'/list-setoran','TabunganController@list_setoran');
-	Route::match(array('GET', 'POST'),'/list-penarikan','TabunganController@list_penarikan');
-	Route::match(array('GET', 'POST'),'/proses-setoran/{id}','TabunganController@proses_setoran');
-	Route::match(array('GET', 'POST'),'/proses-penarikan/{id}','TabunganController@proses_penarikan');
-	Route::match(array('GET'),'/cetak-tabungan/{id}','TabunganController@cetak_tabungan');
-});
+
 #TABUNGAN BERJANGKA
 Route::prefix('tabungan-berjangka')->group(function() {
     Route::get('/', 'TabunganBerjangkaController@index');

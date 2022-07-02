@@ -16,6 +16,22 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`bumdes_sarining_winangun_kukuh` /*!4010
 
 USE `bumdes_sarining_winangun_kukuh`;
 
+/*Table structure for table `config` */
+
+DROP TABLE IF EXISTS `config`;
+
+CREATE TABLE `config` (
+  `key` varchar(50) DEFAULT NULL,
+  `value` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+/*Data for the table `config` */
+
+insert  into `config`(`key`,`value`) values 
+('biaya_jasa','4000'),
+('upah_pungut','17000'),
+('biaya_vendor','1000');
+
 /*Table structure for table `m_akun` */
 
 DROP TABLE IF EXISTS `m_akun`;
@@ -141,17 +157,21 @@ DROP TABLE IF EXISTS `t_sampah`;
 
 CREATE TABLE `t_sampah` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `kode` varchar(15) NOT NULL,
+  `kode_transaksi_sampah` varchar(15) NOT NULL,
   `pelanggan_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `tanggal` datetime NOT NULL,
-  `biaya_jasa` float DEFAULT NULL,
   `jumlah` float NOT NULL,
+  `biaya_jasa` float DEFAULT NULL,
+  `total_bayar` float DEFAULT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`,`kode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`,`kode_transaksi_sampah`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_sampah` */
+
+insert  into `t_sampah`(`id`,`kode_transaksi_sampah`,`pelanggan_id`,`user_id`,`tanggal`,`jumlah`,`biaya_jasa`,`total_bayar`,`keterangan`) values 
+(4,'SP00001',1,1,'2022-07-02 00:00:00',17000,8000,25000,NULL);
 
 /*Table structure for table `t_samsat` */
 
