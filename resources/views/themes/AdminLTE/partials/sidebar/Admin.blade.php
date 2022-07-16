@@ -29,10 +29,11 @@
               <li class="{{ Request::is('user') ? 'active':null}}"><a href="{{ url('user') }}"><i class="fa fa-circle-o"></i> <span> User</span></a></li>
               <li class="{{ Request::is('pelanggan') ? 'active':null}}"><a href="{{ url('pelanggan') }}"><i class="fa fa-circle-o"></i> <span> Pelanggan</span></a></li>
               <li class="{{ Request::is('akun') ? 'active':null}}"><a href="{{ url('akun') }}"><i class="fa fa-circle-o"></i> <span> Akun</span></a></li>
+              <li class="{{ Request::is('jenis-transaksi') ? 'active':null}}"><a href="{{ url('jenis-transaksi') }}"><i class="fa fa-circle-o"></i> <span> Jenis Transaksi</span></a></li>
             </ul>
           </li>
           <li class="{{ Request::is('transaksi-retribusi-sampah') ? 'active':null}}"><a href="{{ url('transaksi-retribusi-sampah') }}"><i class="fa fa-money"></i> <span>Transaksi Retribusi Sampah</span></a></li>
-          <li class="{{ Request::is('tabungan') ? 'active':null}}"><a href="{{ url('tabungan') }}"><i class="fa fa-book"></i> <span>Tabungan Sukarela</span></a></li>
+          <li class="{{ Request::is('transaksi-pembayaran-online') ? 'active':null}}"><a href="{{ url('transaksi-pembayaran-online') }}"><i class="fa fa-book"></i> <span>Transaksi Pembayaran Online</span></a></li>
           <li class="{{ Request::is('tabungan-berjangka') ? 'active':null}}"><a href="{{ url('tabungan-berjangka') }}"><i class="fa fa-archive"></i> <span>Tabungan Berjangka</span></a></li>
           <li class="{{ Request::is('pinjaman') ? 'active':null}}"><a href="{{ url('pinjaman') }}"><i class="fa fa-handshake-o"></i> <span> Data Pinjaman</span></a></li>
           <?php /* <li class="treeview {{ Request::is('tabungan') ? 'active':null}} {{ Request::is('tabungan/list-setoran') ? 'active':null}} {{ Request::is('tabungan/list-penarikan') ? 'active':null}}">

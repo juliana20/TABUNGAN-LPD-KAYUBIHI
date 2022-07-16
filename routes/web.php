@@ -36,6 +36,13 @@ Route::prefix('akun')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','AkunController@edit');
 	Route::match(array('GET', 'POST'),'/lookup_collection','AkunController@lookup_collection');
 });
+#JENIS TRANSAKSI
+Route::prefix('jenis-transaksi')->group(function() {
+    Route::get('/', 'JenisTransaksiController@index');
+	Route::match(array('GET', 'POST'),'/datatables','JenisTransaksiController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','JenisTransaksiController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','JenisTransaksiController@edit');
+});
 #PELANGGAN
 Route::prefix('pelanggan')->group(function() {
     Route::get('/', 'PelangganController@index');
@@ -55,6 +62,15 @@ Route::prefix('transaksi-retribusi-sampah')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSampahController@edit');
 	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSampahController@show');
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSampahController@cetak_nota');
+});
+#TRANSAKSI PEMBAYARAN ONLINE
+Route::prefix('transaksi-pembayaran-online')->group(function() {
+    Route::get('/', 'TransaksiOnlineController@index');
+	Route::match(array('GET', 'POST'),'/datatables','TransaksiOnlineController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','TransaksiOnlineController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiOnlineController@edit');
+	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiOnlineController@show');
+	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiOnlineController@cetak_nota');
 });
 
 

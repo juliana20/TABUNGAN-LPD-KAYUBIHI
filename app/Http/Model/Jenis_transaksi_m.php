@@ -5,9 +5,9 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class Tabungan_berjangka_detail_m extends Model
+class Jenis_transaksi_m extends Model
 {
-	protected $table = 'tb_tabungan_berjangka_detail';
+	protected $table = 'm_jenis_transaksi';
 	protected $index_key = 'id';
     public $timestamps  = false;
 
@@ -15,7 +15,14 @@ class Tabungan_berjangka_detail_m extends Model
 
     public function __construct()
 	{
-
+        $this->rules = [
+            'insert' => [
+                'nama' => "required|unique:{$this->table}",
+            ],
+			'update' => [
+				'nama' => 'required',
+            ],
+        ];
 	}
 
     function get_all()
@@ -30,14 +37,7 @@ class Tabungan_berjangka_detail_m extends Model
 
 	function get_one($id)
 	{
-		$query = DB::table("{$this->table} as a")
-			     ->join('tb_tabungan_berjangka as b','a.id_tabungan_berjangka','=','b.id_tabungan_berjangka')
-				 ->join('tb_nasabah as c','b.id_nasabah','=','c.id_nasabah')
-				 ->join('tb_user as d','a.id_user','=','d.id')
-				 ->select('a.*','c.nama_nasabah','c.tanggal_daftar','d.nama_user')
-				 ->where("a.{$this->index_key}", $id);
-
-		return 	$query->first();
+		return self::where($this->index_key, $id)->first();
 	}
 
 	function get_by( $where )
@@ -60,6 +60,5 @@ class Tabungan_berjangka_detail_m extends Model
 		$query = DB::table($this->table)->where($where);
 		return $query->update($data);
 	}
-
 
 }
