@@ -28,7 +28,7 @@
       <input type="text" class="form-control" id="golongan_akun" value="{{ substr(@$item->kode_akun, 0, 1) }}" placeholder="" required="" readonly>
     </div>
     <div class="col-lg-8">
-      <input type="text" class="form-control" name="f[kode_akun]" id="kode_akun" value="{{ substr(@$item->kode_akun,1) }}" placeholder="Kode Akun" required="">
+      <input type="text" class="form-control" data-inputmask="&quot;mask&quot;: &quot;9999&quot;" data-mask="" name="f[kode_akun]" id="kode_akun" value="{{ substr(@$item->kode_akun,1) }}" placeholder="Kode Akun" required="">
     </div>
   </div>
   <div class="form-group">
@@ -68,6 +68,7 @@
     $( "#golongan_akun" ).val($(this).find(':selected').attr('data-level'));
   });
   $(document).ready(function() {
+      $('[data-mask]').inputmask();
       mask_number.init();
   });
   $('form[name="form_crud"]').on('submit',function(e) {

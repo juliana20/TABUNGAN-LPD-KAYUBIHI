@@ -4,7 +4,7 @@
     {{ @$title }}
   </h1>
   <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Master</a></li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> Transaksi</a></li>
     <li><a href="{{ url(@$nameroutes) }}">{{ @$breadcrumb }}</a></li>
     <li class="active">{{ @$title }}</li>
   </ol>
@@ -12,20 +12,14 @@
 @section('content')  
   <div class="box box-primary">
     <div class="box-header with-border">
-        <h3 class="box-title">{{ @$title }}</h3>
-        <div class="box-tools pull-right">
-
+      <h3 class="box-title">{{ @$header }}</h3>
+      <div class="box-tools pull-right">
           <div class="btn-group">
-            <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-            Tindakan <i class="fa fa-wrench"></i></button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="{{ url(@$nameroutes) }}/create" title=""><i class="fa fa-plus" aria-hidden="true"></i> Tambah Baru</a></li>
-            </ul>
+            <a href="{{ url($nameroutes.'/create') }}" class="btn btn-success btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</a>
           </div>
-          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-          </button>
-        </div>
+        </button>
       </div>
+    </div>
       <!-- /.box-header -->
 <form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" id="form_crud">
   {{ csrf_field() }}
@@ -34,7 +28,7 @@
       <div class="form-group">
           <label class="col-lg-3 control-label">No Bukti *</label>
           <div class="col-lg-9">
-            <input type="text"  class="form-control" name="f[id_mutasi_kas]" id="id_mutasi_kas" value="{{ @$item->id_mutasi_kas }}"  required="" readonly>
+            <input type="text"  class="form-control" name="f[kode_pengeluaran]" id="kode_pengeluaran" value="{{ @$item->kode_pengeluaran }}"  required="" readonly>
           </div>
       </div>
       <div class="form-group">
@@ -46,27 +40,17 @@
       <div class="form-group">
         <label class="col-lg-3 control-label">Total *</label>
         <div class="col-lg-9">
-          <input type="text" name="total" id="total" class="form-control mask-number" placeholder="Total" value="{{ @$item->total }}" required="" readonly>
+          <input type="text" name="f[total]" id="total" class="form-control mask-number" placeholder="Total" value="{{ @$item->total }}" required="" readonly>
         </div>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="form-group">
-        <label class="col-lg-3 control-label">Jenis Mutasi *</label>
-        <div class="col-lg-9">
-          <select name="f[jenis_mutasi]" class="form-control" required="" id="jenis_mutasi">
-          <?php foreach(@$jenis_mutasi as $dt): ?>
-            <option value="{{ @$dt['id'] }}" {{ @$dt['id'] == @$item->id_kk ? 'selected': null }}>{{ @$dt['desc'] }}</option>
-          <?php endforeach; ?>
-          </select>
-        </div>
-        </div>
         <div class="form-group">
           <label class="col-lg-3 control-label">Akun Kas</label>
           <div class="col-lg-9">
             <div class="input-group data_collect_wrapper">
               <input type="hidden" id="akun_id" name="f[akun_id]" required value="{{ @$item->akun_id }}">
-              <input type="text" name="f[nama_akun]" id="nama_akun" value="{{ @$item->nama_akun }}" class="form-control" placeholder="Akun Kas" required="" readonly>
+              <input type="text" name="nama_akun" id="nama_akun" value="{{ @$item->nama_akun }}" class="form-control" placeholder="Akun Kas" required="" readonly>
               <div class="input-group-btn">
                 <a href="javascript:;" id="lookup_akun" class="btn btn-info btn-flat data_collect_btn"><i class="fa fa-search"></i> Cari</a>
               </div>
@@ -89,6 +73,7 @@
               <th>Nama Akun</th>
               <th>Keterangan</th>
               <th>Nominal</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -96,7 +81,7 @@
           </tbody>
         </table>
         <div>
-            <a  title="Tambah" id="lookup_detail" class="btn btn-block btn-github"><i class="fa fa-plus" aria-hidden="true"></i> <b>Tambah Detail</b> </a>
+            <a  title="Tambah" id="lookup_detail" class="btn btn-block btn-github"><i class="fa fa-plus" aria-hidden="true"></i> <b>Tambah Detail Pengeluaran</b> </a>
         </div>
   </div>
   <div class="box-footer">
@@ -120,12 +105,11 @@
         lookup_modal_detail: function() {
             $('#lookup_detail').on( "click", function(e){
               e.preventDefault();
-              var jenis_mutasi = $('#jenis_mutasi').val();
               var _prop= {
                 _this : $( this ),
-                remote : "{{ url("$nameroutes") }}/lookup_detail/"+ jenis_mutasi,
-                size : 'modal-md',
-                title : "Form Detail Mutasi",
+                remote : "{{ url("$nameroutes") }}/lookup_detail",
+                size : 'modal-lg',
+                title : "Form Detail Pengeluaran",
               }
               ajax_modal.show(_prop);											
             });  
@@ -217,7 +201,7 @@
                             }
                         },
                         { 
-                              data: "akun_id", 
+                              data: "kode_akun", 
                               render: function ( val, type, row ){
                                   return val
                                 }
@@ -237,7 +221,14 @@
                         { 
                               data: "nominal", 
                               render: function ( val, type, row ){
-                                  return (row.nominal > 0 ) ? mask_number.currency_add(val) :  mask_number.currency_add(row.kredit)
+                                  return (val == 0 || !val) ? 'Rp ' +0 : 'Rp ' + mask_number.currency_add(val)
+                                }
+                        },
+                        { 
+                              data: "akun_id", 
+                              visible: false,
+                              render: function ( val, type, row ){
+                                  return val
                                 }
                         },
                     ],
@@ -277,14 +268,15 @@
         modalTxtSelect : 'Pilih Akun',
         dtOrdering : true,
         dtOrder: [],
-        dtThead:['No Akun','Nama Akun','Kelompok'],
+        dtThead:['No Akun','Nama Akun','Golongan','Kelompok'],
         dtColumns: [
-            {data: "id_akun"}, 
+            {data: "kode_akun"}, 
             {data: "nama_akun"}, 
+            {data: "golongan"}, 
             {data: "kelompok"}, 
         ],
         onSelected: function(data, _this){	
-          $('#akun_id').val(data.id_akun);
+          $('#akun_id').val(data.id);
           $('#nama_akun').val(data.nama_akun); 
             
           return true;
@@ -306,7 +298,6 @@
       e.preventDefault();
           var header_data = {
                     'tanggal' : $("#tanggal").val(),
-                    'jenis_mutasi' : $("#jenis_mutasi").val(),
                     'akun_id' :  $("#akun_id").val(),
                     'keterangan': $("#keterangan").val(),
                     'total': mask_number.currency_remove($("#total").val()),
@@ -314,7 +305,7 @@
 
             var data_post = {
                     "details" : {},
-                    "header" : header_data
+                    "f" : header_data
                 }
             
               _datatable.rows().data().each(function (value, index){

@@ -34,8 +34,8 @@
           </li>
           <li class="{{ Request::is('transaksi-retribusi-sampah') ? 'active':null}}"><a href="{{ url('transaksi-retribusi-sampah') }}"><i class="fa fa-money"></i> <span>Transaksi Retribusi Sampah</span></a></li>
           <li class="{{ Request::is('transaksi-pembayaran-online') ? 'active':null}}"><a href="{{ url('transaksi-pembayaran-online') }}"><i class="fa fa-book"></i> <span>Transaksi Pembayaran Online</span></a></li>
-          <li class="{{ Request::is('tabungan-berjangka') ? 'active':null}}"><a href="{{ url('tabungan-berjangka') }}"><i class="fa fa-archive"></i> <span>Tabungan Berjangka</span></a></li>
-          <li class="{{ Request::is('pinjaman') ? 'active':null}}"><a href="{{ url('pinjaman') }}"><i class="fa fa-handshake-o"></i> <span> Data Pinjaman</span></a></li>
+          <li class="{{ Request::is('transaksi-samsat-kendaraan') ? 'active':null}}"><a href="{{ url('transaksi-samsat-kendaraan') }}"><i class="fa fa-car" aria-hidden="true"></i> <span>Transaksi Samsat Kendaraan</span></a></li>
+          <li class="{{ Request::is('pengeluaran') ? 'active':null}}"><a href="{{ url('pengeluaran') }}"><i class="fa fa-handshake-o"></i> <span> Pengeluaran</span></a></li>
           <?php /* <li class="treeview {{ Request::is('tabungan') ? 'active':null}} {{ Request::is('tabungan/list-setoran') ? 'active':null}} {{ Request::is('tabungan/list-penarikan') ? 'active':null}}">
             <a href="#">
               <i class="fa fa-clipboard" aria-hidden="true"></i>

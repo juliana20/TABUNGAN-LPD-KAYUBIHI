@@ -3,13 +3,12 @@
 namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
-class Mutasi_kas_detail_m extends Model
+class Pengeluaran_detail_m extends Model
 {
-	protected $table = 'tb_mutasi_kas_detail';
+	protected $table = 't_pengeluaran_detail';
 	protected $index_key = 'id';
-	protected $index_key2 = 'id_mutasi_kas';
+	protected $index_key2 = 'pengeluaran_id';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,11 +17,11 @@ class Mutasi_kas_detail_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'id_mutasi_kas' => "required",
+                'pengeluaran_id' => "required",
 				'akun_id' => 'required',
             ],
 			'update' => [
-				'id_mutasi_kas' => "required",
+				'pengeluaran_id' => "required",
 				'akun_id' => 'required',
             ],
         ];
@@ -30,15 +29,17 @@ class Mutasi_kas_detail_m extends Model
 
     function get_all()
     {
-        return self::get();
+        $query = self::join('m_akun','t_pengeluaran_detail.akun_id','=','m_akun.id')
+				->select('t_pengeluaran_detail.*','m_akun.kode_akun','m_akun.nama_akun');
+
+		return $query->get();
     }
 
 	function collection($id)
 	{
-		$query = DB::table("{$this->table} as a")
-				->join('tb_akun as b','b.id_akun','=','a.akun_id')
-				->select('a.*','b.nama_akun')
-				->where("a.{$this->index_key2}", $id);
+		$query = self::join('m_akun','t_pengeluaran_detail.akun_id','=','m_akun.id')
+				->where("t_pengeluaran_detail.{$this->index_key2}", $id)
+				->select('t_pengeluaran_detail.*','m_akun.kode_akun','m_akun.nama_akun');
 				
 		return $query->get();
 	}
@@ -50,7 +51,9 @@ class Mutasi_kas_detail_m extends Model
 
 	function get_one($id)
 	{
-		return self::where($this->index_key, $id)->first();
+		return self::join('m_akun','t_pengeluaran_detail.akun_id','=','m_akun.id')
+				->where("t_pengeluaran_detail.{$this->index_key}", $id)
+				->select('t_pengeluaran_detail.*','m_akun.kode_akun','m_akun.nama_akun')->first();
 	}
 
 	function get_by( $where )
@@ -70,7 +73,7 @@ class Mutasi_kas_detail_m extends Model
 
 	function update_by($data, Array $where)
 	{
-		$query = DB::table($this->table)->where($where);
+		$query = self::where($where);
 		return $query->update($data);
 	}
 

@@ -37,6 +37,10 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{{ url('themes/AdminLTE-2.4.3/dist/js/demo.js') }}"></script>
 
+{{-- input mask --}}
+<script src="{{ url('themes/AdminLTE-2.4.3/plugins/input-mask/jquery.inputmask.js') }}"></script>
+<script src="{{ url('themes/AdminLTE-2.4.3/plugins/input-mask/jquery.inputmask.date.extensions.js') }}"></script>
+<script src="{{ url('themes/AdminLTE-2.4.3/plugins/input-mask/jquery.inputmask.extensions.js') }}"></script>
 <!-- DataTables -->
 <script src="{{ url('themes/AdminLTE-2.4.3/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('themes/AdminLTE-2.4.3/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
@@ -71,6 +75,7 @@
                 text: message,
                 icon: "success",
                 button: false,
+                timer: 2000
               });
 
 						try{ $( "#audio-alert" ).get(0).play(); }catch(ex){}

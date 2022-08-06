@@ -4,36 +4,28 @@
     {{ @$title }}
   </h1>
   <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Master</a></li>
+    <li><a href="#"><i class="fa fa-dashboard"></i> Transaksi</a></li>
     <li class="active">{{ @$title }}</li>
   </ol>
 @endsection
 @section('content')  
     <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">{{ @$title }}</h3>
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ @$header }}</h3>
         <div class="box-tools pull-right">
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-            Tindakan <i class="fa fa-wrench"></i></button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="{{ url(@$nameroutes) }}/create" title="Tambah Data"><i class="fa fa-plus" aria-hidden="true"></i> Tambah Baru</a></li>
-            </ul>
-          </div>
-          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-          </button>
+            <div class="btn-group">
+              <a href="{{ url($nameroutes.'/create') }}" class="btn btn-success btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</a>
+            </div>
         </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
-        <table class="table table-striped table-bordered table-hover" id="{{$idDatatables}}" width="100%">   
+        <table class="table table-hover" id="{{$idDatatables}}" width="100%">   
             <thead>
               <tr>
                 <th class="no-sort">No</th>
                 <th>Tanggal</th>
                 <th>No Bukti</th>
-                <th>Jenis Mutasi</th>
                 <th>Akun</th>
                 <th>Total</th>
                 <th>Keterangan</th>
@@ -71,14 +63,7 @@
                                   }
                           },
                           { 
-                                data: "id_mutasi_kas", 
-                                render: function ( val, type, row ){
-                                    var button_danger  = `<label class="label label-danger">Dibatalkan</label>`;
-                                        return (row.status_batal == 1) ? val + ' ' +button_danger : val
-                                  }
-                          },
-                          { 
-                                data: "jenis_mutasi", 
+                                data: "kode_pengeluaran", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
@@ -92,7 +77,7 @@
                           { 
                                 data: "total", 
                                 render: function ( val, type, row ){
-                                    return mask_number.currency_add(val)
+                                    return (val == 0 || !val) ? 'Rp ' +0 : 'Rp ' + mask_number.currency_add(val)
                                   }
                           },
                           { 
@@ -107,7 +92,7 @@
                                 className: "text-center",
                                 render: function ( val, type, row ){
                                     var buttons = '<div class="btn-group">' +
-                                                        '<a href=\"{{ url('mutasi-kas/detail') }}/'+ val +'\" title=\"Lihat Data\" class="btn btn-info btn-xs"><i class=\"fa fa-eye\"></i> Lihat</a>' +            
+                                                        '<a href=\"{{ url('pengeluaran/detail') }}/'+ val +'\" title=\"Lihat Data\" class="btn btn-info btn-xs"><i class=\"fa fa-eye\"></i> Lihat</a>' +            
                                                   '</div>';
                                     return buttons
                                   }

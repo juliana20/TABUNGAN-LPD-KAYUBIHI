@@ -3,13 +3,12 @@
 namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
-class Mutasi_kas_m extends Model
+class Pengeluaran_m extends Model
 {
-	protected $table = 'tb_mutasi_kas';
+	protected $table = 't_pengeluaran';
 	protected $index_key = 'id';
-	protected $index_key2 = 'id_mutasi_kas';
+	protected $index_key2 = 'kode_pengeluaran';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,24 +17,25 @@ class Mutasi_kas_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'id_mutasi_kas' => "required|unique:{$this->table}",
+                'kode_pengeluaran' => "required|unique:{$this->table}",
 				'tanggal' => 'required',
 				'akun_id' => 'required',
+				'total' => 'required'
             ],
 			'update' => [
 				'tanggal' => 'required',
 				'akun_id' => 'required',
+				'total' => 'required'
             ],
         ];
 	}
 
     function get_all()
     {
-		$query = DB::table("{$this->table} as a")
-				->join('tb_akun as b','a.akun_id','=','b.id_akun')
-				->select('a.*','b.nama_akun')
-				->where('a.status_batal', 0);
-        return $query->get();
+		$query = self::join('m_akun','t_pengeluaran.akun_id','=','m_akun.id')
+				->select('t_pengeluaran.*','m_akun.kode_akun','m_akun.nama_akun');
+
+		return $query->get();
     }
 
     function insert_data($data)
@@ -45,10 +45,9 @@ class Mutasi_kas_m extends Model
 
 	function get_one($id)
 	{
-		$query = DB::table("{$this->table} as a")
-				->join('tb_akun as b','a.akun_id','=','b.id_akun')
-				->select('a.*','b.nama_akun')
-				->where("a.{$this->index_key}", $id);
+		$query = self::join('m_akun','t_pengeluaran.akun_id','=','m_akun.id')
+				->where("t_pengeluaran.{$this->index_key}", $id)
+				->select('t_pengeluaran.*','m_akun.kode_akun','m_akun.nama_akun');
 
 		return $query->first();
 	}
@@ -70,7 +69,7 @@ class Mutasi_kas_m extends Model
 
 	function update_by($data, Array $where)
 	{
-		$query = DB::table($this->table)->where($where);
+		$query = self::where($where);
 		return $query->update($data);
 	}
 

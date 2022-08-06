@@ -36,11 +36,14 @@ class Akun_m extends Model
 
 	function get_all_lookup($params)
     {
-		$query = DB::table("{$this->table}")
-				->select('*');
+		$query = self::select('*');
 
 		if(!empty($params['kelompok'])){
 			$query->where('kelompok', $params['kelompok']);
+		}
+
+		if(!empty($params['golongan'])){
+			$query->where('golongan', $params['golongan']);
 		}
 
 		return $query->get();

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Model\Mutasi_kas_m;
-use App\Http\Model\Mutasi_kas_detail_m;
 use App\Http\Model\Akun_m;
+use App\Http\Model\Pengeluaran_detail_m;
+use App\Http\Model\Pengeluaran_m;
 use Validator;
 use DataTables;
 use Illuminate\Validation\Rule;
@@ -13,19 +13,17 @@ use Helpers;
 use DB;
 use Response;
 
-class MutasiController extends Controller
+class PengeluaranController extends Controller
 {
-    protected $jenis_mutasi = [
-        ['id' => 'Penerimaan', 'desc' => 'Penerimaan Kas'],
-        ['id' => 'Pengeluaran', 'desc' => 'Pengeluaran Kas'],
-    ];
-
-    public function __construct()
+    protected $model;
+    protected $model_detail;
+    protected $model_akun;
+    public function __construct(Pengeluaran_m $model, Pengeluaran_detail_m $model_detail, Akun_m $model_akun)
     {
-        $this->model = New Mutasi_kas_m;
-        $this->model_detail = New Mutasi_kas_detail_m;
-        $this->model_akun = New Akun_m;
-        $this->nameroutes = 'mutasi-kas';
+        $this->model = $model;
+        $this->model_detail = $model_detail;
+        $this->model_akun = $model_akun;
+        $this->nameroutes = 'pengeluaran';
     }
     /**
      * Display a listing of the resource.
@@ -34,45 +32,43 @@ class MutasiController extends Controller
      */
    public function index()
    {
-            $data = array(
-                'nameroutes'        => $this->nameroutes,
-                'title'             => 'Data Mutasi Kas',
-                'breadcrumb'        => 'List Data Mutasi Kas',
-                'urlDatatables'     => "{$this->nameroutes}/datatables",
-                'idDatatables'      => 'dt_mutasi_kas'
-            );
-            return view('mutasi_kas.datatable',$data);
+        $data = array(
+            'nameroutes'        => $this->nameroutes,
+            'title'             => 'Pengeluaran',
+            'header'            => 'Data Pengeluaran',
+            'urlDatatables'     => $this->nameroutes.'/datatables',
+            'idDatatables'      => 'dt_pengeluaran',
+        );
+        return view('pengeluaran.datatable', $data);
     }
 
     public function create(Request $request)
     {
         $item = [
-            'id_mutasi_kas' => $this->model->gen_code('MUT'),
+            'kode_pengeluaran' => $this->model->gen_code('PL'),
             'tanggal' => date('Y-m-d')
         ];
 
         $data = array(
             'item'              => (object) $item,
-            'title'             => 'Buat Mutasi Kas',
-            'breadcrumb'        => 'Daftar Mutasi Kas',
-            'submit_url'            => url()->current(),
-            'is_edit'               => FALSE,
-            'jenis_mutasi'          => $this->jenis_mutasi,
-            'nameroutes'            => $this->nameroutes,
+            'title'             => 'Buat Pengeluaran',
+            'header'            => 'Form Pengeluaran',
+            'breadcrumb'        => 'Daftar Pengeluaran',
+            'submit_url'        => url()->current(),
+            'is_edit'           => FALSE,
+            'nameroutes'        => $this->nameroutes,
+            'option_akun'       => $this->model_akun->get_all()
         );
 
         //jika form sumbit
         if($request->post())
         {
             //request dari view
-            $header = array_merge($item, $request->input('header'));
-            $header['id_mutasi_kas'] = $this->model->gen_code('MUT');
-            $header['debet'] = ($header['jenis_mutasi'] == 'Penerimaan') ? $header['total'] : 0;
-            $header['kredit'] = ($header['jenis_mutasi'] == 'Pengeluaran') ? $header['total'] : 0;
-            $header['id_user'] = Helpers::getId();
+            $header = array_merge($item, $request->input('f'));
+            $header['user_id'] = Helpers::getId();
+            $header['kode_pengeluaran'] = $this->model->gen_code('PL');
             $header['tanggal'] = date('Y-m-d h:i:s', strtotime($header['tanggal']));
             $details = $request->input('details');
-
 
             $validator = Validator::make( $header, $this->model->rules['insert']);
             if ($validator->fails()) {
@@ -87,25 +83,20 @@ class MutasiController extends Controller
             DB::beginTransaction();
             try {
                 //insert header get id
-                $this->model->insert_data($header);
+                $id_pengeluaran = Pengeluaran_m::insertGetId($header);
+
                 $data_details = [];
                 foreach($details as $row)
                 {
-                    $data_details[] = [
-                        'id_mutasi_kas' => $header['id_mutasi_kas'],
-                        'nominal' => ($header['jenis_mutasi'] == 'Pengeluaran') ? $row['nominal'] : 0,
-                        'kredit' => ($header['jenis_mutasi'] == 'Penerimaan') ? $row['nominal'] : 0,
-                        'keterangan' => $row['keterangan'],
-                        'akun_id' => $row['akun_id'],
-                    ];
+                    $row['pengeluaran_id'] = $id_pengeluaran;
+                    $data_details[] = $row;
                 }
-
                 // insert detail
                 $this->model_detail->insert_data($data_details);
                 DB::commit();
     
                 $response = [
-                    "message" => 'Data mutasi berhasil dibuat',
+                    "message" => 'Data pengeluaran berhasil tersimpan',
                     'status' => 'success',
                     'code' => 200,
                 ];
@@ -123,16 +114,13 @@ class MutasiController extends Controller
             return Response::json($response);
         }
 
-        return view('mutasi_kas.form', $data);
+        return view('pengeluaran.form', $data);
 
     }
 
-    public function lookup_detail( $id = null)
+    public function lookup_detail()
     {
-        $data = [
-            'jenis_mutasi' => $id
-        ];
-        return view('mutasi_kas.lookup.lookup_detail', $data);
+        return view('pengeluaran.lookup.lookup_detail');
     }
 
 
@@ -204,12 +192,5 @@ class MutasiController extends Controller
         $data = $this->model->get_all();
         return Datatables::of($data)->make(true);
     }
-
-    public function datatables_collection_no_tabungan()
-    {
-        $data = $this->model->get_all_no_tabungan();
-        return Datatables::of($data)->make(true);
-    }
-
 
 }

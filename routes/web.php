@@ -72,6 +72,28 @@ Route::prefix('transaksi-pembayaran-online')->group(function() {
 	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiOnlineController@show');
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiOnlineController@cetak_nota');
 });
+#TRANSAKSI SAMSAT KENDARAAN
+Route::prefix('transaksi-samsat-kendaraan')->group(function() {
+    Route::get('/', 'TransaksiSamsatController@index');
+	Route::match(array('GET', 'POST'),'/datatables','TransaksiSamsatController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','TransaksiSamsatController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSamsatController@edit');
+	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSamsatController@show');
+	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSamsatController@cetak_nota');
+});
+
+#PENGELUARAN
+Route::prefix('pengeluaran')->group(function() {
+    Route::get('/', 'PengeluaranController@index');
+	Route::match(array('GET', 'POST'),'/datatables','PengeluaranController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','PengeluaranController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','PengeluaranController@edit');
+	Route::match(array('GET', 'POST'),'/show/{id}','PengeluaranController@show');
+	Route::match(array('GET'),'/cetak-nota/{id}','PengeluaranController@cetak_nota');
+	Route::match(array('GET', 'POST'),'/lookup_detail','PengeluaranController@lookup_detail');
+});
+
+
 
 
 #SIMPANAN ANGGOTA

@@ -16,12 +16,11 @@
             <div class="btn-group">
               <a href="{{ url('transaksi-retribusi-sampah/create') }}" class="btn btn-success btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</a>
             </div>
-          </button>
         </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
-        <table class="table table-striped table-bordered table-hover" id="{{ $idDatatables }}" width="100%">   
+        <table class="table table-hover" id="{{ $idDatatables }}" width="100%">   
             <thead>
               <tr>
                 <th class="no-sort">No</th>
