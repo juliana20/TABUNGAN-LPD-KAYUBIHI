@@ -92,8 +92,9 @@
                                 className: "text-center",
                                 render: function ( val, type, row ){
                                     var buttons = '<div class="btn-group">' +
-                                                        '<a href=\"{{ url('pengeluaran/detail') }}/'+ val +'\" title=\"Lihat Data\" class="btn btn-info btn-xs"><i class=\"fa fa-eye\"></i> Lihat</a>' +            
-                                                  '</div>';
+                                                        '<a href=\"{{ url('pengeluaran/show') }}/'+ val +'\" title=\"Lihat Data\" class="btn btn-warning btn-xs"><i class=\"fa fa-eye\"></i> Lihat</a>' +            
+                                                        '<a href=\"{{ url('pengeluaran/edit') }}/'+ val +'\" title=\"Ubah Data\" class=\"btn btn-info btn-xs\"><i class=\"glyphicon glyphicon-pencil\"></i> Ubah</a>' +
+                                                        '</div>';
                                     return buttons
                                   }
                               },

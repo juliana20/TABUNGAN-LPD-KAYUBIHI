@@ -46,8 +46,9 @@ class Pengeluaran_m extends Model
 	function get_one($id)
 	{
 		$query = self::join('m_akun','t_pengeluaran.akun_id','=','m_akun.id')
+				->join('m_user','t_pengeluaran.user_id','=','m_user.id')
 				->where("t_pengeluaran.{$this->index_key}", $id)
-				->select('t_pengeluaran.*','m_akun.kode_akun','m_akun.nama_akun');
+				->select('t_pengeluaran.*','m_akun.kode_akun','m_akun.nama_akun','m_user.nama as nama_user');
 
 		return $query->first();
 	}

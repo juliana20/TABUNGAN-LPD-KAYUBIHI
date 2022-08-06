@@ -188,13 +188,13 @@ CREATE TABLE `t_pengeluaran_detail` (
   `keterangan` varchar(255) DEFAULT NULL,
   `bukti_struk` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran_detail` */
 
 insert  into `t_pengeluaran_detail`(`id`,`pengeluaran_id`,`akun_id`,`nominal`,`keterangan`,`bukti_struk`) values 
-(1,2,3,6000000,'Pembayaran gaji karyawan bulan juli 2022',NULL),
-(2,2,4,1200000,'Pembayaran listrik tagihan juli 2022',NULL);
+(8,2,3,6000000,'Pembayaran gaji karyawan bulan juli 2022',NULL),
+(9,2,4,1200000,'Pembayaran listrik juli 2022',NULL);
 
 /*Table structure for table `t_sampah` */
 

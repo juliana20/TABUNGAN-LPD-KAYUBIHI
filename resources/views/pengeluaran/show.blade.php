@@ -15,7 +15,7 @@
       <h3 class="box-title">{{ @$header }}</h3>
       <div class="box-tools pull-right">
           <div class="btn-group">
-            <a href="{{ url($nameroutes.'/create') }}" class="btn btn-success btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</a>
+            <a href="{{ url($nameroutes.'/cetak-nota/'. @$item->id) }}" target="_blank" class="btn btn-warning btn-sm"><i class="fa fa-print" aria-hidden="true"></i> Cetak Nota Transaksi</a>
           </div>
         </button>
       </div>
@@ -68,7 +68,7 @@
         <table class="table table-striped table-hover" id="dt_detail" width="100%">   
           <thead>
             <tr>
-              <th></th>
+              <th>No</th>
               <th>No Akun</th>
               <th>Nama Akun</th>
               <th>Keterangan</th>
@@ -80,23 +80,6 @@
           
           </tbody>
         </table>
-        <div>
-            <a  title="Tambah" id="lookup_detail" class="btn btn-block btn-github"><i class="fa fa-plus" aria-hidden="true"></i> <b>Tambah Detail Pengeluaran</b> </a>
-        </div>
-  </div>
-  <div class="box-footer">
-    @if(@$item->status_batal == 1)
-      <div class="pull-center">
-        <h4 style="color: red;text-align:center">Data ini sudah dibatalkan!</h4>
-      </div>
-    @endif
-    <div class="pull-right">
-          {{-- @if(@$is_edit)
-            <button title="Batalkan data" @if(@$item->status_batal == 1) disabled @else id="cancel" @endif  class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i> Batalkan</button>
-          @else --}}
-            <button id="submit_form" type="submit" class="btn btn-success"><i class="fa fa-save" aria-hidden="true"></i> Simpan </button> 
-          {{-- @endif --}}
-    </div>
   </div>
 </form>
 
@@ -196,8 +179,8 @@
                         {
                             data: "id",
                             className: 'text-center',
-                            render: function (val, type, row) {
-                              return '<a title=\"Hapus\" class=\"btn btn-danger btn-remove\"><i class=\"fa fa-trash\"></i></a>';
+                            render: function (val, type, row, meta) {
+                              return meta.row + meta.settings._iDisplayStart + 1;
                             }
                         },
                         { 
