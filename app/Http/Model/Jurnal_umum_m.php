@@ -5,11 +5,11 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class Jurnal_detail_m extends Model
+class Jurnal_umum_m extends Model
 {
-	protected $table = 'tb_detail_jurnal';
+	protected $table = 't_jurnal_umum';
 	protected $index_key = 'id';
-	protected $index_key2 = 'id_jurnal';
+	protected $index_key2 = 'kode_jurnal';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,30 +18,26 @@ class Jurnal_detail_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'id_jurnal' => "required",
+                'kode_jurnal' => "required|unique:{$this->table}",
+				'tanggal' => 'required',
+				'akun_id' => 'required',
             ],
 			'update' => [
-				'id_jurnal' => 'required',
+				'tanggal' => 'required',
+				'tanggal' => 'required',
+				'akun_id' => 'required',
             ],
         ];
 	}
 
     function get_all()
     {
-		$query = DB::table("{$this->table} as a")
-				->join('tb_akun as b','a.id_akun','=','b.id_akun')
-				->select('a.*','b.nama_akun');
+		$query = self::join('m_user','t_jurnal_umum.user_id','=','m_user.id')
+						->join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
+						->select('t_jurnal_umum.*','m_user.nama as nama_user','m_akun.kode_akun','m_akun.nama_akun');
+
         return $query->get();
     }
-	function collection($id)
-	{
-		$query = DB::table("{$this->table} as a")
-				->join('tb_akun as b','b.id_akun','=','a.id_akun')
-				->select('a.*','b.nama_akun')
-				->where("a.{$this->index_key2}", $id);
-				
-		return $query->get();
-	}
 
     function insert_data($data)
 	{
@@ -50,10 +46,10 @@ class Jurnal_detail_m extends Model
 
 	function get_one($id)
 	{
-		$query = DB::table("{$this->table} as a")
-				->join('tb_akun as b','a.id_akun','=','b.id_akun')
-				->select('a.*','b.nama_akun')
-				->where("a.{$this->index_key}", $id);
+		$query = self::join('m_user','t_jurnal_umum.user_id','=','m_user.id')
+				->join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
+				->where("t_jurnal_umum.{$this->index_key}", $id)
+				->select('t_jurnal_umum.*','m_user.nama as nama_user','m_akun.kode_akun','m_akun.nama_akun');
 
 		return $query->first();
 	}

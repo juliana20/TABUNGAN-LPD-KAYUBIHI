@@ -5,7 +5,7 @@
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<link rel="shortcut icon" href="{{url('themes/default/images/favicon.ico')}}">
+	<link rel="icon" type="image/png" href="{{ url('') }}/themes/login/Login_v2/images/icons/favicon.ico"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 	<!-- Bootstrap 3.3.7 -->
 	<link rel="stylesheet" href="{{ url('themes/AdminLTE-2.4.3/bower_components/bootstrap/dist/css/bootstrap.min.css') }}">

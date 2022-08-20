@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Model\Jenis_transaksi_m;
+use App\Http\Model\Jurnal_umum_m;
 use App\Http\Model\Transaksi_online_m;
 use Illuminate\Http\Request;
 use Validator;
@@ -79,6 +80,29 @@ class TransaksiOnlineController extends Controller
                 $header['kode_transaksi_online'] = $this->model->gen_code('TO');
                 $header['tanggal'] = date('Y-m-d h:i:s', strtotime($header['tanggal']));
                 $this->model->insert_data($header);
+                #insert jurnal umum
+                $get_jenis_transaksi = Jenis_transaksi_m::where('id', $header['jenis_transaksi_id'])->first();
+                $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $header['kode_transaksi_online'], 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 6, #Pendapatan Jasa Pembayaran Online
+                        'tanggal' => $header['tanggal'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran '. $get_jenis_transaksi->nama
+                    ],
+                    [
+                        'kode_jurnal' => $header['kode_transaksi_online'], 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran '. $get_jenis_transaksi->nama
+                    ],
+                ];
+                Jurnal_umum_m::insert($jurnal_umum);
                 DB::commit();
     
                 $response = [
@@ -155,6 +179,33 @@ class TransaksiOnlineController extends Controller
             DB::beginTransaction();
             try {
                 $this->model->update_data($header, $id);
+                #insert jurnal umum
+                $get_jenis_transaksi = Jenis_transaksi_m::where('id', $header['jenis_transaksi_id'])->first();
+                $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_online, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 6, #Pendapatan Jasa Pembayaran Online
+                        'tanggal' => $header['tanggal'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran '. $get_jenis_transaksi->nama
+                    ],
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_online, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran '. $get_jenis_transaksi->nama
+                    ],
+                ];
+                $cek_jurnal_already = Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_online)->first();
+                if(!empty($cek_jurnal_already)){
+                    Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_online)->delete();
+                }
+                Jurnal_umum_m::insert($jurnal_umum);
                 DB::commit();
 
                 $response = [

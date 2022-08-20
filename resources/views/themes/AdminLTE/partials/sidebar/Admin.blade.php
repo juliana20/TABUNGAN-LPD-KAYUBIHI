@@ -17,7 +17,7 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
           <li class="{{ Request::is('dashboard') ? 'active':null}}"><a href="{{ url('dashboard') }}"><i class="glyphicon glyphicon-home"></i> <span>Dashboard</span></a></li>
-          <li class="treeview {{ Request::is('user') ? 'active':null}} {{ Request::is('akun') ? 'active':null}} {{ Request::is('pelanggan') ? 'active':null}}">
+          <li class="treeview {{ Request::is('user') ? 'active':null}} {{ Request::is('akun') ? 'active':null}} {{ Request::is('pelanggan') ? 'active':null}} {{ Request::is('jenis-transaksi') ? 'active':null}}">
             <a href="#">
               <i class="glyphicon glyphicon-book" aria-hidden="true"></i>
               <span>Data Master</span>

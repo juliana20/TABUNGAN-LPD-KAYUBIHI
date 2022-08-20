@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Model\Jurnal_umum_m;
 use Illuminate\Http\Request;
 use App\Http\Model\Transaksi_sampah_m;
 use Validator;
@@ -75,6 +76,28 @@ class TransaksiSampahController extends Controller
                 $header['kode_transaksi_sampah'] = $this->model->gen_code('SP');
                 $header['tanggal'] = date('Y-m-d h:i:s', strtotime($header['tanggal']));
                 $this->model->insert_data($header);
+                #insert jurnal umum
+                $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $header['kode_transaksi_sampah'], 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 5, #Pendapatan Jasa Retribusi Sampah
+                        'tanggal' => $header['tanggal'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran Retribusi Sampah'
+                    ],
+                    [
+                        'kode_jurnal' => $header['kode_transaksi_sampah'], 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran Retribusi Sampah'
+                    ],
+                ];
+                Jurnal_umum_m::insert($jurnal_umum);
                 DB::commit();
     
                 $response = [
@@ -150,6 +173,32 @@ class TransaksiSampahController extends Controller
             DB::beginTransaction();
             try {
                 $this->model->update_data($header, $id);
+                #insert jurnal umum
+                $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_sampah, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 5, #Pendapatan Jasa Retribusi Sampah
+                        'tanggal' => $header['tanggal'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran Retribusi Sampah'
+                    ],
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_sampah, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran Retribusi Sampah'
+                    ],
+                ];
+                $cek_jurnal_already = Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_sampah)->first();
+                if(!empty($cek_jurnal_already)){
+                    Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_sampah)->delete();
+                }
+                Jurnal_umum_m::insert($jurnal_umum);
                 DB::commit();
 
                 $response = [

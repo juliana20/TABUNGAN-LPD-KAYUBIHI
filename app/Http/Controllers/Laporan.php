@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Model\Transaksi_online_m;
+use App\Http\Model\Transaksi_sampah_m;
+use App\Http\Model\Transaksi_samsat_m;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
@@ -17,7 +20,7 @@ class Laporan extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   public function simpanan_anggota()
+   public function retribusiSampah()
    {
             $item = [
                 'date_start' => Carbon::now()->startOfMonth()->toDateString(),
@@ -26,71 +29,31 @@ class Laporan extends Controller
 
             $data = array(
                 'item'              => (object) $item,
-                'title'             => 'Laporan Simpanan Anggota',
-                'url_print'         => 'laporan/simpanan-anggota/print'
+                'title'             => 'Laporan Retribusi Sampah',
+                'url_print'         => 'laporan/retribusi-sampah/print'
             );
 
-            return view('laporan.form.simpanan_anggota', $data);
+            return view('laporan.form.retribusi_sampah', $data);
     }
 
-    private function jumlah_pokok($nasabah, $date_start, $date_end)
-    {
-        $kredit = DB::table('tb_simpanan_pokok')
-                ->where('id_nasabah', $nasabah)
-                ->whereBetween('tanggal',[$date_start, $date_end])
-                ->sum('kredit');
-            
-        $debet = DB::table('tb_simpanan_pokok')
-                ->where('id_nasabah', $nasabah)
-                ->whereBetween('tanggal',[$date_start, $date_end])
-                ->sum('debet');
-
-        return $kredit-$debet;
-    }
-
-    private function jumlah_wajib($nasabah, $date_start, $date_end)
-    {
-        $kredit = DB::table('tb_simpanan_wajib')
-                ->where('id_nasabah', $nasabah)
-                ->whereBetween('tanggal',[$date_start, $date_end])
-                ->sum('kredit');
-            
-        $debet = DB::table('tb_simpanan_wajib')
-                ->where('id_nasabah', $nasabah)
-                ->whereBetween('tanggal',[$date_start, $date_end])
-                ->sum('debet');
-
-        return $kredit-$debet;
-    }
-
-    public function print_simpanan_anggota(Request $request)
+    public function printRetribusiSampah(Request $request)
     {
         $params = $request->input('f');
-        $nasabah = DB::table('tb_nasabah')->where('anggota', 1)->get();
-        
-        foreach($nasabah as $anggota)
-        {
-            $collection[] = [
-                'no_anggota' => $anggota->no_anggota,
-                'nama_nasabah' => $anggota->nama_nasabah,
-                'tanggal_daftar' => $anggota->tanggal_daftar,
-                'jumlah_pokok'  => self::jumlah_pokok($anggota->id_nasabah, $params['date_start'], $params['date_end']),
-                'jumlah_wajib'  => self::jumlah_wajib($anggota->id_nasabah, $params['date_start'], $params['date_end']),
-            ];
-        }
+        $collection = Transaksi_sampah_m::join('m_pelanggan','m_pelanggan.id','=','t_sampah.pelanggan_id')
+                                        ->whereBetween('t_sampah.tanggal',[$params['date_start'], $params['date_end']])
+                                        ->select('t_sampah.*','m_pelanggan.nama as nama_pelanggan')
+                                        ->get();
 
         $data = [
             'params'            => (object) $params,
-            'item'              => (object) $collection,
-            'title'             => 'Laporan Simpanan Anggota',
+            'item'              => $collection,
+            'title'             => 'Laporan Retribusi Sampah',
         ];
-
-        // return view('laporan.print.kategori_keuangan', $data);
-        $pdf = PDF::loadView('laporan.print.cetak_simpanan_anggota', $data, $params)->setPaper('a4', 'portait');
-        return $pdf->stream($params['date_start'].$params['date_end'].'laporan_simpanan_anggota.pdf'); 
+        $pdf = PDF::loadView('laporan.print.cetak_retribusi_sampah', $data, $params)->setPaper('a4', 'landscape');
+        return $pdf->stream($params['date_start'].$params['date_end'].'laporan_retribusi_sampah.pdf'); 
     }
 
-    public function tabungan_sukarela()
+    public function pembayaranOnline()
     {
              $item = [
                  'date_start' => Carbon::now()->startOfMonth()->toDateString(),
@@ -99,69 +62,33 @@ class Laporan extends Controller
  
              $data = array(
                  'item'              => (object) $item,
-                 'title'             => 'Laporan Tabungan Sukarela',
-                 'url_print'         => 'laporan/tabungan-sukarela/print'
+                 'title'             => 'Laporan Pembayaran Online',
+                 'url_print'         => 'laporan/pembayaran-online/print'
              );
  
-             return view('laporan.form.tabungan_sukarela', $data);
+             return view('laporan.form.pembayaran_online', $data);
  
      }
  
-     private function saldo_sukarela($nasabah, $date_start, $date_end)
-     {
-         $kredit = DB::table('tb_tabungan_sukarela')
-                 ->where('id_nasabah', $nasabah)
-                 ->whereBetween('tanggal',[$date_start, $date_end])
-                 ->sum('kredit');
-             
-         $debet = DB::table('tb_tabungan_sukarela')
-                 ->where('id_nasabah', $nasabah)
-                 ->whereBetween('tanggal',[$date_start, $date_end])
-                 ->sum('debet');
- 
-         return $kredit - $debet;
-     }
- 
-     private function bunga_sukarela($nasabah, $date_start, $date_end)
-     {
-         $bunga = DB::table('tb_tabungan_sukarela')
-                 ->where('id_nasabah', $nasabah)
-                 ->whereBetween('tanggal',[$date_start, $date_end])
-                 ->sum('bunga');
-
- 
-         return $bunga;
-     }
-     public function print_tabungan_sukarela(Request $request)
+     public function printPembayaranOnline(Request $request)
      {
          $params = $request->input('f');
-         $nasabah = DB::table('tb_nasabah')->where([
-             'anggota' =>  1, 
-             'berhenti_anggota' => 0,
-             ])
-             ->where('no_rek_tabungan','<>','')
-             ->get();
-         foreach($nasabah as $anggota)
-         {
-             $collection[] = [
-                 'no_rek_tabungan' => $anggota->no_rek_tabungan,
-                 'nama_nasabah' => $anggota->nama_nasabah,
-                 'tanggal_daftar' => $anggota->tanggal_daftar,
-                 'saldo'  => self::saldo_sukarela($anggota->id_nasabah, $params['date_start'], $params['date_end']),
-                 'bunga'  => self::bunga_sukarela($anggota->id_nasabah, $params['date_start'], $params['date_end']),
-             ];
-         }
+         $collection = Transaksi_online_m::join('m_pelanggan','m_pelanggan.id','=','t_online.pelanggan_id')
+                                        ->join('m_jenis_transaksi','m_jenis_transaksi.id','=','t_online.jenis_transaksi_id')
+                                        ->whereBetween('t_online.tanggal',[$params['date_start'], $params['date_end']])
+                                        ->select('t_online.*','m_pelanggan.nama as nama_pelanggan','m_jenis_transaksi.nama as jenis_transaksi')
+                                        ->get();
          $data = [
              'params'   => (object) $params,
-             'item'     =>  (!empty($collection)) ? $collection : [],
-             'title'    => 'Laporan Tabungan Sukarela',
+             'item'     =>  $collection,
+             'title'    => 'Laporan Pembayaran Online',
          ];
 
-         $pdf = PDF::loadView('laporan.print.cetak_tabungan_sukarela', $data, $params)->setPaper('a4', 'portait');
-         return $pdf->stream($params['date_start'].$params['date_end'].'laporan_tabungan_sukarela.pdf'); 
+         $pdf = PDF::loadView('laporan.print.cetak_pembayaran_online', $data, $params)->setPaper('a4', 'landscape');
+         return $pdf->stream($params['date_start'].$params['date_end'].'laporan_pembayaran_online.pdf'); 
      }
 
-     public function tabungan_berjangka()
+     public function samsatKendaraan()
      {
               $item = [
                   'date_start' => Carbon::now()->startOfMonth()->toDateString(),
@@ -170,44 +97,30 @@ class Laporan extends Controller
   
               $data = array(
                   'item'              => (object) $item,
-                  'title'             => 'Laporan Tabungan Berjangka',
-                  'url_print'         => 'laporan/tabungan-berjangka/print'
+                  'title'             => 'Laporan Samsat Kendaraan',
+                  'url_print'         => 'laporan/samsat-kendaraan/print'
               );
   
-              return view('laporan.form.tabungan_berjangka', $data);
+              return view('laporan.form.samsat_kendaraan', $data);
   
       }
 
-      public function print_tabungan_berjangka(Request $request)
+      public function printSamsatKendaraan(Request $request)
       {
           $params = $request->input('f');
+          $collection = Transaksi_samsat_m::join('m_pelanggan','m_pelanggan.id','=','t_samsat.pelanggan_id')
+                                            ->whereBetween('t_samsat.tanggal_samsat',[$params['date_start'], $params['date_end']])
+                                            ->select('t_samsat.*','m_pelanggan.nama as nama_pelanggan')
+                                            ->get();
           $data = [
               'params'   => (object) $params,
-              'item'     =>  DB::table('tb_tabungan_berjangka as a')
-                                ->join('tb_tabungan_berjangka_detail as b','b.id_tabungan_berjangka','=','a.id_tabungan_berjangka')
-                                ->join('tb_nasabah as c','c.id_nasabah','=','a.id_nasabah')
-                                ->select(
-                                    'a.id_tabungan_berjangka',
-                                    'a.jangka_waktu',
-                                    'a.tanggal_awal',
-                                    'c.nama_nasabah',
-                                    DB::raw('SUM(b.debet) AS debet'),
-                                    DB::raw('SUM(b.kredit) AS kredit')
-                                )
-                                ->whereBetween('b.tanggal',[$params['date_start'], $params['date_end']])
-                                ->groupBy(
-                                    'a.id_tabungan_berjangka',
-                                    'a.jangka_waktu',
-                                    'a.tanggal_awal',
-                                    'c.nama_nasabah'
-                                )
-                                ->get(),
-              'title'    => 'Laporan Tabungan Berjangka',
+              'item'     =>  $collection,
+              'title'    => 'Laporan Samsat Kendaraan',
           ];
  
           
-          $pdf = PDF::loadView('laporan.print.cetak_tabungan_berjangka', $data, $params)->setPaper('a4', 'portait');
-          return $pdf->stream($params['date_start'].$params['date_end'].'laporan_tabungan_berjangka.pdf'); 
+          $pdf = PDF::loadView('laporan.print.cetak_samsat_kendaraan', $data, $params)->setPaper('a4', 'landscape');
+          return $pdf->stream($params['date_start'].$params['date_end'].'laporan_samsat_kendaraan.pdf'); 
       }
 
       public function pinjaman()

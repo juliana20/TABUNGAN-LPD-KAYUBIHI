@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Model\Jurnal_umum_m;
 use App\Http\Model\Transaksi_samsat_m;
 use Illuminate\Http\Request;
 use Validator;
@@ -92,6 +93,28 @@ class TransaksiSamsatController extends Controller
                 $header['kode_transaksi_samsat'] = $this->model->gen_code('ST');
                 $header['tanggal_lunas'] = date('Y-m-d h:i:s', strtotime($header['tanggal_lunas']));
                 $this->model->insert_data($header);
+                #insert jurnal umum
+                $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $header['kode_transaksi_samsat'], 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 7, #Pendapatan Jasa Samsat Kendaraan
+                        'tanggal' => $header['tanggal_samsat'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran Samsat Kendaraan'
+                    ],
+                    [
+                        'kode_jurnal' => $header['kode_transaksi_samsat'], 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal_samsat'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran Samsat Kendaraan'
+                    ],
+                ];
+                Jurnal_umum_m::insert($jurnal_umum);
                 DB::commit();
     
                 $response = [
@@ -169,6 +192,32 @@ class TransaksiSamsatController extends Controller
             DB::beginTransaction();
             try {
                 $this->model->update_data($header, $id);
+                 #insert jurnal umum
+                 $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_samsat, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 7, #Pendapatan Jasa Samsat Kendaraan
+                        'tanggal' => $header['tanggal_samsat'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran Samsat Kendaraan'
+                    ],
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_samsat, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal_samsat'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran Samsat Kendaraan'
+                    ],
+                ];
+                $cek_jurnal_already = Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_samsat)->first();
+                if(!empty($cek_jurnal_already)){
+                    Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_samsat)->delete();
+                }
+                Jurnal_umum_m::insert($jurnal_umum);
                 DB::commit();
 
                 $response = [

@@ -1,6 +1,6 @@
 /*
 SQLyog Community v13.1.5  (64 bit)
-MySQL - 10.4.11-MariaDB : Database - u1657744_bumdes_sarining_winangun_kukuh
+MySQL - 10.4.11-MariaDB : Database - bumdes_sarining_winangun_kukuh
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 10.4.11-MariaDB : Database - u1657744_bumdes_sarining_winangun_kukuh
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`u1657744_bumdes_sarining_winangun_kukuh` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`bumdes_sarining_winangun_kukuh` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
-USE `u1657744_bumdes_sarining_winangun_kukuh`;
+USE `bumdes_sarining_winangun_kukuh`;
 
 /*Table structure for table `config` */
 
@@ -46,7 +46,7 @@ CREATE TABLE `m_akun` (
   `saldo_awal` float DEFAULT NULL,
   `saldo_akhir` float DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_akun`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_akun` */
 
@@ -54,7 +54,10 @@ insert  into `m_akun`(`id`,`kode_akun`,`nama_akun`,`golongan`,`kelompok`,`normal
 (1,'10001','Kas','Aktiva','Aktiva Lancar','Debit',0,NULL),
 (2,'10002','Bank Koperasi','Aktiva','Aktiva Lancar','Debit',0,NULL),
 (3,'60001','Beban Gaji','Biaya','Biaya Operasional','Debit',0,NULL),
-(4,'60002','Beban Listrik','Biaya','Biaya Operasional','Debit',0,NULL);
+(4,'60002','Beban Listrik','Biaya','Biaya Operasional','Debit',0,NULL),
+(5,'40001','Pendapatan Jasa Retribusi Sampah','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
+(6,'40002','Pendapatan Jasa Pembayaran Online','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
+(7,'40003','Pendapatan Jasa Samsat Kendaraan','Pendapatan','Pendapatan Operasional','Debit',0,NULL);
 
 /*Table structure for table `m_jenis_transaksi` */
 
@@ -85,12 +88,13 @@ CREATE TABLE `m_pelanggan` (
   `jenis_kelamin` varchar(20) DEFAULT NULL,
   `no_telepon` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`,`kode`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_pelanggan` */
 
 insert  into `m_pelanggan`(`id`,`kode`,`nama`,`alamat`,`jenis_kelamin`,`no_telepon`) values 
-(1,'PL001','I Made Susila Putra','Denpasar Timur','Laki-Laki','081788787222');
+(1,'PL001','I Made Susila Putra','Denpasar Timur','Laki-Laki','081788787222'),
+(2,'PL002','Wayan Agus Saputra','Denpasar, Bali','Laki-Laki','081565444333');
 
 /*Table structure for table `m_user` */
 
@@ -119,18 +123,32 @@ DROP TABLE IF EXISTS `t_jurnal_umum`;
 
 CREATE TABLE `t_jurnal_umum` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `kode` varchar(15) NOT NULL,
+  `kode_jurnal` varchar(15) NOT NULL,
   `user_id` int(11) NOT NULL,
   `akun_id` int(11) NOT NULL,
   `tanggal` datetime NOT NULL,
-  `reff` int(11) NOT NULL,
+  `reff` int(11) DEFAULT NULL,
   `debet` float NOT NULL,
   `kredit` float NOT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`,`kode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`,`kode_jurnal`),
+  KEY `t_jurnal_umum_user` (`user_id`),
+  KEY `t_jurnal_umum_akun` (`akun_id`),
+  CONSTRAINT `t_jurnal_umum_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_jurnal_umum_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_jurnal_umum` */
+
+insert  into `t_jurnal_umum`(`id`,`kode_jurnal`,`user_id`,`akun_id`,`tanggal`,`reff`,`debet`,`kredit`,`keterangan`) values 
+(15,'SP00002',1,5,'2022-08-20 00:00:00',NULL,0,21000,'Pembayaran Retribusi Sampah'),
+(16,'SP00002',1,1,'2022-08-20 00:00:00',NULL,21000,0,'Pembayaran Retribusi Sampah'),
+(17,'SP00001',1,5,'2022-07-02 00:00:00',NULL,0,25000,'Pembayaran Retribusi Sampah'),
+(18,'SP00001',1,1,'2022-07-02 00:00:00',NULL,25000,0,'Pembayaran Retribusi Sampah'),
+(27,'ST001',1,7,'2022-08-06 00:00:00',NULL,0,228000,'Pembayaran Samsat Kendaraan'),
+(28,'ST001',1,1,'2022-08-06 00:00:00',NULL,228000,0,'Pembayaran Samsat Kendaraan'),
+(31,'TO00001',1,6,'2022-07-03 00:00:00',NULL,0,19000,'Pembayaran Listrik'),
+(32,'TO00001',1,1,'2022-07-03 00:00:00',NULL,19000,0,'Pembayaran Listrik');
 
 /*Table structure for table `t_online` */
 
@@ -147,13 +165,19 @@ CREATE TABLE `t_online` (
   `jumlah` float NOT NULL,
   `total_bayar` float DEFAULT NULL,
   `keterangan` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`id`,`kode_transaksi_online`)
+  PRIMARY KEY (`id`,`kode_transaksi_online`),
+  KEY `t_online_pelanggan` (`pelanggan_id`),
+  KEY `t_online_user` (`user_id`),
+  KEY `t_online_jenis_transaksi` (`jenis_transaksi_id`),
+  CONSTRAINT `t_online_jenis_transaksi` FOREIGN KEY (`jenis_transaksi_id`) REFERENCES `m_jenis_transaksi` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_online_pelanggan` FOREIGN KEY (`pelanggan_id`) REFERENCES `m_pelanggan` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_online_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_online` */
 
 insert  into `t_online`(`id`,`kode_transaksi_online`,`user_id`,`pelanggan_id`,`tanggal`,`jenis_transaksi_id`,`biaya_jasa`,`jumlah`,`total_bayar`,`keterangan`) values 
-(1,'TO00001',1,1,'2022-07-03 00:00:00',1,2000,17000,19000,'Tidak Lunas');
+(1,'TO00001',1,1,'2022-07-03 00:00:00',1,2000,17000,19000,'Lunas');
 
 /*Table structure for table `t_pengeluaran` */
 
@@ -168,7 +192,11 @@ CREATE TABLE `t_pengeluaran` (
   `total` float DEFAULT NULL,
   `reff` int(11) DEFAULT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`,`kode_pengeluaran`)
+  PRIMARY KEY (`id`,`kode_pengeluaran`),
+  KEY `t_pengeluaran_user` (`user_id`),
+  KEY `t_pengeluaran_akun` (`akun_id`),
+  CONSTRAINT `t_pengeluaran_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_pengeluaran_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran` */
@@ -187,7 +215,11 @@ CREATE TABLE `t_pengeluaran_detail` (
   `nominal` float NOT NULL,
   `keterangan` varchar(255) DEFAULT NULL,
   `bukti_struk` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `t_pengeluaran_detail_pengeluaran` (`pengeluaran_id`),
+  KEY `t_pengeluaran_detail_akun` (`akun_id`),
+  CONSTRAINT `t_pengeluaran_detail_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_pengeluaran_detail_pengeluaran` FOREIGN KEY (`pengeluaran_id`) REFERENCES `t_pengeluaran` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran_detail` */
@@ -210,13 +242,18 @@ CREATE TABLE `t_sampah` (
   `biaya_jasa` float DEFAULT NULL,
   `total_bayar` float DEFAULT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`,`kode_transaksi_sampah`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`,`kode_transaksi_sampah`),
+  KEY `t_sampah_pelanggan` (`pelanggan_id`),
+  KEY `t_sampah_user` (`user_id`),
+  CONSTRAINT `t_sampah_pelanggan` FOREIGN KEY (`pelanggan_id`) REFERENCES `m_pelanggan` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_sampah_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_sampah` */
 
 insert  into `t_sampah`(`id`,`kode_transaksi_sampah`,`pelanggan_id`,`user_id`,`tanggal`,`jumlah`,`biaya_jasa`,`total_bayar`,`keterangan`) values 
-(4,'SP00001',1,1,'2022-07-02 00:00:00',17000,8000,25000,NULL);
+(4,'SP00001',1,1,'2022-07-02 00:00:00',17000,8000,25000,NULL),
+(5,'SP00002',2,1,'2022-08-20 00:00:00',17000,4000,21000,NULL);
 
 /*Table structure for table `t_samsat` */
 
@@ -236,7 +273,11 @@ CREATE TABLE `t_samsat` (
   `tanggal_lunas` datetime NOT NULL,
   `total_bayar` float NOT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`,`kode_transaksi_samsat`)
+  PRIMARY KEY (`id`,`kode_transaksi_samsat`),
+  KEY `t_samsat_pelanggan` (`pelanggan_id`),
+  KEY `t_samsat_user` (`user_id`),
+  CONSTRAINT `t_samsat_pelanggan` FOREIGN KEY (`pelanggan_id`) REFERENCES `m_pelanggan` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `t_samsat_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_samsat` */
