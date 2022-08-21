@@ -3,24 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Model\Jurnal_m;
-use App\Http\Model\Jurnal_detail_m;
-use App\Http\Model\Akun_m;
+use App\Http\Model\Jurnal_umum_m;
 use Validator;
 use DataTables;
-use Illuminate\Validation\Rule;
 use Helpers;
 use DB;
 use Response;
 
 class JurnalController extends Controller
 {
-    public function __construct()
+    protected $model;
+    public function __construct(Jurnal_umum_m $model)
     {
-        $this->model = New Jurnal_m;
-        $this->model_detail = New Jurnal_detail_m;
-        $this->model_akun = New Akun_m;
-        $this->nameroutes = 'jurnal';
+        $this->model = $model;
+        $this->nameroutes = 'jurnal-umum';
     }
     /**
      * Display a listing of the resource.
@@ -29,14 +25,15 @@ class JurnalController extends Controller
      */
    public function index()
    {
-            $data = array(
-                'nameroutes'        => $this->nameroutes,
-                'title'             => 'Data Transaksi Jurnal Umum',
-                'breadcrumb'        => 'List Data Transaksi Jurnal Umum',
-                'urlDatatables'     => "{$this->nameroutes}/datatables",
-                'idDatatables'      => 'dt_jurnal'
-            );
-            return view('jurnal.datatable',$data);
+        $data = array(
+            'nameroutes'        => $this->nameroutes,
+            'title'             => 'Jurnal Umum',
+            'header'            => 'Jurnal Umum',
+            'breadcrumb'        => 'List Jurnal Umum',
+            'urlDatatables'     => "{$this->nameroutes}/datatables",
+            'idDatatables'      => 'dt_jurnal_umum'
+        );
+        return view('jurnal_umum.datatable',$data);
     }
 
     public function create(Request $request)
@@ -180,16 +177,37 @@ class JurnalController extends Controller
         return view('jurnal.form', $data);
     }
 
-    public function datatables_collection()
+    public function datatables_collection(Request $request)
     {
-        $data = $this->model->get_all();
-        return Datatables::of($data)->make(true);
-    }
+        $params = $request->all();
+        $query = Jurnal_umum_m::join('m_user','t_jurnal_umum.user_id','=','m_user.id')
+                    ->join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
+                    ->select(
+                        't_jurnal_umum.*',
+                        'm_user.nama as nama_user',
+                        'm_akun.kode_akun',
+                        'm_akun.nama_akun'
+                    )
+                    ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
+                    ->orderBy('t_jurnal_umum.tanggal','asc')
+                    ->orderBy('t_jurnal_umum.debet','desc')
+                    ->get();
 
-    public function datatables_collection_no_tabungan()
-    {
-        $data = $this->model->get_all_no_tabungan();
-        return Datatables::of($data)->make(true);
+        $evidence_number = $evidence_number_before = NULL;
+        $collection = array();
+        foreach( $query as $row ){
+            $evidence_number = $row->kode_jurnal;
+            $row->tanggal = ( $evidence_number_before == $evidence_number ) ? '' : date('d-m-Y', strtotime($row->tanggal));
+            $row->kode_jurnal =	( $evidence_number_before == $evidence_number ) ? '' : $evidence_number;
+            $row->debet = $row->debet;
+            $row->kredit = $row->kredit;
+            $row->kode_jurnal_hide = $evidence_number;
+            $collection[] = $row;
+
+            $evidence_number_before = $evidence_number;
+        }
+
+        return Datatables::of($collection)->make(true);
     }
 
 

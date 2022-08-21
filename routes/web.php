@@ -100,8 +100,8 @@ Route::prefix('dashboard')->group(function() {
 	Route::post('/chart','Dashboard@chart');
 });
 
-#JURNAL
-Route::prefix('jurnal')->group(function() {
+#JURNAL UMUM
+Route::prefix('jurnal-umum')->group(function() {
     Route::get('/', 'JurnalController@index');
 	Route::match(array('GET', 'POST'),'/datatables','JurnalController@datatables_collection');
 	Route::match(array('GET', 'POST'),'/create','JurnalController@create');

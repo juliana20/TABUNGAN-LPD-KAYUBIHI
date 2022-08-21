@@ -17,7 +17,7 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
           <li class="{{ Request::is('dashboard') ? 'active':null}}"><a href="{{ url('dashboard') }}"><i class="glyphicon glyphicon-home"></i> <span>Dashboard</span></a></li>
-          <li class="{{ Request::is('jurnal') ? 'active':null}}"><a href="{{ url('jurnal') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span>Jurnal</span></a></li>
+          <li class="{{ Request::is('jurnal-umum') ? 'active':null}}"><a href="{{ url('jurnal-umum') }}"><i class="fa fa-balance-scale" aria-hidden="true"></i> <span>Jurnal Umum</span></a></li>
           <li class="treeview {{ Request::is('laporan/retribusi-sampah') ? 'active':null}} {{ Request::is('laporan/pembayaran-online') ? 'active':null}} 
             {{ Request::is('laporan/samsat-kendaraan') ? 'active':null}} {{ Request::is('laporan/tunggakan-spp') ? 'active':null}} 
             {{ Request::is('laporan/pembayaran-gedung') ? 'active':null}} {{ Request::is('laporan/tunggakan-gedung') ? 'active':null}}">

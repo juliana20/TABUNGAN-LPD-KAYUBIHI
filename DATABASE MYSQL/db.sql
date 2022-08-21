@@ -1,6 +1,6 @@
 /*
 SQLyog Community v13.1.5  (64 bit)
-MySQL - 10.4.11-MariaDB : Database - bumdes_sarining_winangun_kukuh
+MySQL - 10.4.11-MariaDB : Database - u1657744_bumdes_sarining_winangun_kukuh
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 10.4.11-MariaDB : Database - bumdes_sarining_winangun_kukuh
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`bumdes_sarining_winangun_kukuh` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`u1657744_bumdes_sarining_winangun_kukuh` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
-USE `bumdes_sarining_winangun_kukuh`;
+USE `u1657744_bumdes_sarining_winangun_kukuh`;
 
 /*Table structure for table `config` */
 
@@ -136,7 +136,7 @@ CREATE TABLE `t_jurnal_umum` (
   KEY `t_jurnal_umum_akun` (`akun_id`),
   CONSTRAINT `t_jurnal_umum_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_jurnal_umum_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_jurnal_umum` */
 
@@ -145,10 +145,10 @@ insert  into `t_jurnal_umum`(`id`,`kode_jurnal`,`user_id`,`akun_id`,`tanggal`,`r
 (16,'SP00002',1,1,'2022-08-20 00:00:00',NULL,21000,0,'Pembayaran Retribusi Sampah'),
 (17,'SP00001',1,5,'2022-07-02 00:00:00',NULL,0,25000,'Pembayaran Retribusi Sampah'),
 (18,'SP00001',1,1,'2022-07-02 00:00:00',NULL,25000,0,'Pembayaran Retribusi Sampah'),
-(27,'ST001',1,7,'2022-08-06 00:00:00',NULL,0,228000,'Pembayaran Samsat Kendaraan'),
-(28,'ST001',1,1,'2022-08-06 00:00:00',NULL,228000,0,'Pembayaran Samsat Kendaraan'),
 (31,'TO00001',1,6,'2022-07-03 00:00:00',NULL,0,19000,'Pembayaran Listrik'),
-(32,'TO00001',1,1,'2022-07-03 00:00:00',NULL,19000,0,'Pembayaran Listrik');
+(32,'TO00001',1,1,'2022-07-03 00:00:00',NULL,19000,0,'Pembayaran Listrik'),
+(33,'ST001',1,7,'2022-08-06 00:00:00',NULL,0,228000,'Pembayaran Samsat Kendaraan'),
+(34,'ST001',1,1,'2022-08-06 00:00:00',NULL,228000,0,'Pembayaran Samsat Kendaraan');
 
 /*Table structure for table `t_online` */
 
