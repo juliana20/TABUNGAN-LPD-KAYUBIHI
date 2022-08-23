@@ -1,34 +1,32 @@
-@extends('themes.AdminLTE.layouts.template')
-@section('breadcrumb') 
-@endsection
-@section('content')  
-<div class="col-sm-8 col-sm-offset-2">
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">{{ @$header }}</h3>
-        <div class="box-tools pull-right">
-            <div class="btn-group">
-              <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
-            </div>
-          </button>
-        </div>
+@extends('themes.gentelella.template.template')
+@section('content')
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li class="dropdown">
+            <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
       </div>
-      <!-- /.box-header -->
-      <div class="box-body table-responsive">
+      <div class="x_content">
         <table class="table table-hover" id="{{ $idDatatables }}" width="100%">   
             <thead>
               <tr>
-                <th class="no-sort">No</th>
-                <th>Nama Jenis Transaksi</th>
                 <th class="no-sort">Aksi</th>
+                <th>Nama Jenis Transaksi</th>
               </tr>
             </thead>
             <tbody>
             
           </tbody>
           </table>
+        </div>
       </div>
-    </div>
+  </div>
 </div>
 <!-- DataTable -->
 <script type="text/javascript">
@@ -59,21 +57,9 @@
 								},
                 order:[ 1, 'asc'],
               columns: [
-                          {
-                              data: "id",
-                              className: "text-center",
-                              render: function (data, type, row, meta) {
-                                  return meta.row + meta.settings._iDisplayStart + 1;
-                              }
-                          },
-                          { 
-                                data: "nama", 
-                                render: function ( val, type, row ){
-                                    return val
-                                  }
-                          },
-                          { 
+                        { 
                                 data: "id",
+                                orderable: false,
                                 className: "text-center",
                                 render: function ( val, type, row ){
                                     var buttons = '<div class="btn-group" role="group">';
@@ -82,6 +68,12 @@
                                     return buttons
                                   }
                               },
+                          { 
+                                data: "nama", 
+                                render: function ( val, type, row ){
+                                    return val
+                                  }
+                          },
                       ],
                       createdRow: function ( row, data, index ){		
                         $( row ).on( "click", ".modalEdit",  function(e){

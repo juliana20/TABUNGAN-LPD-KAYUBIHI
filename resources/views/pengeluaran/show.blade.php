@@ -1,53 +1,45 @@
-@extends('themes.AdminLTE.layouts.template')
-@section('breadcrumb')  
-  <h1>
-    {{ @$title }}
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Transaksi</a></li>
-    <li><a href="{{ url(@$nameroutes) }}">{{ @$breadcrumb }}</a></li>
-    <li class="active">{{ @$title }}</li>
-  </ol>
-@endsection
-@section('content')  
-  <div class="box box-primary">
-    <div class="box-header with-border">
-      <h3 class="box-title">{{ @$header }}</h3>
-      <div class="box-tools pull-right">
-          <div class="btn-group">
-            <a href="{{ url($nameroutes.'/cetak-nota/'. @$item->id) }}" target="_blank" class="btn btn-warning btn-sm"><i class="fa fa-print" aria-hidden="true"></i> Cetak Nota Transaksi</a>
-          </div>
-        </button>
+@extends('themes.gentelella.template.template')
+@section('content')
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li class="dropdown">
+            <a  href="{{ url($nameroutes."/cetak-nota/{$item->id}") }}" target="_blank"  class="btn" style="color:#000"><i class="fa fa-print" aria-hidden="true"></i> Cetak Nota Pengeluaran</a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
       </div>
-    </div>
-      <!-- /.box-header -->
-<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" id="form_crud">
+      <div class="x_content">
+<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal form-label-left" id="form_crud">
   {{ csrf_field() }}
   <div class="box-body">
     <div class="col-md-6">
       <div class="form-group">
-          <label class="col-lg-3 control-label">No Bukti *</label>
-          <div class="col-lg-9">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">No Bukti *</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
             <input type="text"  class="form-control" name="f[kode_pengeluaran]" id="kode_pengeluaran" value="{{ @$item->kode_pengeluaran }}"  required="" readonly>
           </div>
       </div>
       <div class="form-group">
-        <label class="col-lg-3 control-label">Tanggal *</label>
-        <div class="col-lg-9">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal *</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
           <input type="date" name="f[tanggal]" id="tanggal" class="form-control" placeholder="Tanggal" value="{{ date('Y-m-d', strtotime(@$item->tanggal)) }}" required="">
         </div>
       </div>
       <div class="form-group">
-        <label class="col-lg-3 control-label">Total *</label>
-        <div class="col-lg-9">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Total *</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
           <input type="text" name="f[total]" id="total" class="form-control mask-number" placeholder="Total" value="{{ @$item->total }}" required="" readonly>
         </div>
       </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
-          <label class="col-lg-3 control-label">Akun Kas</label>
-          <div class="col-lg-9">
+          <label class="control-label col-md-3 col-sm-3 col-xs-12">Akun Kas</label>
+          <div class="col-md-9 col-sm-9 col-xs-12">
             <div class="input-group data_collect_wrapper">
               <input type="hidden" id="akun_id" name="f[akun_id]" required value="{{ @$item->akun_id }}">
               <input type="text" name="nama_akun" id="nama_akun" value="{{ @$item->nama_akun }}" class="form-control" placeholder="Akun Kas" required="" readonly>
@@ -58,8 +50,8 @@
           </div>
         </div>
       <div class="form-group">
-        <label class="col-lg-3 control-label">Keterangan *</label>
-        <div class="col-lg-9">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Keterangan *</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
           <textarea name="f[keterangan]" id="keterangan" cols="30" rows="3" class="form-control" required>{{ @$item->keterangan }}</textarea>
         </div>
       </div>
@@ -82,6 +74,10 @@
         </table>
   </div>
 </form>
+</div>
+</div>
+</div>
+</div>
 
 <script type="text/javascript">
       let lookup = {

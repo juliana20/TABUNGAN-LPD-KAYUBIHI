@@ -1,20 +1,20 @@
-<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" name="form_crud">
+<form class="form-horizontal form-label-left" method="POST" action="{{ url($submit_url) }}" name="form_crud">
   {{ csrf_field() }}
   <div class="form-group">
-    <label class="col-lg-3 control-label">Kode Pelanggan *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Kode Pelanggan *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <input type="text" class="form-control" name="f[kode]" id="kode" value="{{ @$item->kode }}" placeholder="Kode Pelanggan" required="" readonly>
     </div>
   </div>
   <div class="form-group">
-      <label class="col-lg-3 control-label">Nama Pelanggan *</label>
-      <div class="col-lg-9">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama Pelanggan *</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
         <input type="text" class="form-control" name="f[nama]" id="nama" value="{{ @$item->nama }}" placeholder="Nama Pelanggan" required="">
       </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Jenis Kelamin *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Jenis Kelamin *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <select name="f[jenis_kelamin]" class="form-control" required="" id="jenis_kelamin">
         <option value="" disabled="" selected="" hidden="">-- Pilih --</option>
         <?php foreach(@$option_jenis_kelamin as $dt): ?>
@@ -24,14 +24,14 @@
     </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Alamat *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Alamat *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <textarea name="f[alamat]" id="alamat" cols="30" rows="2" class="form-control" required>{{ @$item->alamat }}</textarea>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Telepon *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Telepon *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <input type="text" name="f[no_telepon]" id="no_telepon" class="form-control" placeholder="Telepon" value="{{ @$item->no_telepon }}" required="">
     </div>
   </div>
@@ -69,9 +69,8 @@
           }
             
           $.alert_success(response.message);
-              setTimeout(function(){
-                document.location.href = "{{ url("$nameroutes") }}";        
-              }, 500);  
+          ajax_modal.hide();
+          _datatable.ajax.reload(); 
           },
         error: function(error)
         {

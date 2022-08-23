@@ -1,45 +1,37 @@
-@extends('themes.AdminLTE.layouts.template')
-@section('breadcrumb')  
-  <h1>
-    {{ @$title }}
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Master</a></li>
-    <li class="active">{{ @$title }}</li>
-  </ol>
-@endsection
-@section('content')  
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">{{ @$header }}</h3>
-        <div class="box-tools pull-right">
-            <div class="btn-group">
-              <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
-            </div>
-          </button>
-        </div>
+@extends('themes.gentelella.template.template')
+@section('content')
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li class="dropdown">
+            <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
       </div>
-      <!-- /.box-header -->
-      <div class="box-body table-responsive">
+      <div class="x_content">
         <table class="table table-hover" id="{{ $idDatatables }}" width="100%">   
             <thead>
               <tr>
-                <th class="no-sort">No</th>
+                <th class="no-sort">Aksi</th>
                 <th>Kode Pelanggan</th>
                 <th>Nama Pelanggan</th>
                 <th>Jenis Kelamin</th>
                 <th>Alamat</th>
                 <th>Telepon</th>
-                <th class="no-sort">Aksi</th>
               </tr>
             </thead>
             <tbody>
             
           </tbody>
           </table>
+        </div>
       </div>
-    </div>
-
+  </div>
+</div>
 <!-- DataTable -->
 <script type="text/javascript">
     let lookup = {
@@ -68,13 +60,17 @@
 										}
 								},
               columns: [
-                          {
-                              data: "id",
-                              className: "text-center",
-                              render: function (data, type, row, meta) {
-                                  return meta.row + meta.settings._iDisplayStart + 1;
-                              }
-                          },
+                        { 
+                                data: "id",
+                                orderable: false,
+                                className: "text-center",
+                                render: function ( val, type, row ){
+                                    var buttons = '<div class="btn-group" role="group">';
+                                      buttons += '<a class=\"btn btn-info btn-xs modalEdit\"><i class=\"glyphicon glyphicon-pencil\"></i> Ubah</a>';
+                                      buttons += "</div>";
+                                    return buttons
+                                  }
+                              },
                           { 
                                 data: "kode", 
                                 render: function ( val, type, row ){
@@ -105,16 +101,6 @@
                                     return val
                                   }
                           },
-                          { 
-                                data: "id",
-                                className: "text-center",
-                                render: function ( val, type, row ){
-                                    var buttons = '<div class="btn-group" role="group">';
-                                      buttons += '<a class=\"btn btn-info btn-xs modalEdit\"><i class=\"glyphicon glyphicon-pencil\"></i> Ubah</a>';
-                                      buttons += "</div>";
-                                    return buttons
-                                  }
-                              },
                       ],
                       createdRow: function ( row, data, index ){		
                         $( row ).on( "click", ".modalEdit",  function(e){

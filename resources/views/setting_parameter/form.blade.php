@@ -1,31 +1,31 @@
-@extends('themes.AdminLTE.layouts.template')
-@section('breadcrumb')  
-@endsection
-@section('content')  
-<div class="col-sm-8 col-sm-offset-2">
-  <div class="box box-primary">
-    <div class="box-header with-border">
-      <h3 class="box-title">{{ @$header }}</h3>
-    </div>
-      <!-- /.box-header -->
-<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" name="form_crud">
+@extends('themes.gentelella.template.template')
+@section('content')
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal form-label-left" name="form_crud">
   {{ csrf_field() }}
   <div class="box-body">
     <div class="form-group">
-        <label class="col-lg-3 control-label">Biaya Jasa Bumdes</label>
-        <div class="col-lg-9">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">Biaya Jasa Bumdes</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
           <input type="text" class="form-control mask-number" name="f[biaya_jasa]" id="biaya_jasa" value="{{ Helpers::config_item('biaya_jasa') }}" placeholder="Biaya Jasa" required="">
         </div>
     </div>
     <div class="form-group">
-      <label class="col-lg-3 control-label">Upah Pungut</label>
-      <div class="col-lg-9">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Upah Pungut</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
         <input type="text" class="form-control mask-number" name="f[upah_pungut]" id="upah_pungut" value="{{ Helpers::config_item('upah_pungut') }}" placeholder="Upah Pungut" required="">
       </div>
     </div>
     <div class="form-group">
-      <label class="col-lg-3 control-label">Vendor</label>
-      <div class="col-lg-9">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Vendor</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
         <input type="text" class="form-control mask-number" name="f[biaya_vendor]" id="biaya_vendor" value="{{ Helpers::config_item('biaya_vendor') }}" placeholder="Biaya Vendor" required="">
       </div>
     </div>
@@ -36,7 +36,9 @@
     </div>
   </div>
 </form>
-    </div>
+</div>
+</div>
+</div>
 </div>
 
 <script type="text/javascript">

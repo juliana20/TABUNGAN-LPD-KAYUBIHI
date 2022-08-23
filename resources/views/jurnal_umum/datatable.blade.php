@@ -1,68 +1,72 @@
-@extends('themes.AdminLTE.layouts.template')
-@section('breadcrumb')  
-  <h1>
-    {{ @$title }}
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Master</a></li>
-    <li class="active">{{ @$title }}</li>
-  </ol>
-@endsection
-@section('content')  
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">{{ @$header }}</h3>
-        <div class="box-tools pull-right">
-            <div class="btn-group">
-              
-            </div>
-          </button>
-        </div>
+@extends('themes.gentelella.template.template')
+@section('content')
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+          {{-- <li class="dropdown">
+            <button onclick="window.location='{{ url($nameroutes.'/create') }}'"  class="btn btn-success btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
+          </li> --}}
+        </ul>
+        <div class="clearfix"></div>
       </div>
-      <!-- /.box-header -->
-      <div class="box-body">
-        <div class="form-group">
-          <label class="col-md-1 control-label">Periode</label>
-          <div class="col-md-4">
-            <div class="input-group">
-              <div class="input-group-addon">
-                <i class="fa fa-calendar"></i>
+      <div class="x_content">
+        <div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel">
+              <a class="panel-heading" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  <h4 class="panel-title"><i class="fa fa-filter"></i> Filter Pencarian</h4>
+              </a>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" style="background:#ffffff">
+                  <div class="panel-body">
+                      <div class="row">
+                        <div class="form-group">
+                          <div class="col-md-3">
+                            <label class="control-label" for="filter_date">Periode</label>
+                            <input id="filter_date" type="text" name="filter_date" class="form-control init-daterangepicker" value="" placeholder="Cari Tanggal..." autocomplete="off">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
               </div>
-              <input type="text" class="form-control pull-right" id="reservation">
-            </div>
-          </div><br><hr>
-          <!-- /.input group -->
-        </div>
-        <table class="table table-hover" id="{{$idDatatables}}" width="100%">   
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>No Bukti</th>
-                <th>Kode Akun</th>
-                <th>Nama Akun</th>
-                <th>Debet</th>
-                <th>Kredit</th>
-                <th>Keterangan</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            
-          </tbody>
-          <tfoot>
-            <tr>
-                <th colspan="4" style="text-align:right">Total</th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </tfoot>
-          </table>
+          </div>
       </div>
+          <table class="table table-hover" id="{{$idDatatables}}" width="100%">   
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>No Bukti</th>
+                  <th>Kode Akun</th>
+                  <th>Nama Akun</th>
+                  <th>Debet</th>
+                  <th>Kredit</th>
+                  <th>Keterangan</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              
+            </tbody>
+            <tfoot>
+              <tr>
+                  <th colspan="4" style="text-align:right">Total</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+              </tr>
+          </tfoot>
+        </table>
     </div>
+  </div>
+</div>
+</div>
 
 <!-- DataTable -->
 <script type="text/javascript">
+  var _datestart = moment().startOf("hour").format('YYYY-MM-DD');
+	var _dateend = moment().endOf("hour").format('YYYY-MM-DD');
     var id_datatables = "{{ $idDatatables }}";
 
     _datatables_show = {
@@ -73,8 +77,10 @@
 								url: "{{ url("{$urlDatatables}") }}",
 								type: "POST",
 								data: function(params){
-                        params.date_start = $('#reservation').data('daterangepicker').startDate.format("YYYY-MM-DD");
-                        params.date_end = $('#reservation').data('daterangepicker').endDate.format("YYYY-MM-DD");
+                        // params.date_start = $('#reservation').data('daterangepicker').startDate.format("YYYY-MM-DD");
+                        // params.date_end = $('#reservation').data('daterangepicker').endDate.format("YYYY-MM-DD");
+                        params.date_start = _datestart;
+                        params.date_end = _dateend;
 										}
 								},							
               pageLength: 100,
@@ -124,9 +130,9 @@
                           { 
                             data: "kode_jurnal_hide", 
                             className: " text-center", 
-                            render: function( val, type, row ){ 
-                              return "<b>"+ val +"</b>";
-                            } 
+                              render: function( val, type, row ){ 
+                                return "<b>"+ val +"</b>";
+                              } 
                           },
                       ],
                       columnDefs: [{
@@ -189,16 +195,23 @@
       
   $(function () {
     //Date range picker
-    $('#reservation').daterangepicker()
+    // $('#reservation').daterangepicker({
+    //                locale: {
+    //                         format: 'DD/MM/YYYY'
+    //                         }
+    //              })
   })
 
   $(document).ready(function() {
-    _datatables_show.dt_datatables();
+     _datatables_show.dt_datatables();
+      $('#filter_date').on('apply.daterangepicker', function(ev, picker) {
+					_datestart = picker.startDate.startOf("hour").format('YYYY-MM-DD');
+					_dateend = picker.endDate.endOf("hour").format('YYYY-MM-DD');
+					$('#filter_date').val(picker.startDate.format('DD, MMM YYYY') + ' - ' + picker.endDate.format('DD, MMM YYYY'));
+          _datatable.ajax.reload();
+				});
+				
 
-    $('#reservation').on('change', function(e){
-        e.preventDefault();
-        _datatable.ajax.reload();
-    });
     
   });
 

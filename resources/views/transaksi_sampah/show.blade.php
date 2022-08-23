@@ -1,49 +1,40 @@
-@extends('themes.AdminLTE.layouts.template')
+@extends('themes.gentelella.template.template')
+@section('content')
 <style>
   .form-horizontal .control-label {
     text-align: left!important;
 }
 </style>
-@section('breadcrumb')  
-  <h1>
-    {{ @$title }}
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Master</a></li>
-    <li><a href="{{ url($nameroutes) }}">{{ @$title }}</a></li>
-    <li class="active">{{ @$header }}</li>
-  </ol>
-@endsection
-@section('content')  
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">{{ @$header }}</h3>
-        <div class="box-tools pull-right">
-          <div class="btn-group">
-            <a href="{{ url("transaksi-retribusi-sampah/cetak-nota/{$item->id}") }}" target="_blank" class="btn btn-warning btn-sm"><i class="fa fa-print" aria-hidden="true"></i> Cetak Nota Transaksi</a>
-          </div>
-        </button>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li class="dropdown">
+            <a href="{{ url($nameroutes."/cetak-nota/{$item->id}") }}" target="_blank" class="btn" style="color:#000"><i class="fa fa-print" aria-hidden="true"></i> Cetak Nota Transaksi</a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
       </div>
-      </div>
-      <!-- /.box-header -->
-      <div class="box-body">
+      <div class="x_content">
         <div class="col-sm-10 col-sm-offset-1">
         <form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" name="form_crud">
           <div class="form-group">
-            <label class="col-lg-3 control-label">Kode Transaksi</label>
-            <div class="col-lg-9">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Kode Transaksi</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
               <label class="control-label">: {{ $item->kode_transaksi_sampah }}</label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-3 control-label">Tanggal Transaksi</label>
-            <div class="col-lg-9">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal Transaksi</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
               <label class="control-label">: {{ date('d-m-Y', strtotime($item->tanggal)) }}</label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-3 control-label">Pelanggan</label>
-            <div class="col-lg-9">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Pelanggan</label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
               <label class="control-label">: {{ @$item->nama_pelanggan }}</label>
             </div>
           </div>
@@ -67,7 +58,8 @@
       </div>
       </div>
     </div>
-      
+  </div>
+</div>    
 
 <script type="text/javascript">
   $(document).on("keyup",'#jumlah,#biaya_jasa', calculate);

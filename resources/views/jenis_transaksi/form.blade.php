@@ -1,8 +1,9 @@
-<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" name="form_crud">
+
+<form class="form-horizontal form-label-left" method="POST" action="{{ url($submit_url) }}" name="form_crud">
   {{ csrf_field() }}
   <div class="form-group">
-      <label class="col-lg-3 control-label">Nama *</label>
-      <div class="col-lg-9">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama *</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
         <input type="text" class="form-control" name="f[nama]" id="nama" value="{{ @$item->nama }}" placeholder="Nama Jenis Transaksi" required="">
       </div>
   </div>
@@ -39,10 +40,8 @@
               return false
           }
           $.alert_success(response.message);
-              ajax_modal.hide();
-              setTimeout(function(){
-                document.location.href = "{{ url("$nameroutes") }}";        
-              }, 500);  
+          ajax_modal.hide();
+          _datatable.ajax.reload();  
       }).catch(error => {
             $.alert_error(error);
             $('.btn-save').removeClass('disabled', true);

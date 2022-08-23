@@ -1,0 +1,80 @@
+.text-base {
+    font-size: 12px!important;
+    font-weight: bold!important;
+}
+
+.text-sm {
+    font-size: 12px!important;
+}
+
+.p-4 {
+    padding: 12px!important;
+}
+
+.x_title h2 {
+    margin: 5px 0 6px;
+    float: left;
+    display: block;
+    font-size: 18px!important;
+}
+
+.breadcrumb {
+    margin-bottom: 0px!important;
+}
+
+.btn_upload {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    background-color: #2a72d4;
+    border: 1px solid #166b8a;
+    padding: 5px 10px;
+  }
+  
+  .btn_upload:hover,
+  .btn_upload:focus {
+    background-color: #7ca9e6;
+  }
+  
+  .yes {
+    display: block;
+    align-items: flex-start;
+    margin-top: 0px !important;
+  }
+  
+  .btn_upload input {
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    filter: alpha(opacity=1);
+    -moz-opacity: 0;
+    opacity: 0;
+  }
+  
+  .it {
+    height: 100px;
+    margin-left: 0px;
+    margin-top: 4px;
+  }
+  
+  .btn-rmv {
+    display: none;
+  }
+  
+  .rmv {
+    cursor: pointer;
+    color: #fff;
+    border-radius: 10px;
+    border: 1px solid #fff;
+    display: inline-block;
+    background: rgba(255, 0, 0, 1);
+    margin: -14px;
+    padding: 0px 6px 0px 6px;
+  }
+  
+  .rmv:hover {
+    background: rgba(255, 0, 0, 0.5);
+  }
+  

@@ -1,38 +1,39 @@
-<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" name="form_crud">
+
+<form class="form-horizontal form-label-left" method="POST" action="{{ url($submit_url) }}" name="form_crud">
   {{ csrf_field() }}
   <div class="form-group">
-    <label class="col-lg-3 control-label">Kode User *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Kode User *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <input type="text" class="form-control" name="f[kode_user]" id="kode_user" value="{{ @$item->kode_user }}" placeholder="Kode User" required="" readonly>
     </div>
   </div>
   <div class="form-group">
-      <label class="col-lg-3 control-label">Nama *</label>
-      <div class="col-lg-9">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama *</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
         <input type="text" class="form-control" name="f[nama]" id="nama" value="{{ @$item->nama }}" placeholder="Nama User" required="">
       </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Username *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Username *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <input type="text" name="f[username]" id="username" class="form-control" placeholder="Username" value="{{ @$item->username }}">
     </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Password *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Password *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <input type="password" name="f[password]" id="password" class="form-control" placeholder="Password" value="{{ @$item->password }}">
     </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Telepon *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Telepon *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <input type="text" name="f[no_telepon]" id="no_telepon" class="form-control" placeholder="Telepon" value="{{ @$item->no_telepon }}" required="">
     </div>
   </div>
   <div class="form-group">
-    <label class="col-lg-3 control-label">Jabatan *</label>
-    <div class="col-lg-9">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Jabatan *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
       <select name="f[jabatan]" class="form-control" required="" id="jabatan">
         <option value="" disabled="" selected="" hidden="">-- Pilih --</option>
         <?php foreach(@$option_jabatan as $dt): ?>
@@ -67,9 +68,8 @@
                     return false
                 }
                 $.alert_success(response.message);
-                setTimeout(function(){
-                  document.location.href = "{{ url("$nameroutes") }}";
-                }, 500);  
+                ajax_modal.hide();
+                _datatable.ajax.reload(); 
             }
     });
   });

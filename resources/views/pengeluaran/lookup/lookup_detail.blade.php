@@ -1,11 +1,11 @@
-<form  method="POST" action="" class="form-horizontal" name="form_crud">
+<form  method="POST" action="" class="form-horizontal form-label-left" name="form_crud">
 	{{ csrf_field() }}
 	<div class="form-group">
-		<label class="col-lg-3 control-label">No Akun</label>
-		<div class="col-lg-3">
+		<label class="control-label col-md-3 col-sm-3 col-xs-12">No Akun</label>
+		<div class="col-md-3 col-sm-3 col-xs-12">
 			<input type="text" name="f[no_akun]" id="no_akun_lookup" class="form-control" placeholder="No Akun" required="" readonly>
 		</div>
-		<div class="col-lg-6">
+		<div class="col-md-6 col-sm-6 col-xs-12">
 		  <div class="input-group data_collect_wrapper">
 			<input type="hidden" id="akun_id_lookup" name="f[akun_id]" required>
 			<input type="hidden" id="kode_akun" name="f[kode_akun]" required>
@@ -17,14 +17,14 @@
 		</div>
 	  </div>
 	  <div class="form-group">
-		<label class="col-lg-3 control-label">Keterangan</label>
-		<div class="col-lg-9">
+		<label class="control-label col-md-3 col-sm-3 col-xs-12">Keterangan</label>
+		<div class="col-md-9 col-sm-9 col-xs-12">
 			<textarea name="f[keterangan]" id="keterangan_detail" cols="30" rows="3" class="form-control" required>{{ @$item->keterangan }}</textarea>
 		</div>
 	  </div>
 	  <div class="form-group">
-		<label class="col-lg-3 control-label">Nominal</label>
-		<div class="col-lg-9">
+		<label class="control-label col-md-3 col-sm-3 col-xs-12">Nominal</label>
+		<div class="col-md-9 col-sm-9 col-xs-12">
 			<div class="input-group">
 				<div class="input-group-btn">
 					<span class="btn btn-default btn-flat">Rp</span>

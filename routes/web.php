@@ -56,11 +56,11 @@ Route::prefix('setting-parameter')->group(function() {
 });
 #TRANSAKSI RETRIBUSI SAMPAH
 Route::prefix('transaksi-retribusi-sampah')->group(function() {
-    Route::get('/', 'TransaksiSampahController@index');
+    Route::get('/', 'TransaksiSampahController@index')->name('transaksi-retribusi-sampah');
 	Route::match(array('GET', 'POST'),'/datatables','TransaksiSampahController@datatables_collection');
-	Route::match(array('GET', 'POST'),'/create','TransaksiSampahController@create');
-	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSampahController@edit');
-	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSampahController@show');
+	Route::match(array('GET', 'POST'),'/create','TransaksiSampahController@create')->name('transaksi-retribusi-sampah.create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSampahController@edit')->name('transaksi-retribusi-sampah.edit');;
+	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSampahController@show')->name('transaksi-retribusi-sampah.show');;
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSampahController@cetak_nota');
 });
 #TRANSAKSI PEMBAYARAN ONLINE
