@@ -120,8 +120,8 @@ Route::prefix('laporan')->group(function() {
 	Route::get('/samsat-kendaraan','Laporan@samsatKendaraan');
 	Route::post('/samsat-kendaraan/print','Laporan@printSamsatKendaraan');
 
-	Route::get('/pinjaman','Laporan@pinjaman');
-	Route::post('/pinjaman/print','Laporan@print_pinjaman');
+	Route::get('/jurnal-umum','Laporan@jurnalUmum');
+	Route::post('/jurnal-umum/print','Laporan@printJurnalUmum');
 
 	Route::get('/keuangan','Laporan@keuangan');
 	Route::post('/keuangan/print-jurnal-umum','Laporan@print_jurnal_umum');

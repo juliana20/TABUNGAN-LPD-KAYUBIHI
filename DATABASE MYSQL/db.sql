@@ -46,7 +46,7 @@ CREATE TABLE `m_akun` (
   `saldo_awal` float DEFAULT NULL,
   `saldo_akhir` float DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_akun`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_akun` */
 
@@ -57,7 +57,8 @@ insert  into `m_akun`(`id`,`kode_akun`,`nama_akun`,`golongan`,`kelompok`,`normal
 (4,'60002','Beban Listrik','Biaya','Biaya Operasional','Debit',0,NULL),
 (5,'40001','Pendapatan Jasa Retribusi Sampah','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
 (6,'40002','Pendapatan Jasa Pembayaran Online','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
-(7,'40003','Pendapatan Jasa Samsat Kendaraan','Pendapatan','Pendapatan Operasional','Debit',0,NULL);
+(7,'40003','Pendapatan Jasa Samsat Kendaraan','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
+(8,'60003','Beban Air','Biaya','Biaya Operasional','Debit',0,NULL);
 
 /*Table structure for table `m_jenis_transaksi` */
 
@@ -126,7 +127,7 @@ CREATE TABLE `t_jurnal_umum` (
   `kode_jurnal` varchar(15) NOT NULL,
   `user_id` int(11) NOT NULL,
   `akun_id` int(11) NOT NULL,
-  `tanggal` datetime NOT NULL,
+  `tanggal` date NOT NULL,
   `reff` int(11) DEFAULT NULL,
   `debet` float NOT NULL,
   `kredit` float NOT NULL,
@@ -136,19 +137,25 @@ CREATE TABLE `t_jurnal_umum` (
   KEY `t_jurnal_umum_akun` (`akun_id`),
   CONSTRAINT `t_jurnal_umum_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_jurnal_umum_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_jurnal_umum` */
 
 insert  into `t_jurnal_umum`(`id`,`kode_jurnal`,`user_id`,`akun_id`,`tanggal`,`reff`,`debet`,`kredit`,`keterangan`) values 
-(15,'SP00002',1,5,'2022-08-20 00:00:00',NULL,0,21000,'Pembayaran Retribusi Sampah'),
-(16,'SP00002',1,1,'2022-08-20 00:00:00',NULL,21000,0,'Pembayaran Retribusi Sampah'),
-(17,'SP00001',1,5,'2022-07-02 00:00:00',NULL,0,25000,'Pembayaran Retribusi Sampah'),
-(18,'SP00001',1,1,'2022-07-02 00:00:00',NULL,25000,0,'Pembayaran Retribusi Sampah'),
-(31,'TO00001',1,6,'2022-07-03 00:00:00',NULL,0,19000,'Pembayaran Listrik'),
-(32,'TO00001',1,1,'2022-07-03 00:00:00',NULL,19000,0,'Pembayaran Listrik'),
-(33,'ST001',1,7,'2022-08-06 00:00:00',NULL,0,228000,'Pembayaran Samsat Kendaraan'),
-(34,'ST001',1,1,'2022-08-06 00:00:00',NULL,228000,0,'Pembayaran Samsat Kendaraan');
+(15,'SP00002',1,5,'2022-08-20',NULL,0,21000,'Pembayaran Retribusi Sampah'),
+(16,'SP00002',1,1,'2022-08-20',NULL,21000,0,'Pembayaran Retribusi Sampah'),
+(31,'TO00001',1,6,'2022-07-03',NULL,0,19000,'Pembayaran Listrik'),
+(32,'TO00001',1,1,'2022-07-03',NULL,19000,0,'Pembayaran Listrik'),
+(33,'ST001',1,7,'2022-08-06',NULL,0,228000,'Pembayaran Samsat Kendaraan'),
+(34,'ST001',1,1,'2022-08-06',NULL,228000,0,'Pembayaran Samsat Kendaraan'),
+(35,'SP00001',1,5,'2022-07-02',NULL,0,25000,'Pembayaran Retribusi Sampah'),
+(36,'SP00001',1,1,'2022-07-02',NULL,25000,0,'Pembayaran Retribusi Sampah'),
+(37,'PL-220806-0001',1,1,'2022-08-06',NULL,0,7200000,'Pengeluaran 6 agustus 2022'),
+(38,'PL-220806-0001',1,3,'2022-08-06',NULL,6000000,0,'Pembayaran gaji karyawan bulan juli 2022'),
+(39,'PL-220806-0001',1,4,'2022-08-06',NULL,1200000,0,'Pembayaran listrik juli 2022'),
+(40,'PL-220824-0002',1,2,'2022-08-24',NULL,0,1950000,'Pengeluaran biaya operasional'),
+(41,'PL-220824-0002',1,8,'2022-08-24',NULL,450000,0,'Bayar air bulan agustus'),
+(42,'PL-220824-0002',1,4,'2022-08-24',NULL,1500000,0,'Bayar listrik bulan agustus');
 
 /*Table structure for table `t_online` */
 
@@ -159,7 +166,7 @@ CREATE TABLE `t_online` (
   `kode_transaksi_online` varchar(15) NOT NULL,
   `user_id` int(11) NOT NULL,
   `pelanggan_id` int(11) NOT NULL,
-  `tanggal` datetime NOT NULL,
+  `tanggal` date NOT NULL,
   `jenis_transaksi_id` int(11) NOT NULL,
   `biaya_jasa` float DEFAULT NULL,
   `jumlah` float NOT NULL,
@@ -177,7 +184,7 @@ CREATE TABLE `t_online` (
 /*Data for the table `t_online` */
 
 insert  into `t_online`(`id`,`kode_transaksi_online`,`user_id`,`pelanggan_id`,`tanggal`,`jenis_transaksi_id`,`biaya_jasa`,`jumlah`,`total_bayar`,`keterangan`) values 
-(1,'TO00001',1,1,'2022-07-03 00:00:00',1,2000,17000,19000,'Lunas');
+(1,'TO00001',1,1,'2022-07-03',1,2000,17000,19000,'Lunas');
 
 /*Table structure for table `t_pengeluaran` */
 
@@ -188,7 +195,7 @@ CREATE TABLE `t_pengeluaran` (
   `kode_pengeluaran` varchar(20) NOT NULL,
   `user_id` int(11) NOT NULL,
   `akun_id` int(11) NOT NULL,
-  `tanggal` datetime NOT NULL,
+  `tanggal` date NOT NULL,
   `total` float DEFAULT NULL,
   `reff` int(11) DEFAULT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
@@ -197,12 +204,13 @@ CREATE TABLE `t_pengeluaran` (
   KEY `t_pengeluaran_akun` (`akun_id`),
   CONSTRAINT `t_pengeluaran_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_pengeluaran_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran` */
 
 insert  into `t_pengeluaran`(`id`,`kode_pengeluaran`,`user_id`,`akun_id`,`tanggal`,`total`,`reff`,`keterangan`) values 
-(2,'PL-220806-0001',1,1,'2022-08-06 12:00:00',7200000,NULL,'Pengeluaran 6 agustus 2022');
+(2,'PL-220806-0001',1,1,'2022-08-06',7200000,NULL,'Pengeluaran 6 agustus 2022'),
+(3,'PL-220824-0002',1,2,'2022-08-24',1950000,NULL,'Pengeluaran biaya operasional');
 
 /*Table structure for table `t_pengeluaran_detail` */
 
@@ -220,13 +228,15 @@ CREATE TABLE `t_pengeluaran_detail` (
   KEY `t_pengeluaran_detail_akun` (`akun_id`),
   CONSTRAINT `t_pengeluaran_detail_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_pengeluaran_detail_pengeluaran` FOREIGN KEY (`pengeluaran_id`) REFERENCES `t_pengeluaran` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran_detail` */
 
 insert  into `t_pengeluaran_detail`(`id`,`pengeluaran_id`,`akun_id`,`nominal`,`keterangan`,`bukti_struk`) values 
-(8,2,3,6000000,'Pembayaran gaji karyawan bulan juli 2022',NULL),
-(9,2,4,1200000,'Pembayaran listrik juli 2022',NULL);
+(10,2,3,6000000,'Pembayaran gaji karyawan bulan juli 2022',NULL),
+(11,2,4,1200000,'Pembayaran listrik juli 2022',NULL),
+(12,3,8,450000,'Bayar air bulan agustus',NULL),
+(13,3,4,1500000,'Bayar listrik bulan agustus',NULL);
 
 /*Table structure for table `t_sampah` */
 
@@ -237,7 +247,7 @@ CREATE TABLE `t_sampah` (
   `kode_transaksi_sampah` varchar(15) NOT NULL,
   `pelanggan_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `tanggal` datetime NOT NULL,
+  `tanggal` date NOT NULL,
   `jumlah` float NOT NULL,
   `biaya_jasa` float DEFAULT NULL,
   `total_bayar` float DEFAULT NULL,
@@ -252,8 +262,8 @@ CREATE TABLE `t_sampah` (
 /*Data for the table `t_sampah` */
 
 insert  into `t_sampah`(`id`,`kode_transaksi_sampah`,`pelanggan_id`,`user_id`,`tanggal`,`jumlah`,`biaya_jasa`,`total_bayar`,`keterangan`) values 
-(4,'SP00001',1,1,'2022-07-02 00:00:00',17000,8000,25000,NULL),
-(5,'SP00002',2,1,'2022-08-20 00:00:00',17000,4000,21000,NULL);
+(4,'SP00001',1,1,'2022-07-02',17000,8000,25000,NULL),
+(5,'SP00002',2,1,'2022-08-20',17000,4000,21000,NULL);
 
 /*Table structure for table `t_samsat` */
 
@@ -270,7 +280,7 @@ CREATE TABLE `t_samsat` (
   `jumlah_tagihan` float NOT NULL,
   `biaya_jasa` float NOT NULL,
   `jenis_pembayaran` varchar(30) NOT NULL,
-  `tanggal_lunas` datetime NOT NULL,
+  `tanggal_lunas` date NOT NULL,
   `total_bayar` float NOT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_transaksi_samsat`),
@@ -283,7 +293,7 @@ CREATE TABLE `t_samsat` (
 /*Data for the table `t_samsat` */
 
 insert  into `t_samsat`(`id`,`kode_transaksi_samsat`,`user_id`,`pelanggan_id`,`plat_nomor`,`tanggal_samsat`,`jenis_kendaraan`,`jumlah_tagihan`,`biaya_jasa`,`jenis_pembayaran`,`tanggal_lunas`,`total_bayar`,`keterangan`) values 
-(1,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',198000,30000,'Lunas','2022-08-06 00:00:00',228000,'-');
+(1,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',198000,30000,'Lunas','2022-08-06',228000,'-');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

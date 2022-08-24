@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers as HelpersHelpers;
 use Illuminate\Http\Request;
 use App\Http\Model\Akun_m;
+use App\Http\Model\Jurnal_umum_m;
 use App\Http\Model\Pengeluaran_detail_m;
 use App\Http\Model\Pengeluaran_m;
 use Validator;
@@ -94,6 +96,32 @@ class PengeluaranController extends Controller
                 }
                 // insert detail
                 $this->model_detail->insert_data($data_details);
+                  // insert jurnal umum
+                  $jurnal_umum_header = [
+                    'kode_jurnal' => $header['kode_pengeluaran'], 
+                    'user_id' => Helpers::getId(),
+                    'akun_id' => $header['akun_id'], #header
+                    'tanggal' => $header['tanggal'],
+                    'debet' => 0,
+                    'kredit' => $header['total'],
+                    'keterangan' => $header['keterangan']
+                ];
+
+                $jurnal_umum_detail = [];
+                foreach($details as $row)
+                {
+                    $jurnal_umum_detail[] = [
+                            'kode_jurnal' => $header['kode_pengeluaran'], 
+                            'user_id' => Helpers::getId(),
+                            'akun_id' => $row['akun_id'], #detail
+                            'tanggal' => $header['tanggal'],
+                            'debet' => $row['nominal'],
+                            'kredit' => 0,
+                            'keterangan' => $row['keterangan']
+                    ];
+                }
+                Jurnal_umum_m::insert($jurnal_umum_header);
+                Jurnal_umum_m::insert($jurnal_umum_detail);
                 DB::commit();
     
                 $response = [
@@ -170,6 +198,36 @@ class PengeluaranController extends Controller
                 }
                 // insert detail
                 $this->model_detail->insert_data($data_details);
+                // insert jurnal umum
+                $jurnal_umum_header = [
+                    'kode_jurnal' => $item->kode_pengeluaran, 
+                    'user_id' => Helpers::getId(),
+                    'akun_id' => $header['akun_id'], #header
+                    'tanggal' => $header['tanggal'],
+                    'debet' => 0,
+                    'kredit' => $header['total'],
+                    'keterangan' => $header['keterangan']
+                ];
+
+                $jurnal_umum_detail = [];
+                foreach($details as $row)
+                {
+                    $jurnal_umum_detail[] = [
+                            'kode_jurnal' => $item->kode_pengeluaran, 
+                            'user_id' => Helpers::getId(),
+                            'akun_id' => $row['akun_id'], #detail
+                            'tanggal' => $header['tanggal'],
+                            'debet' => $row['nominal'],
+                            'kredit' => 0,
+                            'keterangan' => $row['keterangan']
+                    ];
+                }
+                $cek_jurnal_already = Jurnal_umum_m::where('kode_jurnal', $item->kode_pengeluaran)->first();
+                if(!empty($cek_jurnal_already)){
+                    Jurnal_umum_m::where('kode_jurnal', $item->kode_pengeluaran)->delete();
+                }
+                Jurnal_umum_m::insert($jurnal_umum_header);
+                Jurnal_umum_m::insert($jurnal_umum_detail);
                 DB::commit();
 
                 $response = [

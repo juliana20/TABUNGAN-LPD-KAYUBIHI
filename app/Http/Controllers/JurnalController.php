@@ -190,6 +190,7 @@ class JurnalController extends Controller
                     )
                     ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
                     ->orderBy('t_jurnal_umum.tanggal','asc')
+                    ->orderBy('t_jurnal_umum.id','asc')
                     ->orderBy('t_jurnal_umum.debet','desc')
                     ->get();
 

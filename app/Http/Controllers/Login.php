@@ -31,7 +31,7 @@ class Login extends Controller
                 Session::put('login',TRUE);
 
                 alert()->success('Success', 'Login Berhasil!');
-                return redirect('/user');                  
+                return redirect(($data->jabatan == 'Direktur') ? 'jurnal-umum' : 'user');                  
             }   
             else{
                 alert()->error('Login gagal, Silahkan cek username, password atau jabatan anda!', 'Perhatian!')->persistent('Tutup');

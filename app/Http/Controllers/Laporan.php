@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Model\Transaksi_online_m;
 use App\Http\Model\Transaksi_sampah_m;
 use App\Http\Model\Transaksi_samsat_m;
+use App\Http\Model\Jurnal_umum_m;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
@@ -123,7 +124,7 @@ class Laporan extends Controller
           return $pdf->stream($params['date_start'].$params['date_end'].'laporan_samsat_kendaraan.pdf'); 
       }
 
-      public function pinjaman()
+      public function jurnalUmum()
       {
                $item = [
                    'date_start' => Carbon::now()->startOfMonth()->toDateString(),
@@ -132,99 +133,54 @@ class Laporan extends Controller
    
                $data = array(
                    'item'              => (object) $item,
-                   'title'             => 'Laporan Pinjaman',
-                   'url_print'         => 'laporan/pinjaman/print'
+                   'title'             => 'Laporan Jurnal Umum',
+                   'url_print'         => 'laporan/jurnal-umum/print'
                );
    
-               return view('laporan.form.pinjaman', $data);
+               return view('laporan.form.jurnal_umum', $data);
    
        }
  
-       public function print_pinjaman(Request $request)
+       public function printJurnalUmum(Request $request)
        {
            $params = $request->input('f');
-           $query = DB::table('tb_pinjaman as a')
-                    ->join('tb_nasabah as b','a.id_nasabah','=','b.id_nasabah')
-                    ->select('a.*','b.nama_nasabah')
-                    ->whereBetween('a.tgl_realisasi',[$params['date_start'], $params['date_end']])
+           $query = Jurnal_umum_m::join('m_user','t_jurnal_umum.user_id','=','m_user.id')
+                    ->join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
+                    ->select(
+                        't_jurnal_umum.*',
+                        'm_user.nama as nama_user',
+                        'm_akun.kode_akun',
+                        'm_akun.nama_akun'
+                    )
+                    ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
+                    ->orderBy('t_jurnal_umum.tanggal','asc')
+                    ->orderBy('t_jurnal_umum.id','asc')
+                    ->orderBy('t_jurnal_umum.debet','desc')
                     ->get();
-
-           $data = [
-               'params'   => (object) $params,
-               'item'     =>  $query,
-               'title'    => 'Laporan Pinjaman',
-           ];
-  
-           $pdf = PDF::loadView('laporan.print.cetak_pinjaman', $data, $params)->setPaper('a4', 'portait');
-           return $pdf->stream($params['date_start'].$params['date_end'].'laporan_pinjaman.pdf'); 
-       }
- 
-       public function keuangan()
-       {
-            $item = [
-                'date_start' => Carbon::now()->startOfMonth()->toDateString(),
-                'date_end'   => Carbon::now()->endOfMonth()->toDateString()
-            ];
-
-            $data = array(
-                'item'                      => (object) $item,
-                'title'                     => 'Laporan Keuangan',
-                'url_print_jurnal_umum'     => 'laporan/keuangan/print-jurnal-umum',
-                'url_print_buku_besar'     => 'laporan/keuangan/print-buku-besar',
-                'url_print_neraca_lajur'     => 'laporan/keuangan/print-neraca-lajur',
-                'url_print_laba_rugi'     => 'laporan/keuangan/print-laba-rugi',
-                'url_print_neraca'     => 'laporan/keuangan/print-neraca',
-                'url_print_arus_kas'     => 'laporan/keuangan/print-arus-kas'
-            );
-
-            return view('laporan.form.keuangan', $data);
-    
-        }
-
-        public function print_jurnal_umum(Request $request)
-        {
-            $params = $request->input('f');
-            $query = DB::table('tb_jurnal as a')
-                     ->join('tb_detail_jurnal as b','a.id_jurnal','=','b.id_jurnal')
-                     ->join('tb_akun as c','c.id_akun','=','b.id_akun')
-                     ->select(
-                         'a.id_jurnal',
-                         'a.tanggal',
-                         'b.debet',
-                         'b.kredit',
-                         'b.id_akun',
-                         'b.keterangan',
-                         'c.nama_akun')
-                     ->whereBetween('a.tanggal',[$params['date_start'], $params['date_end']])
-                     ->where('a.status_batal', 0)
-                     ->orderBy('a.id_jurnal','a.tanggal')
-                     ->get();
 
             $evidence_number = $evidence_number_before = NULL;
             $collection = array();
             foreach( $query as $row ){
-                $evidence_number = $row->id_jurnal;
-                $row->tanggal = ( $evidence_number_before == $evidence_number ) ? '' : date('d-m-Y', strtotime($row->tanggal));
-                $row->id_jurnal =	( $evidence_number_before == $evidence_number ) ? '' : $evidence_number;
-                $row->debet = $row->debet;
-                $row->kredit = $row->kredit;
-                $row->id_jurnal_hide = $evidence_number;
-                $collection[] = $row;
-        
-                $evidence_number_before = $evidence_number;
+            $evidence_number = $row->kode_jurnal;
+            $row->tanggal = ( $evidence_number_before == $evidence_number ) ? '' : date('d-m-Y', strtotime($row->tanggal));
+            $row->kode_jurnal =	( $evidence_number_before == $evidence_number ) ? '' : $evidence_number;
+            $row->debet = $row->debet;
+            $row->kredit = $row->kredit;
+            $row->kode_jurnal_hide = $evidence_number;
+            $collection[] = $row;
+
+            $evidence_number_before = $evidence_number;
             }
 
-
-            $data = [
-                'params'   => (object) $params,
-                'item'     =>  $collection,
-                'title'    => 'Laporan Jurnal Umum',
-            ];
-   
-            $pdf = PDF::loadView('laporan.print.cetak_jurnal_umum', $data, $params)->setPaper('a4', 'landscape');
-            return $pdf->stream($params['date_start'].$params['date_end'].'laporan_jurnal_umum.pdf'); 
-        }
-
+           $data = [
+               'params'   => (object) $params,
+               'item'     =>  $collection,
+               'title'    => 'Laporan Jurnal Umum',
+           ];
+  
+           $pdf = PDF::loadView('laporan.print.cetak_jurnal_umum', $data, $params)->setPaper('a4', 'landscape');
+           return $pdf->stream($params['date_start'].$params['date_end'].'laporan_jurnal_umum.pdf'); 
+       }
   
         private function get_buku_besar($id_akun, $date_start, $date_end)
         {

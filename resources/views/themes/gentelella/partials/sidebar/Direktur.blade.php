@@ -10,7 +10,7 @@
                         <li class="{{ Request::is('laporan/retribusi-sampah') ? 'active':null}}"><a href="{{ url('laporan/retribusi-sampah') }}">Retribusi Sampah</a></li>
                         <li class="{{ Request::is('laporan/pembayaran-online') ? 'active':null}}"><a href="{{ url('laporan/pembayaran-online') }}">Pembayaran Online</a></li>
                         <li class="{{ Request::is('laporan/samsat-kendaraan') ? 'active':null}}"><a href="{{ url('laporan/samsat-kendaraan') }}">Samsat Kendaraan</a></li>
-                        <li class="{{ Request::is('laporan/pemasukan') ? 'active':null}}"><a href="{{ url('laporan/pemasukan') }}">Jurnal Umum</a></li>
+                        <li class="{{ Request::is('laporan/jurnal-umum') ? 'active':null}}"><a href="{{ url('laporan/jurnal-umum') }}">Jurnal Umum</a></li>
                         <li class="{{ Request::is('laporan/pengeluaran') ? 'active':null}}"><a href="{{ url('laporan/pengeluaran') }}">Buku Besar</a></li>
                         <li class="{{ Request::is('laporan/pembayaran-siswa') ? 'active':null}}"><a href="{{ url('laporan/pembayaran-siswa') }}">Neraca</a></li>
                         <li class="{{ Request::is('laporan/pembayaran-spp') ? 'active':null}}"><a href="{{ url('laporan/pembayaran-spp') }}">Laba Rugi</a></li>
