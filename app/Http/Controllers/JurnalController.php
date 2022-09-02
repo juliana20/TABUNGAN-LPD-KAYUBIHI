@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Model\Jurnal_m;
 use Illuminate\Http\Request;
 use App\Http\Model\Jurnal_umum_m;
 use Validator;
@@ -13,9 +14,11 @@ use Response;
 class JurnalController extends Controller
 {
     protected $model;
-    public function __construct(Jurnal_umum_m $model)
+    protected $model_header_jurnal;
+    public function __construct(Jurnal_umum_m $model, Jurnal_m $model_header_jurnal)
     {
         $this->model = $model;
+        $this->model_header_jurnal = $model_header_jurnal;
         $this->nameroutes = 'jurnal-umum';
     }
     /**
@@ -36,20 +39,34 @@ class JurnalController extends Controller
         return view('jurnal_umum.datatable',$data);
     }
 
+    public function transaksi()
+    {
+        $data = array(
+            'nameroutes'        => $this->nameroutes,
+            'title'             => 'Transaksi Jurnal Umum',
+            'header'            => 'Data Transaksi Jurnal Umum',
+            'urlDatatables'     => "{$this->nameroutes}/transaksi/datatables",
+            'idDatatables'      => 'dt_transaksi_jurnal_umum'
+        );
+        return view('jurnal_umum.datatable_transaksi_jurnal',$data);
+    }
+
+     
     public function create(Request $request)
     {
         $item = [
-            'id_jurnal' => $this->model->gen_code('JUM'),
+            'kode_jurnal' => $this->model_header_jurnal->gen_code('JUM'),
             'tanggal' => date('Y-m-d')
         ];
 
         $data = array(
             'item'              => (object) $item,
             'title'             => 'Buat Transaksi Jurnal Umum',
+            'header'            => 'Form Transaksi Jurnal Umum',
             'breadcrumb'        => 'Daftar Transaksi Jurnal Umum',
-            'submit_url'            => url()->current(),
-            'is_edit'               => FALSE,
-            'nameroutes'            => $this->nameroutes,
+            'submit_url'        => url()->current(),
+            'is_edit'           => FALSE,
+            'nameroutes'        => $this->nameroutes,
         );
 
         //jika form sumbit
@@ -57,12 +74,11 @@ class JurnalController extends Controller
         {
             //request dari view
             $header = array_merge($item, $request->input('header'));
-            $header['id_jurnal'] = $this->model->gen_code('JUM');
-            $header['id_user'] = Helpers::getId();
-            $header['tanggal'] = date('Y-m-d h:i:s', strtotime($header['tanggal']));
+            $header['kode_jurnal'] = $this->model_header_jurnal->gen_code('JUM');
+            $header['user_id'] = Helpers::getId();
             $details = $request->input('details');
 
-            $validator = Validator::make( $header, $this->model->rules['insert']);
+            $validator = Validator::make( $header, $this->model_header_jurnal->rules['insert']);
             if ($validator->fails()) {
                 $response = [
                     'message' => $validator->errors()->first(),
@@ -74,16 +90,21 @@ class JurnalController extends Controller
 
             DB::beginTransaction();
             try {
+                //insert data
                 //insert header get id
-                $this->model->insert_data($header);
+                $this->model_header_jurnal->insert_data($header);
                 $data_details = [];
                 foreach($details as $row)
                 {
-                    $row['id_jurnal'] = $header['id_jurnal'];
+                    $row['kode_jurnal'] = $header['kode_jurnal'];
+                    $row['user_id'] = Helpers::getId();
+                    $row['tanggal'] = $header['tanggal'];
+                    $row['keterangan'] = !empty($row['keterangan']) ? $row['keterangan'] : $header['keterangan'];
+                    $row['transaksi_jurnal'] = 1;
                     $data_details[] = $row;
                 }
                 // insert detail
-                $this->model_detail->insert_data($data_details);
+                $this->model->insert_data($data_details);
                 DB::commit();
     
                 $response = [
@@ -105,13 +126,13 @@ class JurnalController extends Controller
             return Response::json($response);
         }
 
-        return view('jurnal.form', $data);
+        return view('jurnal_umum.form', $data);
 
     }
 
     public function lookup_akun( )
     {
-        return view('jurnal.lookup.akun');
+        return view('jurnal_umum.lookup.akun');
     }
 
 
@@ -136,15 +157,16 @@ class JurnalController extends Controller
      */
     public function detail(Request $request, $id)
     {
-        $get_data = $this->model->get_one($id);
+        $get_data = $this->model_header_jurnal->get_one($id);
         $data = [
             'item'                      => $get_data,
             'title'                     => 'Lihat Transaksi Jurnal Umum',
+            'header'                    => 'Form Transaksi Jurnal Umum',
             'breadcrumb'                => 'Daftar Transaksi Jurnal Umum',
             'is_edit'                   => TRUE,
             'submit_url'                => url()->current(),
             'nameroutes'                => $this->nameroutes,
-            'collection'                => $this->model_detail->collection($get_data->id_jurnal)
+            'collection'                => $this->model->collection($get_data->kode_jurnal)
         ];
 
         //jika form sumbit
@@ -153,7 +175,8 @@ class JurnalController extends Controller
             //insert data
             DB::beginTransaction();
             try {
-                $this->model->update_data(['status_batal' => 1], $id);
+                $this->model_header_jurnal->update_data(['status_batal' => 1], $id);
+                $this->model->where('kode_jurnal', $get_data->kode_jurnal)->update(['status_batal' => 1]);
                 DB::commit();
 
                 $response = [
@@ -174,7 +197,7 @@ class JurnalController extends Controller
             return Response::json($response); 
         }
         
-        return view('jurnal.form', $data);
+        return view('jurnal_umum.form', $data);
     }
 
     public function datatables_collection(Request $request)
@@ -189,6 +212,7 @@ class JurnalController extends Controller
                         'm_akun.nama_akun'
                     )
                     ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
+                    ->where('t_jurnal_umum.status_batal', 0)
                     ->orderBy('t_jurnal_umum.tanggal','asc')
                     ->orderBy('t_jurnal_umum.id','asc')
                     ->orderBy('t_jurnal_umum.debet','desc')
@@ -207,6 +231,14 @@ class JurnalController extends Controller
 
             $evidence_number_before = $evidence_number;
         }
+
+        return Datatables::of($collection)->make(true);
+    }
+
+    public function datatables_collection_transaksi(Request $request)
+    {
+        $params = $request->all();
+        $collection = $this->model_header_jurnal->get_all($params);
 
         return Datatables::of($collection)->make(true);
     }

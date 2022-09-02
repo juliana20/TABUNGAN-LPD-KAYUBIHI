@@ -10,16 +10,16 @@
     <link rel="stylesheet" href="{{ url('themes/default/css/style_report.css')}}">
 </head>
 <body>
-    <h5 align="center">
-      {{config('app.app_name')}} {{config('app.area')}} <br>
-      Alamat : {{config('app.address')}} <br>Telepon : {{config('app.phone')}}<hr>
-    </h5>
+    <h3 align="center">
+      {{config('app.app_alias')}} {{config('app.area')}} <br>
+      {{config('app.address')}}<hr>
+    </h3>
     <h4 align="center">
       {{ @$title }} <br>
-      Periode : {{ $params->date_start ." s/d ". $params->date_end }}
+      Periode : {{ date('d-m-Y', strtotime($params->date_start)) ." s/d ". date('d-m-Y', strtotime($params->date_end)) }}
     </h4>
     <div class="container">
-      <h4>Akun : {{ @$akun->nama_akun }}</h4>
+      <h4>{{ $akun->kode_akun }} {{ @$akun->nama_akun }}</h4>
         <table width="100%">
           <thead>
             <tr>
@@ -45,23 +45,20 @@
               </tr>
             @if(!empty($item)) 
               @foreach($item as $row)
-              <?php 
+              @php
                 $debet += $row->debet; 
                 $kredit += $row->kredit; 
-                //jika akun tabungan sukarela
-                if($params->id_akun == '20103' || $params->id_akun == '20104' || $params->id_akun == '20105' || $params->id_akun == '20106')
-                {
+                //jika akun pendapatan
+                if(in_array($params->akun_id, [5, 6, 7]) || $akun->kelompok == 'Aktiva Tetap'){
                   $saldo_akhir = ( $row->debet > 0) ? $saldo_akhir - $row->debet : $saldo_akhir  + $row->kredit;
                 }else{
                   $saldo_akhir = ( $row->debet > 0) ? $saldo_akhir + $row->debet : $saldo_akhir  - $row->kredit;
                 }
-
-              
-              ?>
+              @endphp
                 <tr>
                   <td align="center">{{ $no++ }}</td>
                   <td>{{ date('d M Y',strtotime($row->tanggal)) }}</td>
-                  <td>{{ $row->no_bukti }}</td>
+                  <td>{{ $row->kode_jurnal }}</td>
                   <td>{{ $row->keterangan }}</td>
                   <td>Rp. {{ number_format($row->debet, 2) }}</td>
                   <td>Rp. {{ number_format($row->kredit, 2) }}</td>
@@ -75,12 +72,7 @@
             @endif
           </tbody>
           <tfoot>
-            {{-- <tr>
-              <td colspan="4" align="right"><b>Total</b></td>
-              <td><b>Rp. {{ number_format($debet, 2) }}</b></td>
-              <td><b>Rp. {{ number_format($kredit, 2) }}</b></td>
-              <td><b>Rp. {{ number_format(($akun->normal_pos == 'Debit') ? $debet - $kredit : $kredit - $debet , 2) }}</b></td>
-            </tr> --}}
+
           </tfoot>
 
         </table>

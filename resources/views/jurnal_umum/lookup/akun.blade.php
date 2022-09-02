@@ -5,7 +5,7 @@
 			if( _response ){
 					// cek apakah item sudah dipilih
 					check = $("#dt_detail").DataTable().rows( function ( idx, data, node ) {
-							return data.id_akun === _response.id_akun ?	true : false;
+							return data.akun_id === _response.id ?	true : false;
 					}).data();
 					
 					if ( check.any() )
@@ -16,7 +16,8 @@
 					}
 				try{
 					var data_detail = {
-						'id_akun' : _response.id_akun,
+						'akun_id' : _response.id,
+						'kode_akun' : _response.kode_akun,
 						'nama_akun' : _response.nama_akun,
 						'debet'	: 0,
 						'kredit' : 0,
@@ -33,7 +34,7 @@
 			}
 	}
 	//]]></script>
-<table class="table table-striped table-bordered table-hover" id="dt_akun" width="100%">   
+<table class="table table-hover" id="dt_akun" width="100%">   
 	<thead>
 	  <tr>
 		<th class="no-sort"></th>
@@ -78,18 +79,18 @@
 								},
 							columns: [
 									{ 
-										data: "id_akun",
+										data: "id",
 										className: "text-center actions",
 										orderable: false,
 										searchable: false,
 										width: "70px",
 										render: function ( val, type, row ){
 												var json = JSON.stringify( row ).replace( /"/g, '\\"' );
-												return "<a href='javascript:try{lookupbox_row_selected(\"" + json + "\")}catch(e){}' title=\"Pilih\" class=\"label label-primary\"><i class=\"fa fa-check\"></i> <span>Pilih</span></a>" 
+												return "<a href='javascript:try{lookupbox_row_selected(\"" + json + "\")}catch(e){}' title=\"Pilih\" class=\"btn btn-xs btn-primary\"><i class=\"fa fa-check\"></i> <span>Pilih</span></a>" 
 											}
 									},
 									{ 
-										data: "id_akun",     
+										data: "kode_akun",     
 										width: "100px",
 										orderable: true,
 										render: function ( val, type, row ){

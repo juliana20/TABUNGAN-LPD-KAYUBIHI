@@ -1,40 +1,24 @@
-@extends('themes.AdminLTE.layouts.template')
-@section('breadcrumb')  
-  <h1>
-    {{ @$title }}
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Master</a></li>
-    <li><a href="{{ url(@$nameroutes) }}">{{ @$breadcrumb }}</a></li>
-    <li class="active">{{ @$title }}</li>
-  </ol>
-@endsection
-@section('content')  
-  <div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">{{ @$title }}</h3>
-        <div class="box-tools pull-right">
-
-          <div class="btn-group">
-            <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-            Tindakan <i class="fa fa-wrench"></i></button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="{{ url(@$nameroutes) }}/create" title=""><i class="fa fa-plus" aria-hidden="true"></i> Tambah Baru</a></li>
-            </ul>
-          </div>
-          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-          </button>
-        </div>
+@extends('themes.gentelella.template.template')
+@section('content')
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ @$header }}</h2>
+        <ul class="nav navbar-right panel_toolbox">
+         
+        </ul>
+        <div class="clearfix"></div>
       </div>
-      <!-- /.box-header -->
-<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal" id="form_crud">
+      <div class="x_content">
+<form  method="POST" action="{{ url($submit_url) }}" class="form-horizontal form-label-left" id="form_crud">
   {{ csrf_field() }}
   <div class="box-body">
     <div class="col-md-6">
       <div class="form-group">
           <label class="col-lg-3 control-label">No Bukti *</label>
           <div class="col-lg-9">
-            <input type="text"  class="form-control" name="f[id_jurnal]" id="id_jurnal" value="{{ @$item->id_jurnal }}"  required="" readonly>
+            <input type="text"  class="form-control" name="f[kode_jurnal]" id="kode_jurnal" value="{{ @$item->kode_jurnal }}"  required="" readonly>
           </div>
       </div>
       <div class="form-group">
@@ -69,9 +53,10 @@
           </tbody>
         </table>
         <div>
-            <a  title="Tambah" id="lookup_akun" class="btn btn-block btn-github"><i class="fa fa-plus" aria-hidden="true"></i> <b>Pilih Akun</b> </a>
+            <a  title="Tambah" id="lookup_akun" class="btn btn-info btn-block btn-github"><i class="fa fa-plus" aria-hidden="true"></i> <b>Pilih Akun</b> </a>
         </div>
   </div>
+  <br>
   <div class="box-footer">
     @if(@$item->status_batal == 1)
       <div class="pull-center">
@@ -79,14 +64,18 @@
       </div>
     @endif
     <div class="pull-right">
-          @if(@$is_edit)
-            <button title="Batalkan data" @if(@$item->status_batal == 1) disabled @else id="cancel" @endif  class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i> Batalkan</button>
-          @else
-            <button id="submit_form" type="submit" class="btn btn-success"><i class="fa fa-save" aria-hidden="true"></i> Simpan </button> 
-          @endif
+        @if(@$is_edit)
+          <button title="Batalkan data" @if(@$item->status_batal == 1) disabled @else id="cancel" @endif  class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i> Batalkan</button>
+        @else
+          <button id="submit_form" type="submit" class="btn btn-success"><i class="fa fa-save" aria-hidden="true"></i> Simpan </button> 
+        @endif
     </div>
   </div>
 </form>
+</div>
+</div>
+</div>
+</div>
 
 <script type="text/javascript">
       let lookup = {
@@ -154,7 +143,7 @@
                           _input.on("blur", function(e){
                               e.preventDefault();
                               try{
-                                data.keterangan = this.value != '' ? this.value : data.keterangan;
+                                data.keterangan = this.value;
                                 _datatable.row( row ).data( data );
                                 
                               } catch(ex){}
@@ -199,14 +188,14 @@
             <?php endif; ?>
             columns: [
                         {
-                            data: "id_akun",
+                            data: "akun_id",
                             className: 'text-center',
                             render: function (val, type, row) {
                               return '<a title=\"Hapus\" class=\"btn btn-danger btn-remove\"><i class=\"fa fa-trash\"></i></a>';
                             }
                         },
                         { 
-                              data: "id_akun", 
+                              data: "kode_akun", 
                               render: function ( val, type, row ){
                                   return val
                                 }
@@ -262,7 +251,6 @@
     }
 
 	$( document ).ready(function(e) {
-
     _datatables_dt_detail.dt_detail();
     lookup.lookup_modal_detail();
 
@@ -271,7 +259,7 @@
       e.preventDefault();
           var header_data = {
                     'tanggal' : $("#tanggal").val(),
-                    'id_jurnal' : $("#id_jurnal").val(),
+                    'kode_jurnal' : $("#kode_jurnal").val(),
                     'keterangan': $("#keterangan").val(),
                 }
 
@@ -285,7 +273,7 @@
                         'debet' : mask_number.currency_remove(value.debet),
                         'kredit' : mask_number.currency_remove(value.kredit),
                         'keterangan' : value.keterangan,
-                        'id_akun' : value.id_akun,
+                        'akun_id' : value.akun_id,
                     }
                     data_post.details[index] = details_form;
                 });
@@ -298,7 +286,7 @@
 						
             $.alert_success( response.message );
             setTimeout(function(){
-              document.location.href = "{{ url("$nameroutes") }}";  
+              document.location.href = "{{ url("$nameroutes") }}/transaksi";  
             }, 500);  
     });
     return false;
@@ -312,7 +300,7 @@ $("#cancel").on('click',function(e) {
       }
       var header_data = {
               'tanggal' : $("#tanggal").val(),
-              'id_jurnal' : $("#id_jurnal").val(),
+              'kode_jurnal' : $("#kode_jurnal").val(),
               'keterangan': $("#keterangan").val(),
             }
 
@@ -328,7 +316,7 @@ $("#cancel").on('click',function(e) {
 						
             $.alert_success( response.message );
             setTimeout(function(){
-              document.location.href = "{{ url("$nameroutes") }}";  
+              document.location.href = "{{ url("$nameroutes") }}/transaksi";  
             }, 500);  
     });
     return false;

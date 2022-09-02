@@ -106,6 +106,9 @@ Route::prefix('jurnal-umum')->group(function() {
 	Route::match(array('GET', 'POST'),'/datatables','JurnalController@datatables_collection');
 	Route::match(array('GET', 'POST'),'/create','JurnalController@create');
 	Route::match(array('GET', 'POST'),'/detail/{id}','JurnalController@detail');
+
+	Route::get('/transaksi', 'JurnalController@transaksi');
+	Route::match(array('GET', 'POST'),'/transaksi/datatables','JurnalController@datatables_collection_transaksi');
 	Route::match(array('GET', 'POST'),'/lookup_akun','JurnalController@lookup_akun');
 });
 
@@ -122,6 +125,12 @@ Route::prefix('laporan')->group(function() {
 
 	Route::get('/jurnal-umum','Laporan@jurnalUmum');
 	Route::post('/jurnal-umum/print','Laporan@printJurnalUmum');
+
+	Route::get('/buku-besar','Laporan@bukuBesar');
+	Route::post('/buku-besar/print','Laporan@printBukuBesar');
+
+	Route::get('/neraca','Laporan@neraca');
+	Route::post('/neraca/print','Laporan@printNeraca');
 
 	Route::get('/keuangan','Laporan@keuangan');
 	Route::post('/keuangan/print-jurnal-umum','Laporan@print_jurnal_umum');

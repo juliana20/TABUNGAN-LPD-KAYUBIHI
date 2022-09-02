@@ -5,9 +5,9 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class Jurnal_umum_m extends Model
+class Jurnal_m extends Model
 {
-	protected $table = 't_jurnal_umum';
+	protected $table = 't_jurnal';
 	protected $index_key = 'id';
 	protected $index_key2 = 'kode_jurnal';
     public $timestamps  = false;
@@ -23,30 +23,23 @@ class Jurnal_umum_m extends Model
             ],
 			'update' => [
 				'tanggal' => 'required',
-				'tanggal' => 'required'
             ],
         ];
 	}
 
-    function get_all()
+    function get_all($params = [])
     {
-		$query = self::join('m_user','t_jurnal_umum.user_id','=','m_user.id')
-						->join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
-						->select('t_jurnal_umum.*','m_user.nama as nama_user','m_akun.kode_akun','m_akun.nama_akun')
-						->where('t_jurnal_umum.status_batal', 0);
+		$query = self::join('m_user','t_jurnal.user_id','=','m_user.id')
+						->select('t_jurnal.*','m_user.nama as nama_user');
 
+		if(!empty($params))
+		{
+			$query->whereBetween('t_jurnal.tanggal',[$params['date_start'], $params['date_end']]);
+		}
+						
         return $query->get();
     }
 
-	function collection($id)
-	{
-		$query = self::join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
-				->select('t_jurnal_umum.*','m_akun.kode_akun','m_akun.nama_akun')
-				->where("t_jurnal_umum.{$this->index_key2}", $id)
-				->where('t_jurnal_umum.status_batal', 0);
-				
-		return $query->get();
-	}
     function insert_data($data)
 	{
 		return self::insert($data);
@@ -54,11 +47,9 @@ class Jurnal_umum_m extends Model
 
 	function get_one($id)
 	{
-		$query = self::join('m_user','t_jurnal_umum.user_id','=','m_user.id')
-				->join('m_akun','t_jurnal_umum.akun_id','=','m_akun.id')
-				->where("t_jurnal_umum.{$this->index_key}", $id)
-				->where('t_jurnal_umum.status_batal', 0)
-				->select('t_jurnal_umum.*','m_user.nama as nama_user','m_akun.kode_akun','m_akun.nama_akun');
+		$query = self::join('m_user','t_jurnal.user_id','=','m_user.id')
+				->where("t_jurnal.{$this->index_key}", $id)
+				->select('t_jurnal.*','m_user.nama as nama_user');
 
 		return $query->first();
 	}
@@ -82,5 +73,20 @@ class Jurnal_umum_m extends Model
 	{
 		$query = DB::table($this->table)->where($where);
 		return $query->update($data);
+	}
+
+	function gen_code( $format )
+	{
+		$max_number = self::all()->max($this->index_key2);
+		$noUrut = (int) substr($max_number, -4);
+		$noUrut++;
+		$date = date('Y-m-d');
+		$month = date('m', strtotime($date));
+		$year = date('y', strtotime($date));
+		$day = date('d', strtotime($date));
+		$code = $format;
+		$no_generate = $code.'-'.$year.$month.$day.'-'.sprintf("%04s", $noUrut);
+
+		return (string) $no_generate;
 	}
 }
