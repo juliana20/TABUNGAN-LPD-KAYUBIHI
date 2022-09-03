@@ -295,16 +295,16 @@ class Laporan extends Controller
                 $debet = 0; 
                 $kredit = 0;
                 $saldo_akhir = 0;
-            foreach($get_saldo as $row):
-                $debet += $row->debet; 
-                $kredit += $row->kredit; 
-                $saldo_akhir = ( $row->debet > 0) ? $saldo_akhir + $row->debet : $saldo_akhir - $row->kredit;
-            endforeach;
+                foreach($get_saldo as $row):
+                    $debet += $row->debet; 
+                    $kredit += $row->kredit; 
+                    $saldo_akhir = ( $row->debet > 0) ? $saldo_akhir + $row->debet : $saldo_akhir + $row->kredit;
+                endforeach;
 
-            //GET SALDO AKHIR BULAN LALU
-            $dateBeforeFirst = $params['date_start'].'first day of last month';
-            $dateBeforeLast = $params['date_start'].'last day of last month';
-            $dtLast = date_create($dateBeforeLast);
+                //GET SALDO AKHIR BULAN LALU
+                $dateBeforeFirst = $params['date_start'].'first day of last month';
+                $dateBeforeLast = $params['date_start'].'last day of last month';
+                $dtLast = date_create($dateBeforeLast);
 
                 $collection_saldo_sebelumnya = self::get_buku_besar_saldo_awal($aktv->id, $dtLast->format('Y-m-d'));
                 $debet = 0; 
@@ -318,13 +318,13 @@ class Laporan extends Controller
                     endforeach;
                 endif;
 
-
+                $saldo_akhir_final = ( $saldo_akhir > 0) ? $saldo_akhir + $saldo_akhir_bulan_lalu : $saldo_akhir;
                 $collection_aktiva = [
                     'id' => $aktv->id,
                     'kode_akun' => $aktv->kode_akun,
                     'nama_akun' => $aktv->nama_akun,
                     'normal_pos' => $aktv->normal_pos,
-                    'nilai' => ( $saldo_akhir > 0) ? $saldo_akhir + $saldo_akhir_bulan_lalu + $aktv->saldo_awal : $saldo_akhir + $aktv->saldo_awal,
+                    'nilai' => $saldo_akhir_final + $aktv->saldo_awal
                 ];
 
                 $data_collect_aktiva[$aktv->kelompok][] = $collection_aktiva;
@@ -350,7 +350,6 @@ class Laporan extends Controller
             $dateBeforeLast = $params['date_start'].'last day of last month';
             $dtLast = date_create($dateBeforeLast);
  
-
             $data = [
                 'params'    => (object) $params,
                 'aktiva'    => $data_collect_aktiva,
@@ -380,109 +379,85 @@ class Laporan extends Controller
         return $query->debet - $query->kredit;
        }
 
-       public function print_laba_rugi(Request $request)
+       public function labaRugi()
+       {
+           $item = [
+               'date_start' => Carbon::now()->startOfMonth()->toDateString(),
+               'date_end'   => Carbon::now()->endOfMonth()->toDateString()
+           ];
+
+           $data = array(
+               'item'              => (object) $item,
+               'title'             => 'Laporan Laba Rugi',
+               'url_print'         => 'laporan/laba-rugi/print'
+           );
+
+           return view('laporan.form.laba_rugi', $data);
+   
+       }
+
+       public function printLabaRugi(Request $request)
        {
             $params = $request->input('f');
-            $bunga_pinjaman = DB::table('tb_pinjaman as a')
-                                ->join('tb_pinjaman_detail as b','a.id_pinjaman','=','b.id_pinjaman')
-                                ->whereBetween('b.tanggal',[$params['date_start'], $params['date_end']])
-                                ->select(DB::raw('SUM(b.bunga) AS total'))
-                                ->first();
-            $biaya_admin = DB::table('tb_pinjaman as a')
-                                ->whereBetween('a.tgl_realisasi',[$params['date_start'], $params['date_end']])
-                                ->select(DB::raw('SUM(a.biaya_admin) AS total'))
-                                ->first();
-
-            $anggota_berhenti = DB::table('tb_nasabah as a')
-                                ->select('a.*')
-                                ->where('a.berhenti_anggota', 1)
-                                ->get();
-
-            $pendapatan_koperasi = DB::table('tb_akun as a')
-                                ->join('tb_mutasi_kas_detail as b','b.akun_id','=','a.id_akun')
-                                ->join('tb_mutasi_kas as c','c.id_mutasi_kas','=','b.id_mutasi_kas')
-                                ->where('a.id_akun','40101')
-                                ->whereBetween('c.tanggal',[$params['date_start'], $params['date_end']])
-                                ->where('c.status_batal', 0)
-                                ->select(
-                                    DB::raw('SUM(b.kredit) AS total'))
-                                ->first();
-            $pendapatan_bunga_tabungan = DB::table('tb_akun as a')
-                                ->join('tb_mutasi_kas_detail as b','b.akun_id','=','a.id_akun')
-                                ->join('tb_mutasi_kas as c','c.id_mutasi_kas','=','b.id_mutasi_kas')
-                                ->where('a.id_akun','40103')
-                                ->where('c.status_batal', 0)
-                                ->whereBetween('c.tanggal',[$params['date_start'], $params['date_end']])
-                                ->select(
-                                    DB::raw('SUM(b.kredit) AS total'))
-                                ->first();
-            $pendapatan_denda = DB::table('tb_pinjaman_detail as a')
-                                ->whereBetween('a.tanggal',[$params['date_start'], $params['date_end']])
-                                ->select(DB::raw('SUM(a.denda) AS total'))
-                                ->first();
-            $pendapatan_denda2 = DB::table('tb_tabungan_berjangka as a')
-                                // ->whereBetween('a.tanggal_awal',[$params['date_start'], $params['date_end']])
-                                ->select(DB::raw('SUM(a.denda_pinalti) AS total'))
-                                ->first();
-
-            $pendapatan = DB::table('tb_akun as a')
-                        ->join('tb_mutasi_kas_detail as b','b.akun_id','=','a.id_akun')
-                        ->join('tb_mutasi_kas as c','c.id_mutasi_kas','=','b.id_mutasi_kas')
-                        ->where('a.golongan','Pendapatan')
-                        ->where('c.status_batal', 0)
-                        ->whereBetween('c.tanggal',[$params['date_start'], $params['date_end']])
+            $pendapatan = Akun_m::join('t_jurnal_umum','t_jurnal_umum.akun_id','=','m_akun.id')
+                        ->where([
+                            'm_akun.golongan' => 'Pendapatan',
+                            't_jurnal_umum.status_batal' =>  0
+                        ])
+                        ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
                         ->select(
-                            'a.nama_akun',
-                            'a.golongan',
-                            'a.kelompok',
-                            'a.id_akun',
-                            DB::raw('SUM(b.nominal) AS debet'),
-                            DB::raw('SUM(b.kredit) AS kredit'))
+                            'm_akun.nama_akun',
+                            'm_akun.golongan',
+                            'm_akun.kelompok',
+                            'm_akun.kode_akun',
+                            DB::raw('SUM(t_jurnal_umum.debet) AS debet'),
+                            DB::raw('SUM(t_jurnal_umum.kredit) AS kredit')
+                        )
                         ->groupBy(
-                            'a.nama_akun',
-                            'a.golongan',
-                            'a.kelompok',
-                            'a.id_akun')
+                            'm_akun.nama_akun',
+                            'm_akun.golongan',
+                            'm_akun.kelompok',
+                            'm_akun.kode_akun'
+                        )
                         ->get();
+
+            $collection_pendapatan = [];
             foreach($pendapatan as $row):
                 $collection_pendapatan[$row->kelompok][] = $row;
             endforeach;
 
-            $biaya = DB::table('tb_akun as a')
-                    ->join('tb_mutasi_kas_detail as b','b.akun_id','=','a.id_akun')
-                    ->join('tb_mutasi_kas as c','c.id_mutasi_kas','=','b.id_mutasi_kas')
-                    ->where('a.golongan','Biaya')
-                    ->whereBetween('c.tanggal',[$params['date_start'], $params['date_end']])
-                    ->where('c.status_batal', 0)
+            $biaya = Akun_m::join('t_jurnal_umum','t_jurnal_umum.akun_id','=','m_akun.id')
+                    ->where([
+                        'm_akun.golongan' => 'Biaya',
+                        't_jurnal_umum.status_batal' => 0
+                    ])
+                    ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
                     ->select(
-                        'a.nama_akun',
-                        'a.golongan',
-                        'a.kelompok',
-                        'a.id_akun',
-                        DB::raw('SUM(b.nominal) AS debet'),
-                        DB::raw('SUM(b.kredit) AS kredit'))
+                        'm_akun.nama_akun',
+                        'm_akun.golongan',
+                        'm_akun.kelompok',
+                        'm_akun.kode_akun',
+                        DB::raw('SUM(t_jurnal_umum.debet) AS debet'),
+                        DB::raw('SUM(t_jurnal_umum.kredit) AS kredit')
+                    )
                     ->groupBy(
-                        'a.nama_akun',
-                        'a.golongan',
-                        'a.kelompok',
-                        'a.id_akun')
+                        'm_akun.nama_akun',
+                        'm_akun.golongan',
+                        'm_akun.kelompok',
+                        'm_akun.kode_akun'
+                    )
                     ->get();
+
+            $collection_biaya = [];
             foreach($biaya as $row):
                 $collection_biaya[$row->kelompok][] = $row;
             endforeach;
 
            $data = [
                'params'        => (object) $params,
-               'pendapatan'    => (!empty($collection_pendapatan)) ? (object) $collection_pendapatan : [],
-               'biaya'         => (!empty($collection_biaya)) ? (object) $collection_biaya : [],
+               'pendapatan'    => (object) $collection_pendapatan,
+               'biaya'         => (object) $collection_biaya,
                'title'         => 'Laporan Laba Rugi',
-               'bunga_pinjaman' => $bunga_pinjaman,
-               'biaya_admin'   => $biaya_admin,
-               'biaya_admin2' => ( count($anggota_berhenti) * 50000),
-               'pendapatan_koperasi' => $pendapatan_koperasi,
-               'pendapatan_bunga_tabungan' => $pendapatan_bunga_tabungan,
-               'pendapatan_denda' => $pendapatan_denda,
-               'pendapatan_denda2' => $pendapatan_denda2
            ]; 
  
 
@@ -490,140 +465,148 @@ class Laporan extends Controller
            return $pdf->stream($params['date_start'].$params['date_end'].'laporan_laba_rugi.pdf'); 
        }
 
-   
+        public function arusKas()
+        {
+            $item = [
+                'date_start' => Carbon::now()->startOfMonth()->toDateString(),
+                'date_end'   => Carbon::now()->endOfMonth()->toDateString()
+            ];
 
+            $data = array(
+                'item'              => (object) $item,
+                'title'             => 'Laporan Arus Kas',
+                'url_print'         => 'laporan/arus-kas/print'
+            );
 
+            return view('laporan.form.arus_kas', $data);
     
-        public function print_arus_kas(Request $request)
+        }
+    
+        public function printArusKas(Request $request)
         {
             $params         = $request->input('f');
-            $simpanan_pokok = DB::table('tb_simpanan_pokok')
-                        ->select(DB::raw('SUM(kredit) AS total'))
-                        ->whereBetween('tanggal',[$params['date_start'], $params['date_end']])
-                        ->first();
-            $simpanan_wajib = DB::table('tb_simpanan_wajib')
-                        ->select(DB::raw('SUM(kredit) AS total'))
-                        ->whereBetween('tanggal',[$params['date_start'], $params['date_end']])
-                        ->first();
-            $tabungan_sukarela = DB::table('tb_tabungan_sukarela as a')
-                        ->join('tb_nasabah as b','a.id_nasabah','=','b.id_nasabah')
-                        ->select(
-                            DB::raw('SUM(a.debet) AS debet'),
-                            DB::raw('SUM(a.kredit) AS kredit')
-                        )
-                        ->whereBetween('tanggal', [$params['date_start'], $params['date_end']])
-                        // ->where([
-                        //     'b.anggota' => 1,
-                        //     'b.berhenti_anggota' => 0
-                        // ])
-                        ->first();
-            $tabungan_berjangka = DB::table('tb_tabungan_berjangka_detail')
-                        ->select([  
-                            DB::raw('SUM(debet) AS debet'),
-                            DB::raw('SUM(kredit) AS kredit')
-                        ])
-                        ->whereBetween('tanggal',[$params['date_start'], $params['date_end']])
-                        ->first();
-            $pengeluaran = DB::table('tb_mutasi_kas')
-                        ->select(DB::raw('SUM(total) AS total'))
-                        ->where('jenis_mutasi','Pengeluaran')
-                        ->whereBetween('tanggal',[$params['date_start'], $params['date_end']])
-                        ->where('status_batal',0)
-                        ->first();
+            $arus_kas_aktivitas_operasi = Jurnal_umum_m::join('m_akun','m_akun.id','t_jurnal_umum.akun_id')
+                                            ->where([
+                                                'm_akun.kelompok' => 'Pendapatan Operasional',
+                                                't_jurnal_umum.status_batal' => 0
+                                            ])
+                                            ->select(
+                                                'm_akun.nama_akun',
+                                                DB::raw('SUM(t_jurnal_umum.kredit) AS total')
+                                            )
+                                            ->groupBy('m_akun.nama_akun')
+                                            ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
+                                            ->get();
+
+            $arus_kas_aktivitas_investasi =  Jurnal_umum_m::join('m_akun','m_akun.id','t_jurnal_umum.akun_id')
+                                                ->where([
+                                                    'm_akun.kelompok' => 'Biaya Operasional',
+                                                    't_jurnal_umum.status_batal' => 0
+                                                ])
+                                                ->select(
+                                                    'm_akun.nama_akun',
+                                                    DB::raw('SUM(t_jurnal_umum.debet) AS total')
+                                                )
+                                                ->groupBy('m_akun.nama_akun')
+                                                ->whereBetween('t_jurnal_umum.tanggal',[$params['date_start'], $params['date_end']])
+                                                ->get();
+
+            $arus_kas_aktivitas_pendanaan = Akun_m::where([
+                                                    'kelompok' => 'Modal'
+                                                ])
+                                                ->select(
+                                                    'nama_akun',
+                                                    DB::raw('SUM(saldo_awal) AS total')
+                                                )
+                                                ->groupBy('nama_akun')
+                                                ->get();
+
+
             $data = [
-                'params'                => (object) $params,
-                'simpanan_pokok'        => $simpanan_pokok->total,
-                'simpanan_wajib'        => $simpanan_wajib->total,
-                'tabungan_sukarela'     => $tabungan_sukarela->kredit - $tabungan_sukarela->debet,
-                'tabungan_berjangka'    => $tabungan_berjangka->kredit - $tabungan_berjangka->debet,
-                'pengeluaran'           => $pengeluaran->total,
-                'title'                 => 'Laporan Arus Kas',
+                'params'                        => (object) $params,
+                'arus_kas_aktivitas_operasi'    => $arus_kas_aktivitas_operasi,
+                'arus_kas_aktivitas_investasi'  => $arus_kas_aktivitas_investasi,
+                'arus_kas_aktivitas_pendanaan'  => $arus_kas_aktivitas_pendanaan,
+                'title'                         => 'Laporan Arus Kas',
             ];
 
             $pdf = PDF::loadView('laporan.print.cetak_arus_kas', $data, $params)->setPaper('a4', 'landscape');
             return $pdf->stream($params['date_start'].$params['date_end'].'laporan_arus_kas.pdf'); 
         }
      
-        private function get_saldo_akhir($akun_id, $date_start, $date_end)
+        public function perubahanModal()
         {
-            $item = self::get_buku_besar($akun_id, $date_start, $date_end);
+            $item = [
+                'periode' => Carbon::now()->toDateString(),
+            ];
 
-            $debet = 0; $kredit = 0;
-            foreach($item as $row) :
-                $get_akun = DB::table('tb_akun')->where('id_akun', $akun_id)->first();
-                $debet += ($get_akun->normal_pos == 'Debit') ? $row->debet : $row->kredit; 
-                $kredit += ($get_akun->normal_pos == 'Kredit') ? $row->debet : $row->kredit; 
-                
-            endforeach;
+            $data = array(
+                'item'              => (object) $item,
+                'title'             => 'Laporan Perubahan Modal',
+                'url_print'         => 'laporan/perubahan-modal/print'
+            );
 
-
-            return $debet - $kredit;
-
-
+            return view('laporan.form.perubahan_modal', $data);
+    
         }
-         public function print_neraca_lajur(Request $request)
-         {
-            $params = $request->input('f');
+        
+        public function printPerubahanModal(Request $request)
+        {
+            $params  = $request->input('f');
+            $modal_awal = Akun_m::where([
+                                        'kelompok' => 'Modal'
+                                    ])
+                                    ->select(
+                                        DB::raw('SUM(saldo_awal) AS total')
+                                    )
+                                    ->first();
 
-            $akun = DB::table('tb_akun')
-                    ->select('*')
-                    ->orderBy('id_akun','asc')
-                    ->get();
+            $laba_kotor  = Jurnal_umum_m::join('m_akun','m_akun.id','t_jurnal_umum.akun_id')
+                                    ->where([
+                                        'm_akun.golongan' => 'Pendapatan',
+                                        't_jurnal_umum.status_batal' => 0
+                                    ])
+                                    ->where('t_jurnal_umum.tanggal','<=', $params['periode'])
+                                    ->select(
+                                        DB::raw('SUM(t_jurnal_umum.kredit) AS total')
+                                    )
+                                    ->first();
 
-            foreach($akun as $akuns):
-                $get_saldo = self::get_buku_besar($akuns->id_akun, $params['date_start'], $params['date_end']);
-                $debet = 0; $kredit = 0;$saldo_akhir = 0;
-                    foreach($get_saldo as $row):
-                        $debet += $row->debet; 
-                        $kredit += $row->kredit; 
-                        $saldo_akhir = ( $row->debet > 0) ? $saldo_akhir + $row->debet : $saldo_akhir - $row->kredit;
-                    endforeach;
+                
+            $beban_usaha  = Jurnal_umum_m::join('m_akun','m_akun.id','t_jurnal_umum.akun_id')
+                                    ->where([
+                                        'm_akun.golongan' => 'Biaya',
+                                        't_jurnal_umum.status_batal' => 0
+                                    ])
+                                    ->where('t_jurnal_umum.tanggal','<=', $params['periode'])
+                                    ->select(
+                                        DB::raw('SUM(t_jurnal_umum.debet) AS total')
+                                    )
+                                    ->first();
 
-                //GET SALDO AKHIR BULAN LALU
-                $dateBeforeFirst = $params['date_start'].'first day of last month';
-                $dtFirst = date_create($dateBeforeFirst);
-                $dateBeforeLast = $params['date_start'].'last day of last month';
-                $dtLast = date_create($dateBeforeLast);
+            $laba_bersih = $laba_kotor->total - $beban_usaha->total;
 
-                $collection_saldo_sebelumnya = self::get_buku_besar_saldo_awal($akuns->id_akun, $dtLast->format('Y-m-d'));
-                $debet = 0; $kredit = 0;$saldo_akhir_bulan_lalu = 0;
-                if(!empty($collection_saldo_sebelumnya)) :
-                    foreach($collection_saldo_sebelumnya as $row):
-                        $debet += $row->debet; 
-                        $kredit += $row->kredit; 
-                        $saldo_akhir_bulan_lalu = ( $row->debet > 0) ? $saldo_akhir_bulan_lalu + $row->debet : $saldo_akhir_bulan_lalu - $row->kredit;
-                    endforeach;
-                endif;
+            $prive  = Jurnal_umum_m::join('m_akun','m_akun.id','t_jurnal_umum.akun_id')
+                                    ->where([
+                                        'm_akun.kelompok' => 'Prive',
+                                        't_jurnal_umum.status_batal' => 0
+                                    ])
+                                    ->where('t_jurnal_umum.tanggal','<=', $params['periode'])
+                                    ->select(
+                                        DB::raw('SUM(t_jurnal_umum.debet) AS total')
+                                    )
+                                    ->first();
+            $data = [
+                'params'       => (object) $params,
+                'modal_awal'   => $modal_awal->total,
+                'laba_bersih'  => $laba_bersih,
+                'prive'        => $prive->total,
+                'title'        => 'Laporan Perubahan Modal',
+            ];
 
-                $data_akun[] = [
-                    'normal_pos' => $akuns->normal_pos,
-                    'golongan' => $akuns->golongan,
-                    'id_akun'   => $akuns->id_akun,
-                    'nama_akun' => $akuns->nama_akun,
-                    // 'debet_neraca_saldo' => ($akuns->normal_pos == 'Debit') ? self::get_saldo_akhir($akuns->id_akun, $params['date_start'], $params['date_end']) : 0,
-                    // 'kredit_neraca_saldo' =>  ($akuns->normal_pos == 'Kredit') ? self::get_saldo_akhir($akuns->id_akun, $params['date_start'], $params['date_end']) : 0,
-                    'debet_neraca_saldo' => ($akuns->normal_pos == 'Debit') ? $saldo_akhir + $saldo_akhir_bulan_lalu +  $akuns->saldo_awal : 0,
-                    'kredit_neraca_saldo' =>  ($akuns->normal_pos == 'Kredit') ? $saldo_akhir + $saldo_akhir_bulan_lalu +  $akuns->saldo_awal : 0,
-                ]; 
-            endforeach;
-
-            $debet1 = 0; $kredit1 = 0;
-            foreach($data_akun as $row):
-                $debet1  += $row['debet_neraca_saldo']; 
-                $kredit1 += $row['kredit_neraca_saldo'];
-            endforeach;
-
-            $balance = $debet1 - $kredit1;
-
-             $data = [
-                 'params'            => (object) $params,
-                 'akun'        => $data_akun,
-                 'title'             => 'Laporan Neraca Lajur',
-                 'balance'     => $balance
-             ];
- 
-             $pdf = PDF::loadView('laporan.print.cetak_neraca_lajur', $data, $params)->setPaper('a4', 'landscape');
-             return $pdf->stream($params['date_start'].$params['date_end'].'laporan_neraca_lajur.pdf'); 
-         }
+            $pdf = PDF::loadView('laporan.print.cetak_perubahan_modal', $data, $params)->setPaper('a4', 'landscape');
+            return $pdf->stream($params['periode'].'laporan_perubahan_modal.pdf'); 
+        }
+    
   
 }

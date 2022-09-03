@@ -27,6 +27,7 @@ class AkunController extends Controller
         ['id' => 'Pendapatan Non Operasional', 'desc' => 'Pendapatan Non Operasional'],
         ['id' => 'Hutang Lancar', 'desc' => 'Hutang Lancar'],
         ['id' => 'Modal', 'desc' => 'Modal'],
+        ['id' => 'Prive', 'desc' => 'Prive'],
         ['id' => 'Biaya Operasional', 'desc' => 'Biaya Operasional'],
         ['id' => 'Biaya Non Operasional', 'desc' => 'Biaya Non Operasional'],
         ['id' => 'Piutang', 'desc' => 'Piutang'],

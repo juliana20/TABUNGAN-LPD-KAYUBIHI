@@ -15,52 +15,53 @@
     </style>
 </head>
 <body>
-    <h5 align="center">
-      {{config('app.app_name')}} {{config('app.area')}} <br>
-      Alamat : {{config('app.address')}} <br>Telepon : {{config('app.phone')}}<hr>
-    </h5>
+    <h3 align="center">
+      {{config('app.app_alias')}} {{config('app.area')}} <br>
+      {{config('app.address')}}<hr>
+    </h3>
     <h4 align="center">
       {{ @$title }} <br>
-      Periode : {{ $params->date_start ." s/d ". $params->date_end }}
+      Periode : {{ date('d-m-Y', strtotime($params->date_start)) ." s/d ". date('d-m-Y', strtotime($params->date_end)) }}
     </h4>
     <div class="container">
       <table width="100%">
-        {{-- 1 --}}
         <tr>
           <th colspan="3" style="background-color: #ddd">Arus Kas Dari Aktivitas Operasi</th>
         </tr>
-        <tr>
-          <td width="50%">Tabungan Sukarela</td>
-          <td>Rp. {{number_format( $tabungan_sukarela, 2)}}</td>
-        </tr>
-        <tr>
-          <td width="50%">Tabungan Berjangka</td>
-          <td>Rp. {{number_format( $tabungan_berjangka, 2)}}</td>
-        </tr>
-        {{-- 2 --}}
+        @php $arus_kas_aktivitas_operasi_total = 0 @endphp
+        @foreach($arus_kas_aktivitas_operasi as $row)
+          @php $arus_kas_aktivitas_operasi_total += $row->total @endphp
+          <tr>
+            <td width="50%">{{ $row->nama_akun }}</td>
+            <td>Rp. {{ number_format( $row->total, 2) }}</td>
+          </tr>
+        @endforeach
         <tr>
           <th colspan="3" style="background-color: #ddd">Arus Kas Dari Aktivitas Investasi</th>
         </tr>
-        <tr>
-          <td width="50%">Aset Lainnya</td>
-          <td>(Rp. {{number_format( $pengeluaran, 2)}})</td>
-        </tr>
-        {{-- 3 --}}
+        @php $arus_kas_aktivitas_investasi_total = 0 @endphp
+        @foreach($arus_kas_aktivitas_investasi as $row)
+          @php $arus_kas_aktivitas_investasi_total += $row->total @endphp
+          <tr>
+            <td width="50%">{{ $row->nama_akun }}</td>
+            <td>Rp. {{ number_format( $row->total, 2) }}</td>
+          </tr>
+        @endforeach
         <tr>
           <th colspan="3" style="background-color: #ddd">Arus Kas Dari Aktivitas Pendanaan</th>
         </tr>
-        <tr>
-          <td width="50%">Simpanan Pokok</td>
-          <td>Rp. {{number_format( $simpanan_pokok, 2)}}</td>
-        </tr>
-        <tr>
-          <td width="50%">Simpanan Wajib</td>
-          <td>Rp. {{number_format( $simpanan_wajib, 2)}}</td>
-        </tr>
+        @php $arus_kas_aktivitas_pendanaan_total = 0 @endphp
+        @foreach($arus_kas_aktivitas_pendanaan as $row)
+          @php $arus_kas_aktivitas_pendanaan_total += $row->total @endphp
+          <tr>
+            <td width="50%">{{ $row->nama_akun }}</td>
+            <td>Rp. {{ number_format( $row->total, 2) }}</td>
+          </tr>
+        @endforeach
         <br>
         <tr>
           <th colspan="2" style="background-color: #ddd">KAS BERSIH</th>
-          <th style="text-align: right!important">Rp. {{number_format(($simpanan_wajib + $simpanan_pokok + $tabungan_berjangka + $tabungan_sukarela) - $pengeluaran, 2)}}</th>
+          <th style="text-align: right!important">Rp. {{ number_format(($arus_kas_aktivitas_operasi_total + $arus_kas_aktivitas_pendanaan_total) - $arus_kas_aktivitas_investasi_total, 2) }}</th>
         </tr>
 
 

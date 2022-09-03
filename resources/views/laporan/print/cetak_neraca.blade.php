@@ -46,7 +46,7 @@
                                 @php $subtotal_aktiva += ($row['normal_pos'] == 'Kredit') ? $row['nilai'] * -1 : $row['nilai']; @endphp
                                 <tr>
                                   <td width="50%" style="padding-left: 20px">{{ $row['nama_akun'] }}</td>
-                                  <td>Rp. {{ ($row['normal_pos'] == 'Kredit') ? '('.number_format($row['nilai'],2).')' : number_format($row['nilai'], 2) }}</td>
+                                  <td>Rp. {{ ($row['normal_pos'] == 'Kredit') ? '('.number_format($row['nilai'], 2).')' : number_format($row['nilai'], 2) }}</td>
                                 </tr>
                               @endforeach
                               <tr>

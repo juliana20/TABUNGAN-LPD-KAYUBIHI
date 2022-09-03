@@ -1,186 +1,195 @@
-@extends('themes.AdminLTE.layouts.template')
+@extends('themes.gentelella.template.template')
 @section('content')
-@if(empty(@Helpers::isNasabah()))
-<section class="content-header">
-  <h1 align="center">
-    <strong>{{ config('app.app_name') }}</strong>
-  </h1>
-</section>
-<br><br>
 <div class="row">
-  <a href="" id="modalPemasukan">
-  <div class="col-md-3 col-sm-6 col-xs-12">
-    <div class="info-box bg-green">
-      <span class="info-box-icon"><i class="fa fa-sign-in"></i></span>
-
-      <div class="info-box-content">
-        <span class="info-box-text"></span>
-        <span class="info-box-number">Rp {{ number_format($pemasukan, 2) }}</span>
-
-        <div class="progress">
-          <div class="progress-bar" style="width: 100%"></div>
-        </div>
-            <span class="progress-description">
-              Pemasukan
-            </span>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Selamat Datang, <strong>{{ Helpers::getNama() }}</strong></h2>
+        <ul class="nav navbar-right panel_toolbox">
+        </ul>
+        <div class="clearfix"></div>
       </div>
-      <!-- /.info-box-content -->
+      <div class="x_content">
+        <div class="col-md-6 col-sm-6 ">
+          <div class="tile_count">
+            <div class="col-md-12 col-sm-12  tile_stats_count">
+              <span class="count_top"><i class="fa fa-book"></i> Total Pemasukan</span>
+              <div id="totalPemasukan" class="count green">Rp. 0</div>
+            </div>
+          </div>
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Grafik Pemasukan</h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li class="dropdown">
+                  <select name="year_pemasukan" id="select_year_pemasukan" class="form-control">
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022" selected>2022</option>
+                  </select>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">  
+              <div id="chartPemasukan" class="chartPemasukan" style="width:100%; height:280px;"></div>      
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-6 ">
+          <div class="tile_count">
+            <div class="col-md-12 col-sm-12  tile_stats_count">
+              <span class="count_top"><i class="fa fa-money"></i> Total Pengeluaran</span>
+              <div id="totalPengeluaran" class="count red">Rp. 0</div>
+            </div>
+          </div>
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Grafik Pengeluaran</h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li class="dropdown">
+                  <select name="year_pengeluaran" id="select_year_pengeluaran" class="form-control">
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022" selected>2022</option>
+                  </select>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content1">  
+                <div id="chartPengeluaran" class="chartPengeluaran" style="width:100%; height:280px;"></div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
     </div>
-    <!-- /.info-box -->
   </div>
-  </a>
-  <!-- /.col -->
-  <a href="" id="modalPengeluaran">
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <div class="info-box bg-red">
-        <span class="info-box-icon"><i class="fa fa-cloud-upload"></i></span>
-
-        <div class="info-box-content">
-          <span class="info-box-text"></span>
-          <span class="info-box-number">Rp {{ number_format($pengeluaran, 2) }}</span>
-
-          <div class="progress">
-            <div class="progress-bar" style="width: 100%"></div>
-          </div>
-              <span class="progress-description">
-                Pengeluaran
-              </span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-    </div>
-  </a>
-  <!-- /.col -->
-  <a href="" id="modalPengeluaran">
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <div class="info-box bg-yellow">
-        <span class="info-box-icon"><i class="fa fa-money"></i></span>
-
-        <div class="info-box-content">
-          <span class="info-box-text"></span>
-          <span class="info-box-number">Rp {{ number_format($pemasukan - $pengeluaran, 2) }}</span>
-
-          <div class="progress">
-            <div class="progress-bar" style="width: 100%"></div>
-          </div>
-              <span class="progress-description">
-                Saldo Akhir
-              </span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-    </div>
-  </a>
-
-
-
-
 </div>
-<!-- /.row -->
-       <div class="row">
-        <section class="col-lg-12 connectedSortable">
-          <!-- BAR CHART -->
-          <div class="box box-success">
-            <div class="box-header with-border">
-              <h3 class="box-title">Grafik Pengeluaran dan Penerimaan Kas</h3>
 
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-              </div>
-            </div>
-            <div class="box-body chart-responsive">
-              <div class="col-md-2 pull-right">
-                <select name="year" id="select_year" class="form-control">
-                  <option value="2019">2019</option>
-                  <option value="2020">2020</option>
-                  <option value="2021">2021</option>
-                  <option value="2022" selected>2022</option>
-                </select>
-              </div>
-
-              <div class="graph">
-                <div class="chart" id="bar-chart" style="height:230px"></div>
-              </div>
-            </div>
-            <!-- /.box-body -->
-          </div>
-        </section>
-        </div>
-        @else
-          <div class="login-logo">
-            <img src="{{url('themes/login/images/logo_koperasi.png')}}" width="180" style="margin-top: 10px">
-          </div>
-          <section class="content-header">
-            <h1 align="center">
-              <strong>SELAMAT DATANG, {{ @Helpers::getNasabah() }}<br>{{ config('app.app_name') }}</strong>
-            </h1>
-          </section>
-          <br><br>
-        @endif
-        </section>
-      </div>
-      <!-- /.col -->
-    <!-- /.row -->
-    <script>
+<script>
     $(function () {
       $.fn.extend({
-        functionGraph: { 
+        functionGraphPengeluaran: { 
           init:function(){
                 var post_data = {};
                     post_data.header = {
-                      'year':$('#select_year').val()
+                      'year_pengeluaran':$('#select_year_pengeluaran').val()
                     }
-                $.post( "{{url('dashboard/chart')}}", post_data, function( response, status, xhr ){
-                    if ( response.status == 'error')
-                    {
-                      return false;
-                    }
-                    $.fn.functionGraph.chart(response.data);    
-                  });												
-              $('#select_year').on( "change",  function(e){
-                $('#bar-chart').remove();
+                    $.post( "{{ url('dashboard/chart-pengeluaran') }}", post_data, function( response, status, xhr ){
+                        if ( response.status == 'error')
+                        {
+                          return false;
+                        }
+                        $( "#totalPengeluaran" ).html(response.total_pengeluaran);
+                        $.fn.functionGraphPengeluaran.chart(response.data);    
+                    });												
+              $('#select_year_pengeluaran').on( "change",  function(e){
+                $('#chartPengeluaran').remove();
                 var post_data = {};
                     post_data.header = {
-                      'year':$('#select_year').val()
+                      'year_pengeluaran':$('#select_year_pengeluaran').val()
                     }
-                $.post( "{{url('dashboard/chart')}}", post_data, function( response, status, xhr ){
+                $.post( "{{ url('dashboard/chart-pengeluaran') }}", post_data, function( response, status, xhr ){
                     if ( response.status == 'error')
                     {
                       return false;
                     }
-
-                    $( ".graph" ).append( " <div class=\"chart\" id=\"bar-chart\"></div>" );
-                    $.fn.functionGraph.chart(response.data);    
+                    $( ".x_content1" ).append( "<div class=\"chartPengeluaran\" id=\"chartPengeluaran\" style=\"width:100%; height:280px;\"></div>" );
+                    $( "#totalPengeluaran" ).html(response.total_pengeluaran);
+                    $.fn.functionGraphPengeluaran.chart(response.data);    
                   });												
               });
           },
         chart: function(data)
             {
               var bar = new Morris.Bar({
-                  barSizeRatio:1,
-                  element: 'bar-chart',
+                  barSizeRatio:0.8,
+                  element: 'chartPengeluaran',
                   resize: true,
                   data: data,
-                  barColors: ['#00a65a', '#dd4b39'],
+                  barColors: ['#d50606'],
                   xkey: 'Bulan',
-                  ykeys: ['Pemasukan', 'Pengeluaran'],
-                  labels: ['Pemasukan', 'Pengeluaran'],
+                  ykeys: ['Pengeluaran'],
+                  labels: ['Total Pengeluaran'],
                   hideHover: 'auto',
-                  xLabelAngle: 14,
+                  xLabelAngle: 50,
               });
 
             },
-          }
+          },
+
+          
+      });
+
+      $.fn.extend({
+        functionGraphPemasukan: { 
+          init:function(){
+                var post_data = {};
+                    post_data.header = {
+                      'year_pemasukan':$('#select_year_pemasukan').val()
+                    }
+                    $.post( "{{ url('dashboard/chart-pemasukan') }}", post_data, function( response, status, xhr ){
+                        if ( response.status == 'error')
+                        {
+                          return false;
+                        }
+                        $( "#totalPemasukan" ).html(response.total_pemasukan);
+                        $.fn.functionGraphPemasukan.chart(response.data);    
+                    });												
+              $('#select_year_pemasukan').on( "change",  function(e){
+                $('#chartPemasukan').remove();
+                var post_data = {};
+                    post_data.header = {
+                      'year_pemasukan':$('#select_year_pemasukan').val()
+                    }
+                $.post( "{{ url('dashboard/chart-pemasukan') }}", post_data, function( response, status, xhr ){
+                    if ( response.status == 'error')
+                    {
+                      return false;
+                    }
+                    $( ".x_content" ).append( "<div class=\"chartPemasukan\" id=\"chartPemasukan\" style=\"width:100%; height:280px;\"></div>" );
+                    $( "#totalPemasukan" ).html(response.total_pemasukan);
+                    $.fn.functionGraphPemasukan.chart(response.data);    
+                  });												
+              });
+          },
+        chart: function(data)
+            {
+              var bar = new Morris.Bar({
+                  barSizeRatio:1.4,
+                  element: 'chartPemasukan',
+                  // resize: true,
+                  data: data,
+                  barColors: ['#26B99A', '#34495E', '#3498DB'],
+                  xkey: 'Bulan',
+                  ykeys: ['Online','Samsat','Sampah'],
+                  labels: ['Total Pembayaran Online', 'Total Pembayaran Samsat Kendaraan', 'Total Pembayaran Retribusi Sampah'],
+                  hideHover: 'auto',
+                  xLabelAngle: 50,
+              });
+
+            },
+          },
+
+          
       });
 
       $(document).ready(function(){
-        $.fn.functionGraph.init();
-      })
+          if ($('#chartPengeluaran').length )
+          { 
+            $.fn.functionGraphPengeluaran.init();
+          }
+          if ($('#chartPemasukan').length )
+          { 
+            $.fn.functionGraphPemasukan.init();
+          }
+      });
     }); 
-    </script>
 
-    @endsection
+</script>
+@endsection

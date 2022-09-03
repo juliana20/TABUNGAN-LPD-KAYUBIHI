@@ -46,7 +46,7 @@ CREATE TABLE `m_akun` (
   `saldo_awal` float DEFAULT NULL,
   `saldo_akhir` float DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_akun`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_akun` */
 
@@ -59,11 +59,13 @@ insert  into `m_akun`(`id`,`kode_akun`,`nama_akun`,`golongan`,`kelompok`,`normal
 (6,'40002','Pendapatan Jasa Pembayaran Online','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
 (7,'40003','Pendapatan Jasa Samsat Kendaraan','Pendapatan','Pendapatan Operasional','Debit',0,NULL),
 (8,'60003','Beban Air','Biaya','Biaya Operasional','Debit',0,NULL),
-(9,'30001','Modal','Modal','Modal','Debit',100000000,NULL),
+(9,'30001','Modal','Modal','Modal','Kredit',100000000,NULL),
 (10,'10003','Bangunan','Aktiva','Aktiva Tetap','Debit',200000000,NULL),
 (11,'10004','Akm. Penyusutan Bangunan','Aktiva','Aktiva Tetap','Kredit',0,NULL),
 (12,'10005','Peralatan Kantor','Aktiva','Aktiva Tetap','Debit',10000000,NULL),
-(13,'10006','Akm. Penyusutan Peralatan Kantor','Aktiva','Aktiva Tetap','Kredit',0,NULL);
+(13,'10006','Akm. Penyusutan Peralatan Kantor','Aktiva','Aktiva Tetap','Kredit',0,NULL),
+(14,'30002','Prive','Modal','Prive','Debit',0,NULL),
+(15,'60004','Biaya Internet','Biaya','Biaya Operasional','Debit',0,NULL);
 
 /*Table structure for table `m_jenis_transaksi` */
 
@@ -115,13 +117,14 @@ CREATE TABLE `m_user` (
   `password` varchar(250) NOT NULL,
   `jabatan` varchar(30) NOT NULL,
   PRIMARY KEY (`id`,`kode_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_user` */
 
 insert  into `m_user`(`id`,`kode_user`,`nama`,`no_telepon`,`username`,`password`,`jabatan`) values 
 (1,'U00001','I Nyoman Antara Surata','081999787222','admin','$2y$10$S5zgiJ40qAfX/jFd2v/.K.MuQhYX09VyRHNnzWgC6qDz/FL4t0zwC','Admin'),
-(2,'U00002','Wayan Darmawan','081999787333','direktur','$2y$10$uLVJ4UVE6tJv1i8b.70i6OVBYdyNTqoTpldgkarbDc6gOnlkX97si','Direktur');
+(2,'U00002','Wayan Darmawan','081999787333','direktur','$2y$10$uLVJ4UVE6tJv1i8b.70i6OVBYdyNTqoTpldgkarbDc6gOnlkX97si','Direktur'),
+(3,'U00003','I Made Sutresna','081788787222','pengawas','$2y$10$oan0V/CqkqXOtIVF5Ov3XeIyQIS38oDXZzwrrSOVlYhOaLlXbuJg2','Pengawas');
 
 /*Table structure for table `t_jurnal` */
 
@@ -162,7 +165,7 @@ CREATE TABLE `t_jurnal_umum` (
   KEY `t_jurnal_umum_akun` (`akun_id`),
   CONSTRAINT `t_jurnal_umum_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_jurnal_umum_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_jurnal_umum` */
 
@@ -182,7 +185,9 @@ insert  into `t_jurnal_umum`(`id`,`kode_jurnal`,`user_id`,`akun_id`,`tanggal`,`r
 (41,'PL-220824-0002',1,8,'2022-08-24',NULL,450000,0,'Bayar air bulan agustus',0),
 (42,'PL-220824-0002',1,4,'2022-08-24',NULL,1500000,0,'Bayar listrik bulan agustus',0),
 (45,'JUM-220902-0001',2,12,'2022-09-02',NULL,200000,0,'Penyusutan Peralatan Kantor',0),
-(46,'JUM-220902-0001',2,13,'2022-09-02',NULL,0,200000,'Penyusutan Peralatan Kantor',0);
+(46,'JUM-220902-0001',2,13,'2022-09-02',NULL,0,200000,'Penyusutan Peralatan Kantor',0),
+(47,'PL-220903-0003',1,1,'2022-09-03',NULL,0,365000,'Pembayaran internet bulan agustus 2022',0),
+(48,'PL-220903-0003',1,15,'2022-09-03',NULL,365000,0,'Internet bulan agustus 2022',0);
 
 /*Table structure for table `t_online` */
 
@@ -231,13 +236,14 @@ CREATE TABLE `t_pengeluaran` (
   KEY `t_pengeluaran_akun` (`akun_id`),
   CONSTRAINT `t_pengeluaran_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_pengeluaran_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran` */
 
 insert  into `t_pengeluaran`(`id`,`kode_pengeluaran`,`user_id`,`akun_id`,`tanggal`,`total`,`reff`,`keterangan`) values 
 (2,'PL-220806-0001',1,1,'2022-08-06',7200000,NULL,'Pengeluaran 6 agustus 2022'),
-(3,'PL-220824-0002',1,2,'2022-08-24',1950000,NULL,'Pengeluaran biaya operasional');
+(3,'PL-220824-0002',1,2,'2022-08-24',1950000,NULL,'Pengeluaran biaya operasional'),
+(4,'PL-220903-0003',1,1,'2022-09-03',365000,NULL,'Pembayaran internet bulan agustus 2022');
 
 /*Table structure for table `t_pengeluaran_detail` */
 
@@ -255,7 +261,7 @@ CREATE TABLE `t_pengeluaran_detail` (
   KEY `t_pengeluaran_detail_akun` (`akun_id`),
   CONSTRAINT `t_pengeluaran_detail_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_pengeluaran_detail_pengeluaran` FOREIGN KEY (`pengeluaran_id`) REFERENCES `t_pengeluaran` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_pengeluaran_detail` */
 
@@ -263,7 +269,8 @@ insert  into `t_pengeluaran_detail`(`id`,`pengeluaran_id`,`akun_id`,`nominal`,`k
 (10,2,3,6000000,'Pembayaran gaji karyawan bulan juli 2022',NULL),
 (11,2,4,1200000,'Pembayaran listrik juli 2022',NULL),
 (12,3,8,450000,'Bayar air bulan agustus',NULL),
-(13,3,4,1500000,'Bayar listrik bulan agustus',NULL);
+(13,3,4,1500000,'Bayar listrik bulan agustus',NULL),
+(14,4,15,365000,'Internet bulan agustus 2022',NULL);
 
 /*Table structure for table `t_sampah` */
 

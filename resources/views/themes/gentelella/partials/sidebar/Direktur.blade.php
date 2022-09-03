@@ -3,7 +3,7 @@
               <div class="menu_section">
                 <h3>MAIN MENU</h3>
                   <ul class="nav side-menu">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard </a></li>
+                    <li><a href="{{ url('/dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
                     <li><a><i class="fa fa-balance-scale"></i>Jurnal Umum<span class="fa fa-chevron-down"></span></a>
                       <ul class="nav child_menu">
                         <li class="{{ Request::is('jurnal-umum') ? 'active':null}}"><a href="{{ url('jurnal-umum') }}">Lihat Jurnal</a></li>
@@ -18,9 +18,9 @@
                         <li class="{{ Request::is('laporan/jurnal-umum') ? 'active':null}}"><a href="{{ url('laporan/jurnal-umum') }}">Jurnal Umum</a></li>
                         <li class="{{ Request::is('laporan/buku-besar') ? 'active':null}}"><a href="{{ url('laporan/buku-besar') }}">Buku Besar</a></li>
                         <li class="{{ Request::is('laporan/neraca') ? 'active':null}}"><a href="{{ url('laporan/neraca') }}">Neraca</a></li>
-                        <li class="{{ Request::is('laporan/pembayaran-spp') ? 'active':null}}"><a href="{{ url('laporan/pembayaran-spp') }}">Laba Rugi</a></li>
-                        <li class="{{ Request::is('laporan/tunggakan-spp') ? 'active':null}}"><a href="{{ url('laporan/tunggakan-spp') }}">Arus Kas</a></li>
-                        <li class="{{ Request::is('laporan/pembayaran-gedung') ? 'active':null}}"><a href="{{ url('laporan/pembayaran-gedung') }}">Perubahan Modal</a></li>
+                        <li class="{{ Request::is('laporan/laba-rugi') ? 'active':null}}"><a href="{{ url('laporan/laba-rugi') }}">Laba Rugi</a></li>
+                        <li class="{{ Request::is('laporan/arus-kas') ? 'active':null}}"><a href="{{ url('laporan/arus-kas') }}">Arus Kas</a></li>
+                        <li class="{{ Request::is('laporan/perubahan-modal') ? 'active':null}}"><a href="{{ url('laporan/perubahan-modal') }}">Perubahan Modal</a></li>
                       </ul>
                     </li>
               

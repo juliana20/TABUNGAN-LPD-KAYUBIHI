@@ -14,7 +14,7 @@ class UserController extends Controller
     protected $jabatan = [
         ['id' => 'Admin', 'desc' => 'Admin'],
         ['id' => 'Direktur', 'desc' => 'Direktur'],
-        ['id' => 'Badan Pengawas', 'desc' => 'Badan Pengawas']
+        ['id' => 'Pengawas', 'desc' => 'Badan Pengawas']
     ];
 
     protected $model;

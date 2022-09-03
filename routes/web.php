@@ -96,8 +96,8 @@ Route::prefix('pengeluaran')->group(function() {
 #DASHBOARD
 Route::prefix('dashboard')->group(function() {
 	Route::get('/','Dashboard@index');
-	Route::match(array('GET', 'POST'),'/refresh','Dashboard@refresh');
-	Route::post('/chart','Dashboard@chart');
+	Route::post('/chart-pengeluaran','Dashboard@chartPengeluaran');
+	Route::post('/chart-pemasukan','Dashboard@chartPemasukan');
 });
 
 #JURNAL UMUM
@@ -132,29 +132,14 @@ Route::prefix('laporan')->group(function() {
 	Route::get('/neraca','Laporan@neraca');
 	Route::post('/neraca/print','Laporan@printNeraca');
 
-	Route::get('/keuangan','Laporan@keuangan');
-	Route::post('/keuangan/print-jurnal-umum','Laporan@print_jurnal_umum');
-	Route::post('/keuangan/print-buku-besar','Laporan@print_buku_besar');
-	Route::post('/keuangan/print-laba-rugi','Laporan@print_laba_rugi');
-	Route::post('/keuangan/print-neraca','Laporan@print_neraca');
-	Route::post('/keuangan/print-arus-kas','Laporan@print_arus_kas');
-	Route::post('/keuangan/print-neraca-lajur','Laporan@print_neraca_lajur');
-});
+	Route::get('/laba-rugi','Laporan@labaRugi');
+	Route::post('/laba-rugi/print','Laporan@printLabaRugi');
 
-#NASABAH
-Route::prefix('nasabah')->group(function() {
-    Route::get('/tabungan', 'TabunganController@tabungan_nasabah');
-	Route::match(array('GET', 'POST'),'/tabungan/datatables','TabunganController@datatables_collection_nasabah');
+	Route::get('/arus-kas','Laporan@arusKas');
+	Route::post('/arus-kas/print','Laporan@printArusKas');
 
-	Route::get('/tabungan-berjangka', 'TabunganBerjangkaController@tabungan_nasabah');
-	Route::match(array('GET', 'POST'),'/tabungan-berjangka/datatables','TabunganBerjangkaController@datatables_collection_nasabah');
-
-	Route::get('/simpanan-anggota', 'SimpananAnggotaController@tabungan_nasabah');
-	Route::match(array('GET', 'POST'),'/simpanan-anggota/datatables','SimpananAnggotaController@datatables_collection_nasabah');
-	Route::match(array('GET', 'POST'),'/simpanan-anggota-pokok/datatables','SimpananAnggotaController@datatables_collection_simpanan_pokok_nasabah');
-
-	Route::get('/pinjaman', 'PinjamanController@pinjaman_nasabah');
-	Route::match(array('GET', 'POST'),'/pinjaman/datatables','PinjamanController@datatables_collection_pinjaman_nasabah');
+	Route::get('/perubahan-modal','Laporan@perubahanModal');
+	Route::post('/perubahan-modal/print','Laporan@printPerubahanModal');
 });
 
 });

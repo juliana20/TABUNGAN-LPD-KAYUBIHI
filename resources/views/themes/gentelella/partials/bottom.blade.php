@@ -9,6 +9,9 @@
   <script src="{{ url('themes/gentelella/vendors/nprogress/nprogress.js') }}"></script>
   <!-- Chart.js -->
   <script src="{{ url('themes/gentelella/vendors/Chart.js/dist/Chart.min.js') }}"></script>
+  <!-- morris.js -->
+  <script src="{{ url('themes/gentelella/vendors/raphael/raphael.min.js') }}"></script>
+  <script src="{{ url('themes/gentelella/vendors/morris.js/morris.min.js') }}"></script>
   <!-- gauge.js -->
   <script src="{{ url('themes/gentelella/vendors/gauge.js/dist/gauge.min.js') }}"></script>
   <!-- bootstrap-progressbar -->
@@ -39,8 +42,8 @@
   <script src="{{ url('themes/gentelella/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
 
   <!-- Custom Theme Scripts -->
-  {{-- <script src="{{ url('themes/gentelella/build/js/custom.min.js') }}"></script> --}}
-  <script src="{{ url('themes/gentelella/build/js/custom.js') }}"></script>
+  <script src="{{ url('themes/gentelella/build/js/custom.min.js') }}"></script>
+  {{-- <script src="{{ url('themes/gentelella/build/js/custom.js') }}"></script> --}}
 
   {{-- {{ if datatable }} --}}
 <script src="{{ url('') }}/themes/gentelella/vendors/datatables.net/js/jquery.dataTables.min.js"></script>

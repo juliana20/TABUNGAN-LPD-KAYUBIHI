@@ -15,48 +15,33 @@
     </style>
 </head>
 <body>
-    <h5 align="center">
-      {{config('app.app_name')}} {{config('app.area')}} <br>
-      Alamat : {{config('app.address')}} <br>Telepon : {{config('app.phone')}}<hr>
-    </h5>
-    <h5 align="center">
+    <h3 align="center">
+      {{config('app.app_alias')}} {{config('app.area')}} <br>
+      {{config('app.address')}}<hr>
+    </h3>
+    <h4 align="center">
       {{ @$title }} <br>
-      Periode : {{ $params->date_start ." s/d ". $params->date_end }}
-    </h5>
+      Periode : {{ date('d-m-Y', strtotime($params->date_start)) ." s/d ". date('d-m-Y', strtotime($params->date_end)) }}
+    </h4>
     <div class="container">
       <table width="100%">
         {{-- PENDAPATAN --}}
         <tr>
           <th colspan="3" style="background-color: #ddd">PENDAPATAN</th>
         </tr>
-        <?php  $total_pendapatan = @$pendapatan_koperasi->total + @$bunga_pinjaman->total + @$biaya_admin->total + @$pendapatan_bunga_tabungan->total + @$pendapatan_denda->total + $pendapatan_denda2->total + @$biaya_admin2; ?>
+        <?php  $total_pendapatan = 0; ?>
+        @foreach($pendapatan as $kelompok => $item)
           <tr>
-            <td colspan="3"><b>Pendapatan Operasional</b></td>
+            <td colspan="3"><b>{{ $kelompok }}</b></td>
           </tr>
-          {{-- <tr>
-            <td style="padding-left: 20px;">Pendapatan Koperasi</td>
-            <td colspan="2">Rp. {{number_format(@$pendapatan_koperasi->total, 2)}}</td>
-          </tr> --}}
-          <tr>
-            <td style="padding-left: 20px;">Bunga Pinjaman</td>
-            <td colspan="2">Rp. {{number_format(@$bunga_pinjaman->total, 2)}}</td>
-          </tr>
-          <tr>
-            <td style="padding-left: 20px;">Administrasi</td>
-            <td colspan="2">Rp. {{number_format(@$biaya_admin->total + @$biaya_admin2, 2)}}</td>
-          </tr>
-          <tr>
-            <td style="padding-left: 20px;">Pendapatan Denda</td>
-            <td colspan="2">Rp. {{number_format(@$pendapatan_denda->total + $pendapatan_denda2->total, 2)}}</td>
-          </tr>
-          <tr>
-            <td colspan="3"><b>Pendapatan Non Operasional</b></td>
-          </tr>
-          <tr>
-            <td style="padding-left: 20px;">Bunga Tabungan Bank</td>
-            <td colspan="2">Rp. {{number_format(@$pendapatan_bunga_tabungan->total, 2)}}</td>
-          </tr>
-
+          @foreach($item as $row)
+          <?php  $total_pendapatan += $row->kredit - $row->debet; ?>
+            <tr>
+              <td style="padding-left: 20px;">{{$row->nama_akun}}</td>
+              <td colspan="2">Rp. {{number_format($row->kredit - $row->debet, 2)}}</td>
+            </tr>
+          @endforeach
+        @endforeach
         <tr>
           <td colspan="2"><b>Total Pendapatan</b></td>
           <td><b>Rp. {{number_format( $total_pendapatan, 2)}}</b></td>
@@ -92,6 +77,6 @@
 
       </table>
       </div>
-    <p style="z-index: 100;position: absolute;bottom: 0px;float: right;font-size: 11px;"><i>Tanggal Cetak : <?php echo date('d-m-Y') ?></i></p>
+      <p style="z-index: 100;position: absolute;bottom: 0px;float: right;font-size: 11px;"><i>Tanggal Cetak : <?php echo date('d-m-Y') ?></i></p>
 </body>
 </html>
