@@ -5,11 +5,6 @@
     <div class="x_panel">
       <div class="x_title">
         <h2>{{ @$header }}</h2>
-        <ul class="nav navbar-right panel_toolbox">
-          <li class="dropdown">
-            <button onclick="window.location='{{ url($nameroutes.'/create') }}'"  class="btn btn-success btn-sm"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
-          </li>
-        </ul>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
@@ -76,11 +71,16 @@
           </div>
           <div class="form-group">
               <div class="col-lg-offset-3 col-lg-9">
-                <button type="submit" class="btn btn-success btn-save" {{ @$item->ada_perubahan == 1 ? 'disabled' : '' }}>@if($is_edit) Perbarui @else Simpan @endif <i class="fas fa-spinner fa-spin spinner" style="display: none"></i></button> 
-              <br><br>
-              @if(@$item->ada_perubahan == 1)
-                <p style="color: red"><i>* Terdapat perubahan data yang belum divalidasi <a href="javascript:void(0)" id="modalPerubahan" style="color: blue">Lihat perubahan</a></i></p>
-              @endif
+                @if(@$item->validasi == 1)
+                  <p style="color: red"><i>* Perubahan data sudah divalidasi</i></p><br>
+
+                @else
+                  <button type="submit" class="btn btn-success btn-save" id="validasi">Validasi <i class="fas fa-spinner fa-spin spinner" style="display: none"></i></button> 
+                  <br><br>
+                  <p style="color: red"><i><a href="javascript:void(0)" id="modalDataSebelumnya" style="color: blue">Lihat data sebelumnya</a></i></p>
+                @endif
+
+               
               </div>
               
           </div>
@@ -94,16 +94,16 @@
      
 
 <script type="text/javascript">
-    var log_id = "{{ $item->log_id }}";
+    var log_id = "{{ $item->id }}";
     let lookup_modal_perubahan = {
       init: function() {
-          $('#modalPerubahan').on( "click", function(e){
+          $('#modalDataSebelumnya').on( "click", function(e){
             e.preventDefault();
             var _prop= {
               _this : $( this ),
-              remote : "{{ url("$nameroutes") }}/perubahan/" + log_id,
+              remote : "{{ url("$nameroutes") }}/data-sebelumnya/" + log_id,
               size : 'modal-lg',
-              title : "DATA PERUBAHAN TERAKHIR",
+              title : "DATA SEBELUMNYA",
             }
             ajax_modal.show(_prop);											
           });  
@@ -145,49 +145,56 @@
     });
   })
 
-  $('form[name="form_crud"]').on('submit',function(e) {
-    e.preventDefault();
-    $('.btn-save').addClass('disabled', true);
-    $(".spinner").css("display", "");
+  $("#validasi").click(function(){
+      if (!confirm("Apakah anda yakin memvalidasi perubahan data ini?")){
+        return false
+      }
+        $('form[name="form_crud"]').on('submit',function(e) {
+          e.preventDefault();
+          $('.btn-save').addClass('disabled', true);
+          $(".spinner").css("display", "");
 
-    var data = {
-          'biaya_jasa' : mask_number.currency_remove($("#biaya_jasa").val()),
-          'jumlah' : mask_number.currency_remove($("#jumlah").val()),
-          'total_bayar' : mask_number.currency_remove($("#total_bayar").val()),
-          'pelanggan_id' : $("#pelanggan_id").val(),
-          'tanggal' : $("#tanggal").val(),
-          'kode_transaksi_sampah' : $("#kode_transaksi_sampah").val(),
-        }
-     data_post = {
-          "f" : data,
-        }
-    $.ajax({
-        url: $(this).prop('action'),
-        type: 'POST',              
-        data: data_post,
-        success: function(response, status, xhr)
-        {
-          if( response.status == "error"){
-              $.alert_warning(response.message);
-              $('.btn-save').removeClass('disabled', true);
-              $(".spinner").css("display", "none");
-              return false
-          }
-            
-          $.alert_success(response.message);
-              setTimeout(function(){
-                document.location.href = "{{ url("$nameroutes") }}";        
-              }, 500);  
-          },
-        error: function(error)
-        {
-          $.alert_error(error);
-          $('.btn-save').removeClass('disabled', true);
-          $(".spinner").css("display", "none");
-          return false
-        }
-    });
-});
+          var data = {
+                'biaya_jasa' : mask_number.currency_remove($("#biaya_jasa").val()),
+                'jumlah' : mask_number.currency_remove($("#jumlah").val()),
+                'total_bayar' : mask_number.currency_remove($("#total_bayar").val()),
+                'pelanggan_id' : $("#pelanggan_id").val(),
+                'tanggal' : $("#tanggal").val(),
+                'kode_transaksi_sampah' : $("#kode_transaksi_sampah").val(),
+              }
+          data_post = {
+                "f" : data,
+              }
+          $.ajax({
+              url: $(this).prop('action'),
+              type: 'POST',              
+              data: data_post,
+              success: function(response, status, xhr)
+              {
+                if( response.status == "error"){
+                    $.alert_warning(response.message);
+                    $('.btn-save').removeClass('disabled', true);
+                    $(".spinner").css("display", "none");
+                    return false
+                }
+                  
+                $.alert_success(response.message);
+                    setTimeout(function(){
+                      location.reload();
+                    }, 500);  
+                },
+              error: function(error)
+              {
+                $.alert_error(error);
+                $('.btn-save').removeClass('disabled', true);
+                $(".spinner").css("display", "none");
+                return false
+              }
+          });
+        });
+   });
+
+
 </script>
 
 @endsection

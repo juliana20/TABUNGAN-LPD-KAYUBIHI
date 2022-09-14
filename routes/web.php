@@ -62,6 +62,11 @@ Route::prefix('transaksi-retribusi-sampah')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSampahController@edit')->name('transaksi-retribusi-sampah.edit');;
 	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSampahController@show')->name('transaksi-retribusi-sampah.show');;
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSampahController@cetak_nota');
+	Route::get('/perubahan/{log_id}', 'TransaksiSampahController@lookupPerubahan');
+	Route::get('/get-notif', 'TransaksiSampahController@getNotif');
+	#direktur
+	Route::get('/data-sebelumnya/{log_id}', 'TransaksiSampahController@lookupDataSebelumnya');
+	Route::match(array('GET', 'POST'),'/validasi-perubahan/{log_id}', 'TransaksiSampahController@validasiPerubahan');
 });
 #TRANSAKSI PEMBAYARAN ONLINE
 Route::prefix('transaksi-pembayaran-online')->group(function() {

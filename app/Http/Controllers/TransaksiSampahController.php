@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Model\Jurnal_umum_m;
+use App\Http\Model\Transaksi_sampah_log_m;
 use Illuminate\Http\Request;
 use App\Http\Model\Transaksi_sampah_m;
 use Validator;
@@ -17,9 +18,11 @@ use PDF;
 class TransaksiSampahController extends Controller
 {
     protected $model;
-    public function __construct(Transaksi_sampah_m $model)
+    protected $model_log;
+    public function __construct(Transaksi_sampah_m $model, Transaksi_sampah_log_m $model_log)
     {
         $this->model = $model;
+        $this->model_log = $model_log;
         $this->nameroutes = 'transaksi-retribusi-sampah';
     }
     /**
@@ -44,7 +47,7 @@ class TransaksiSampahController extends Controller
         $item = [
             'kode_transaksi_sampah' => $this->model->gen_code('SP'),
             'tanggal' => date('Y-m-d'),
-            'jumlah' => Helpers::config_item('upah_pungut'),
+            'jumlah' => Helpers::config_item('upah_pungut') + Helpers::config_item('biaya_vendor'),
             'biaya_jasa' => Helpers::config_item('biaya_jasa')
         ];
         $data = array(
@@ -155,14 +158,26 @@ class TransaksiSampahController extends Controller
         //jika form sumbit
         if($request->post())
         {
+            if($get_data->ada_perubahan == 1)
+            {
+                $response = [
+                    "success" => false,
+                    'message' => 'Terdapat perubahan yg belum di validasi!',
+                    'status' => 'error',
+                    'code' => 500,
+                ];
+                return Response::json($response);
+            }
             //request dari view
             $header = $request->input('f');
+            $log = $request->input('f');
            //validasi dari model
            $validator = Validator::make( $header,[
                 'kode_transaksi_sampah' => ['required', Rule::unique('t_sampah')->ignore($get_data->kode_transaksi_sampah, 'kode_transaksi_sampah')]
            ]);
            if ($validator->fails()) {
                $response = [
+                    "success" => false,
                    'message' => $validator->errors()->first(),
                    'status' => 'error',
                    'code' => 500,
@@ -172,7 +187,14 @@ class TransaksiSampahController extends Controller
             //insert data
             DB::beginTransaction();
             try {
-                $this->model->update_data($header, $id);
+                $log['user_id'] = Helpers::getId();
+                $log['created_at'] = date('Y-m-d H:i:s');
+                $log['updated_at'] = date('Y-m-d H:i:s');
+                $id_log = $this->model_log::insertGetId($log);
+
+                $update['ada_perubahan'] = 1;
+                $update['log_id'] = $id_log;
+                $this->model->update_data($update, $id);
                 #insert jurnal umum
                 $jurnal_umum = [
                     [
@@ -202,6 +224,7 @@ class TransaksiSampahController extends Controller
                 DB::commit();
 
                 $response = [
+                    "success" => true,
                     "message" => 'Transaksi retribusi sampah berhasil diperbarui',
                     'status' => 'success',
                     'code' => 200,
@@ -210,6 +233,7 @@ class TransaksiSampahController extends Controller
             } catch (\Exception $e) {
                 DB::rollback();
                 $response = [
+                    "success" => false,
                     "message" => $e->getMessage(),
                     'status' => 'error',
                     'code' => 500,
@@ -236,6 +260,125 @@ class TransaksiSampahController extends Controller
 
         return view('transaksi_sampah.show', $data);
     }
+
+    
+    public function lookupPerubahan(Request $request, $log_id)
+    {
+        $get_data = $this->model_log->get_one($log_id);
+        $data = [
+            'title'      => 'Transaksi Retribusi Sampah',
+            'header'     => 'Lihat Transaksi Retribusi Sampah',
+            'item'       => $get_data,
+            'is_edit'    => TRUE,
+            'submit_url' => url()->current(),
+            'nameroutes' => $this->nameroutes,
+        ];
+
+        return view('transaksi_sampah.lookup_perubahan', $data);
+    }
+
+    public function lookupDataSebelumnya(Request $request, $log_id)
+    {
+        $get_data = $this->model->get_by(['a.log_id' => $log_id]);
+        $data = [
+            'title'      => 'Transaksi Retribusi Sampah Sebelumnya',
+            'header'     => 'Lihat Transaksi Retribusi Sampah Sebelumnya',
+            'item'       => $get_data,
+            'is_edit'    => TRUE,
+            'submit_url' => url()->current(),
+            'nameroutes' => $this->nameroutes,
+        ];
+
+        return view('transaksi_sampah.lookup_perubahan', $data);
+    }
+
+
+    public function validasiPerubahan(Request $request, $log_id)
+    {
+        $get_data = $this->model_log->get_one($log_id);
+        $data = [
+            'title'      => 'Perubahan Transaksi Retribusi Sampah',
+            'header'     => 'Lihat Perubahan Transaksi Retribusi Sampah',
+            'item'       => $get_data,
+            'is_edit'    => TRUE,
+            'submit_url' => url()->current(),
+            'nameroutes' => $this->nameroutes,
+        ];
+
+         //jika form sumbit
+         if($request->post())
+         {
+            $header = $request->input('f');
+            $header['ada_perubahan'] = 0;
+             //insert data
+             DB::beginTransaction();
+             try {
+                 $this->model_log->update_data(['validasi' => 1], $log_id);
+                 $this->model->update_by($header, ['log_id' => $log_id]);
+                 #insert jurnal umum
+                 $jurnal_umum = [
+                     [
+                         'kode_jurnal' => $get_data->kode_transaksi_sampah, 
+                         'user_id' => Helpers::getId(),
+                         'akun_id' => 5, #Pendapatan Jasa Retribusi Sampah
+                         'tanggal' => $header['tanggal'],
+                         'debet' => 0,
+                         'kredit' => $header['total_bayar'],
+                         'keterangan' => 'Pembayaran Retribusi Sampah'
+                     ],
+                     [
+                         'kode_jurnal' => $get_data->kode_transaksi_sampah, 
+                         'user_id' => Helpers::getId(),
+                         'akun_id' => 1, #Kas
+                         'tanggal' => $header['tanggal'],
+                         'debet' => $header['total_bayar'],
+                         'kredit' => 0,
+                         'keterangan' => 'Pembayaran Retribusi Sampah'
+                     ],
+                 ];
+                 $cek_jurnal_already = Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_sampah)->first();
+                 if(!empty($cek_jurnal_already)){
+                     Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_sampah)->delete();
+                 }
+                 Jurnal_umum_m::insert($jurnal_umum);
+                 DB::commit();
+ 
+                 $response = [
+                     "success" => true,
+                     "message" => 'Perubahan transaksi retribusi sampah berhasil divalidasi',
+                     'status' => 'success',
+                     'code' => 200,
+                 ];
+            
+             } catch (\Exception $e) {
+                 DB::rollback();
+                 $response = [
+                     "success" => false,
+                     "message" => $e->getMessage(),
+                     'status' => 'error',
+                     'code' => 500,
+                     
+                 ];
+             }
+             return Response::json($response); 
+         }
+         
+
+        return view('transaksi_sampah.form_perubahan', $data);
+    }
+    public function getNotif()
+    {
+        $get_data = $this->model_log->get_notif();
+        $response = [
+           "success" => true,
+           'status' => 'success',
+           'code' => 200,
+           'data' => $get_data->take(5),
+           'count' => $get_data->count()
+        ];
+        return Response::json($response);
+    }
+
 
 
     public function cetak_nota($id)
