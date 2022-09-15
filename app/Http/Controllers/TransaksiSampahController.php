@@ -379,7 +379,17 @@ class TransaksiSampahController extends Controller
         return Response::json($response);
     }
 
-
+    public function semuaPerubahan()
+    {
+        $data = array(
+            'nameroutes'        => $this->nameroutes,
+            'title'             => 'Semua Perubahan Transaksi Retribusi Sampah',
+            'header'            => 'Semua Perubahan Transaksi Retribusi Sampah',
+            'urlDatatables'     => $this->nameroutes.'/datatables_perubahan',
+            'idDatatables'      => 'dt_retribusi_sampah'
+        );
+        return view('transaksi_sampah.datatable_perubahan',$data);
+    }
 
     public function cetak_nota($id)
     {
@@ -395,6 +405,12 @@ class TransaksiSampahController extends Controller
     public function datatables_collection()
     {
         $data = $this->model->get_all();
+        return Datatables::of($data)->make(true);
+    }
+
+    public function datatables_collection_perubahan()
+    {
+        $data = $this->model_log->get_notif();
         return Datatables::of($data)->make(true);
     }
 

@@ -1,6 +1,6 @@
 /*
 SQLyog Community v13.1.5  (64 bit)
-MySQL - 10.4.11-MariaDB : Database - bumdes_sarining_winangun_kukuh
+MySQL - 10.4.11-MariaDB : Database - u1657744_bumdes_sarining_winangun_kukuh
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 10.4.11-MariaDB : Database - bumdes_sarining_winangun_kukuh
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`bumdes_sarining_winangun_kukuh` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`u1657744_bumdes_sarining_winangun_kukuh` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
-USE `bumdes_sarining_winangun_kukuh`;
+USE `u1657744_bumdes_sarining_winangun_kukuh`;
 
 /*Table structure for table `config` */
 
@@ -165,15 +165,11 @@ CREATE TABLE `t_jurnal_umum` (
   KEY `t_jurnal_umum_akun` (`akun_id`),
   CONSTRAINT `t_jurnal_umum_akun` FOREIGN KEY (`akun_id`) REFERENCES `m_akun` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `t_jurnal_umum_user` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_jurnal_umum` */
 
 insert  into `t_jurnal_umum`(`id`,`kode_jurnal`,`user_id`,`akun_id`,`tanggal`,`reff`,`debet`,`kredit`,`keterangan`,`status_batal`) values 
-(31,'TO00001',1,6,'2022-07-03',NULL,0,19000,'Pembayaran Listrik',0),
-(32,'TO00001',1,1,'2022-07-03',NULL,19000,0,'Pembayaran Listrik',0),
-(33,'ST001',1,7,'2022-08-06',NULL,0,228000,'Pembayaran Samsat Kendaraan',0),
-(34,'ST001',1,1,'2022-08-06',NULL,228000,0,'Pembayaran Samsat Kendaraan',0),
 (37,'PL-220806-0001',1,1,'2022-08-06',NULL,0,7200000,'Pengeluaran 6 agustus 2022',0),
 (38,'PL-220806-0001',1,3,'2022-08-06',NULL,6000000,0,'Pembayaran gaji karyawan bulan juli 2022',0),
 (39,'PL-220806-0001',1,4,'2022-08-06',NULL,1200000,0,'Pembayaran listrik juli 2022',0),
@@ -187,7 +183,11 @@ insert  into `t_jurnal_umum`(`id`,`kode_jurnal`,`user_id`,`akun_id`,`tanggal`,`r
 (69,'SP00002',1,5,'2022-08-20',NULL,0,24000,'Pembayaran Retribusi Sampah',0),
 (70,'SP00002',1,1,'2022-08-20',NULL,24000,0,'Pembayaran Retribusi Sampah',0),
 (75,'SP00001',2,5,'2022-07-02',NULL,0,38000,'Pembayaran Retribusi Sampah',0),
-(76,'SP00001',2,1,'2022-07-02',NULL,38000,0,'Pembayaran Retribusi Sampah',0);
+(76,'SP00001',2,1,'2022-07-02',NULL,38000,0,'Pembayaran Retribusi Sampah',0),
+(85,'ST001',2,7,'2022-08-06',NULL,0,530000,'Pembayaran Samsat Kendaraan',0),
+(86,'ST001',2,1,'2022-08-06',NULL,530000,0,'Pembayaran Samsat Kendaraan',0),
+(89,'TO00001',2,6,'2022-07-03',NULL,0,22000,'Pembayaran Listrik',0),
+(90,'TO00001',2,1,'2022-07-03',NULL,22000,0,'Pembayaran Listrik',0);
 
 /*Table structure for table `t_online` */
 
@@ -204,6 +204,8 @@ CREATE TABLE `t_online` (
   `jumlah` float NOT NULL,
   `total_bayar` float DEFAULT NULL,
   `keterangan` varchar(250) DEFAULT NULL,
+  `ada_perubahan` tinyint(1) DEFAULT 0,
+  `log_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_transaksi_online`),
   KEY `t_online_pelanggan` (`pelanggan_id`),
   KEY `t_online_user` (`user_id`),
@@ -215,8 +217,8 @@ CREATE TABLE `t_online` (
 
 /*Data for the table `t_online` */
 
-insert  into `t_online`(`id`,`kode_transaksi_online`,`user_id`,`pelanggan_id`,`tanggal`,`jenis_transaksi_id`,`biaya_jasa`,`jumlah`,`total_bayar`,`keterangan`) values 
-(1,'TO00001',1,1,'2022-07-03',1,2000,17000,19000,'Lunas');
+insert  into `t_online`(`id`,`kode_transaksi_online`,`user_id`,`pelanggan_id`,`tanggal`,`jenis_transaksi_id`,`biaya_jasa`,`jumlah`,`total_bayar`,`keterangan`,`ada_perubahan`,`log_id`) values 
+(1,'TO00001',1,1,'2022-07-03',1,2000,20000,22000,'Lunas',0,2);
 
 /*Table structure for table `t_online_log` */
 
@@ -233,16 +235,19 @@ CREATE TABLE `t_online_log` (
   `jumlah` float NOT NULL,
   `total_bayar` float DEFAULT NULL,
   `keterangan` varchar(250) DEFAULT NULL,
+  `validasi` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_transaksi_online`),
   KEY `t_online_pelanggan` (`pelanggan_id`),
   KEY `t_online_user` (`user_id`),
   KEY `t_online_jenis_transaksi` (`jenis_transaksi_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_online_log` */
 
-insert  into `t_online_log`(`id`,`kode_transaksi_online`,`user_id`,`pelanggan_id`,`tanggal`,`jenis_transaksi_id`,`biaya_jasa`,`jumlah`,`total_bayar`,`keterangan`) values 
-(1,'TO00001',1,1,'2022-07-03',1,2000,17000,19000,'Lunas');
+insert  into `t_online_log`(`id`,`kode_transaksi_online`,`user_id`,`pelanggan_id`,`tanggal`,`jenis_transaksi_id`,`biaya_jasa`,`jumlah`,`total_bayar`,`keterangan`,`validasi`,`created_at`,`updated_at`) values 
+(2,'TO00001',1,1,'2022-07-03',1,2000,20000,22000,'Lunas',1,'2022-09-15 21:42:44','2022-09-15 21:45:56');
 
 /*Table structure for table `t_pengeluaran` */
 
@@ -374,6 +379,8 @@ CREATE TABLE `t_samsat` (
   `tanggal_lunas` date NOT NULL,
   `total_bayar` float NOT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
+  `ada_perubahan` tinyint(1) DEFAULT 0,
+  `log_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_transaksi_samsat`),
   KEY `t_samsat_pelanggan` (`pelanggan_id`),
   KEY `t_samsat_user` (`user_id`),
@@ -383,8 +390,8 @@ CREATE TABLE `t_samsat` (
 
 /*Data for the table `t_samsat` */
 
-insert  into `t_samsat`(`id`,`kode_transaksi_samsat`,`user_id`,`pelanggan_id`,`plat_nomor`,`tanggal_samsat`,`jenis_kendaraan`,`jumlah_tagihan`,`biaya_jasa`,`jenis_pembayaran`,`tanggal_lunas`,`total_bayar`,`keterangan`) values 
-(1,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',198000,30000,'Lunas','2022-08-06',228000,'-');
+insert  into `t_samsat`(`id`,`kode_transaksi_samsat`,`user_id`,`pelanggan_id`,`plat_nomor`,`tanggal_samsat`,`jenis_kendaraan`,`jumlah_tagihan`,`biaya_jasa`,`jenis_pembayaran`,`tanggal_lunas`,`total_bayar`,`keterangan`,`ada_perubahan`,`log_id`) values 
+(1,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',500000,30000,'Lunas','2022-08-06',530000,'-',0,4);
 
 /*Table structure for table `t_samsat_log` */
 
@@ -404,15 +411,19 @@ CREATE TABLE `t_samsat_log` (
   `tanggal_lunas` date NOT NULL,
   `total_bayar` float NOT NULL,
   `keterangan` varchar(100) DEFAULT NULL,
+  `validasi` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`,`kode_transaksi_samsat`),
   KEY `t_samsat_pelanggan` (`pelanggan_id`),
   KEY `t_samsat_user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_samsat_log` */
 
-insert  into `t_samsat_log`(`id`,`kode_transaksi_samsat`,`user_id`,`pelanggan_id`,`plat_nomor`,`tanggal_samsat`,`jenis_kendaraan`,`jumlah_tagihan`,`biaya_jasa`,`jenis_pembayaran`,`tanggal_lunas`,`total_bayar`,`keterangan`) values 
-(1,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',198000,30000,'Lunas','2022-08-06',228000,'-');
+insert  into `t_samsat_log`(`id`,`kode_transaksi_samsat`,`user_id`,`pelanggan_id`,`plat_nomor`,`tanggal_samsat`,`jenis_kendaraan`,`jumlah_tagihan`,`biaya_jasa`,`jenis_pembayaran`,`tanggal_lunas`,`total_bayar`,`keterangan`,`validasi`,`created_at`,`updated_at`) values 
+(3,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',400000,30000,'Lunas','2022-08-06',430000,'-',1,'2022-09-15 20:41:05','2022-09-15 21:05:43'),
+(4,'ST001',1,1,'DK0923LK','2022-08-06','Roda Dua',500000,30000,'Lunas','2022-08-06',530000,'-',1,'2022-09-15 21:07:15','2022-09-15 21:07:50');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

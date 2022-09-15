@@ -95,9 +95,13 @@
               </div>
             </div>
             <div class="form-group">
-                <div class="col-lg-offset-3 col-lg-9">
-                  <button type="submit" class="btn btn-success btn-save">@if($is_edit) Perbarui @else Simpan @endif <i class="fas fa-spinner fa-spin spinner" style="display: none"></i></button> 
-                </div>
+              <div class="col-lg-offset-3 col-lg-9">
+                <button type="submit" class="btn btn-success btn-save" {{ @$item->ada_perubahan == 1 ? 'disabled' : '' }}>@if($is_edit) Perbarui @else Simpan @endif <i class="fas fa-spinner fa-spin spinner" style="display: none"></i></button> 
+              <br><br>
+              @if(@$item->ada_perubahan == 1)
+                <p style="color: red"><i>* Terdapat perubahan data yang belum divalidasi <a href="javascript:void(0)" id="modalPerubahan" style="color: blue">Lihat perubahan</a></i></p>
+              @endif
+              </div>
             </div>
           </form>
         </div>
@@ -108,6 +112,23 @@
       
 
 <script type="text/javascript">
+    var log_id = "{{ $item->log_id }}";
+    let lookup_modal_perubahan = {
+      init: function() {
+          $('#modalPerubahan').on( "click", function(e){
+            e.preventDefault();
+            var _prop= {
+              _this : $( this ),
+              remote : "{{ url("$nameroutes") }}/perubahan/" + log_id,
+              size : 'modal-lg',
+              title : "DATA PERUBAHAN TERAKHIR",
+            }
+            ajax_modal.show(_prop);											
+          });  
+        },
+    };
+
+
   $(document).on("keyup",'#jumlah,#biaya_jasa', calculate);
 
   function calculate() {
@@ -119,6 +140,7 @@
   $(document).ready(function(){
     calculate();
     mask_number.init()
+    lookup_modal_perubahan.init();
     
     $('#lookup_pelanggan').dataCollect({
         ajaxUrl: "{{ url('pelanggan/datatables') }}",

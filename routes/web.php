@@ -62,11 +62,14 @@ Route::prefix('transaksi-retribusi-sampah')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSampahController@edit')->name('transaksi-retribusi-sampah.edit');;
 	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSampahController@show')->name('transaksi-retribusi-sampah.show');;
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSampahController@cetak_nota');
+
+	#direktur
 	Route::get('/perubahan/{log_id}', 'TransaksiSampahController@lookupPerubahan');
 	Route::get('/get-notif', 'TransaksiSampahController@getNotif');
-	#direktur
 	Route::get('/data-sebelumnya/{log_id}', 'TransaksiSampahController@lookupDataSebelumnya');
 	Route::match(array('GET', 'POST'),'/validasi-perubahan/{log_id}', 'TransaksiSampahController@validasiPerubahan');
+	Route::get('/semua-perubahan', 'TransaksiSampahController@semuaPerubahan');
+	Route::match(array('GET', 'POST'),'/datatables_perubahan','TransaksiSampahController@datatables_collection_perubahan');
 });
 #TRANSAKSI PEMBAYARAN ONLINE
 Route::prefix('transaksi-pembayaran-online')->group(function() {
@@ -76,6 +79,14 @@ Route::prefix('transaksi-pembayaran-online')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiOnlineController@edit');
 	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiOnlineController@show');
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiOnlineController@cetak_nota');
+
+	#direktur
+	Route::get('/perubahan/{log_id}', 'TransaksiOnlineController@lookupPerubahan');
+	Route::get('/get-notif', 'TransaksiOnlineController@getNotif');
+	Route::get('/data-sebelumnya/{log_id}', 'TransaksiOnlineController@lookupDataSebelumnya');
+	Route::match(array('GET', 'POST'),'/validasi-perubahan/{log_id}', 'TransaksiOnlineController@validasiPerubahan');
+	Route::get('/semua-perubahan', 'TransaksiOnlineController@semuaPerubahan');
+	Route::match(array('GET', 'POST'),'/datatables_perubahan','TransaksiOnlineController@datatables_collection_perubahan');
 });
 #TRANSAKSI SAMSAT KENDARAAN
 Route::prefix('transaksi-samsat-kendaraan')->group(function() {
@@ -85,6 +96,14 @@ Route::prefix('transaksi-samsat-kendaraan')->group(function() {
 	Route::match(array('GET', 'POST'),'/edit/{id}','TransaksiSamsatController@edit');
 	Route::match(array('GET', 'POST'),'/show/{id}','TransaksiSamsatController@show');
 	Route::match(array('GET'),'/cetak-nota/{id}','TransaksiSamsatController@cetak_nota');
+
+	#direktur
+	Route::get('/perubahan/{log_id}', 'TransaksiSamsatController@lookupPerubahan');
+	Route::get('/get-notif', 'TransaksiSamsatController@getNotif');
+	Route::get('/data-sebelumnya/{log_id}', 'TransaksiSamsatController@lookupDataSebelumnya');
+	Route::match(array('GET', 'POST'),'/validasi-perubahan/{log_id}', 'TransaksiSamsatController@validasiPerubahan');
+	Route::get('/semua-perubahan', 'TransaksiSamsatController@semuaPerubahan');
+	Route::match(array('GET', 'POST'),'/datatables_perubahan','TransaksiSamsatController@datatables_collection_perubahan');
 });
 
 #PENGELUARAN

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Model\Jurnal_umum_m;
+use App\Http\Model\Transaksi_samsat_log_m;
 use App\Http\Model\Transaksi_samsat_m;
 use Illuminate\Http\Request;
 use Validator;
@@ -17,6 +18,7 @@ use PDF;
 class TransaksiSamsatController extends Controller
 {
     protected $model;
+    protected $model_log;
 
     protected $jenis_kendaraan = [
         ['id' => 'Roda Dua', 'desc' => 'Roda Dua'],
@@ -29,9 +31,10 @@ class TransaksiSamsatController extends Controller
         ['id' => 'Lunas', 'desc' => 'Lunas'],
     ];
 
-    public function __construct(Transaksi_samsat_m $model)
+    public function __construct(Transaksi_samsat_m $model, Transaksi_samsat_log_m $model_log)
     {
         $this->model = $model;
+        $this->model_log = $model_log;
         $this->nameroutes = 'transaksi-samsat-kendaraan';
     }
     /**
@@ -174,8 +177,20 @@ class TransaksiSamsatController extends Controller
         //jika form sumbit
         if($request->post())
         {
+            if($get_data->ada_perubahan == 1)
+            {
+                $response = [
+                    "success" => false,
+                    'message' => 'Terdapat perubahan yg belum di validasi!',
+                    'status' => 'error',
+                    'code' => 500,
+                ];
+                return Response::json($response);
+            }
+            
             //request dari view
             $header = $request->input('f');
+            $log = $request->input('f');
            //validasi dari model
            $validator = Validator::make( $header,[
                 'kode_transaksi_samsat' => ['required', Rule::unique('t_samsat')->ignore($get_data->kode_transaksi_samsat, 'kode_transaksi_samsat')]
@@ -191,7 +206,14 @@ class TransaksiSamsatController extends Controller
             //insert data
             DB::beginTransaction();
             try {
-                $this->model->update_data($header, $id);
+                $log['user_id'] = Helpers::getId();
+                $log['created_at'] = date('Y-m-d H:i:s');
+                $log['updated_at'] = date('Y-m-d H:i:s');
+                $id_log = $this->model_log::insertGetId($log);
+
+                $update['ada_perubahan'] = 1;
+                $update['log_id'] = $id_log;
+                $this->model->update_data($update, $id);
                  #insert jurnal umum
                  $jurnal_umum = [
                     [
@@ -273,6 +295,147 @@ class TransaksiSamsatController extends Controller
         $params = $request->all();
         $data = $this->model->get_all($params);
         return Datatables::of($data)->make(true);
+    }
+
+    public function datatables_collection_perubahan()
+    {
+        $data = $this->model_log->get_notif();
+        return Datatables::of($data)->make(true);
+    }
+
+    public function lookupPerubahan(Request $request, $log_id)
+    {
+        $get_data = $this->model_log->get_one($log_id);
+        $data = [
+            'title'      => 'Transaksi Samsat Kendaraan',
+            'header'     => 'Lihat Transaksi Samsat Kendaraan',
+            'item'       => $get_data,
+            'is_edit'    => TRUE,
+            'submit_url' => url()->current(),
+            'nameroutes' => $this->nameroutes,
+            'option_jenis_kendaraan' => $this->jenis_kendaraan,
+            'option_jenis_pembayaran' => $this->jenis_pembayaran,
+        ];
+
+        return view('transaksi_samsat.lookup_perubahan', $data);
+    }
+
+    public function lookupDataSebelumnya(Request $request, $log_id)
+    {
+        $get_data = $this->model->get_by(['t_samsat.log_id' => $log_id]);
+        $data = [
+            'title'      => 'Transaksi Samsat Kendaraan Sebelumnya',
+            'header'     => 'Lihat Transaksi Samsat Kendaraan Sebelumnya',
+            'item'       => $get_data,
+            'is_edit'    => TRUE,
+            'submit_url' => url()->current(),
+            'nameroutes' => $this->nameroutes,
+            'option_jenis_kendaraan' => $this->jenis_kendaraan,
+            'option_jenis_pembayaran' => $this->jenis_pembayaran,
+        ];
+
+        return view('transaksi_samsat.lookup_perubahan', $data);
+    }
+
+
+    public function validasiPerubahan(Request $request, $log_id)
+    {
+        $get_data = $this->model_log->get_one($log_id);
+        $data = [
+            'title'      => 'Perubahan Transaksi Samsat Kendaraan',
+            'header'     => 'Lihat Perubahan Transaksi Samsat Kendaraan',
+            'item'       => $get_data,
+            'is_edit'    => TRUE,
+            'submit_url' => url()->current(),
+            'nameroutes' => $this->nameroutes,
+            'option_jenis_kendaraan' => $this->jenis_kendaraan,
+            'option_jenis_pembayaran' => $this->jenis_pembayaran,
+        ];
+
+         //jika form sumbit
+         if($request->post())
+         {
+            $header = $request->input('f');
+            $header['ada_perubahan'] = 0;
+             //insert data
+             DB::beginTransaction();
+             try {
+                 $this->model_log->update_data(['validasi' => 1], $log_id);
+                 $this->model->update_by($header, ['log_id' => $log_id]);
+                 #insert jurnal umum
+                 $jurnal_umum = [
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_samsat, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 7, #Pendapatan Jasa Samsat Kendaraan
+                        'tanggal' => $header['tanggal_samsat'],
+                        'debet' => 0,
+                        'kredit' => $header['total_bayar'],
+                        'keterangan' => 'Pembayaran Samsat Kendaraan'
+                    ],
+                    [
+                        'kode_jurnal' => $get_data->kode_transaksi_samsat, 
+                        'user_id' => Helpers::getId(),
+                        'akun_id' => 1, #Kas
+                        'tanggal' => $header['tanggal_samsat'],
+                        'debet' => $header['total_bayar'],
+                        'kredit' => 0,
+                        'keterangan' => 'Pembayaran Samsat Kendaraan'
+                    ],
+                ];
+                $cek_jurnal_already = Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_samsat)->first();
+                if(!empty($cek_jurnal_already)){
+                    Jurnal_umum_m::where('kode_jurnal', $get_data->kode_transaksi_samsat)->delete();
+                }
+                Jurnal_umum_m::insert($jurnal_umum);
+                DB::commit();
+ 
+                 $response = [
+                     "success" => true,
+                     "message" => 'Perubahan transaksi samsat kendaraan berhasil divalidasi',
+                     'status' => 'success',
+                     'code' => 200,
+                 ];
+            
+             } catch (\Exception $e) {
+                 DB::rollback();
+                 $response = [
+                     "success" => false,
+                     "message" => $e->getMessage(),
+                     'status' => 'error',
+                     'code' => 500,
+                     
+                 ];
+             }
+             return Response::json($response); 
+         }
+         
+
+        return view('transaksi_samsat.form_perubahan', $data);
+    }
+    public function getNotif()
+    {
+        $get_data = $this->model_log->get_notif();
+        $response = [
+           "success" => true,
+           'status' => 'success',
+           'code' => 200,
+           'data' => $get_data->take(5),
+           'count' => $get_data->count()
+        ];
+        return Response::json($response);
+    }
+
+    public function semuaPerubahan()
+    {
+        $data = array(
+            'nameroutes'        => $this->nameroutes,
+            'title'             => 'Semua Perubahan Transaksi Samsat Kendaraan',
+            'header'            => 'Semua Perubahan Transaksi Samsat Kendaraan',
+            'urlDatatables'     => $this->nameroutes.'/datatables_perubahan',
+            'idDatatables'      => 'dt_samsat_kendaraan'
+        );
+        return view('transaksi_samsat.datatable_perubahan',$data);
     }
 
 
