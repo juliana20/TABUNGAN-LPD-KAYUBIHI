@@ -135,7 +135,7 @@
       
 
 <script type="text/javascript">
-    var log_id = "{{ $item->log_id }}";
+    var log_id = "{{ @$item->log_id }}";
     let lookup_modal_perubahan = {
       init: function() {
           $('#modalPerubahan').on( "click", function(e){
