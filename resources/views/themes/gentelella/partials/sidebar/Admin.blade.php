@@ -4,14 +4,8 @@
                 <h3>MAIN MENU</h3>
                   <ul class="nav side-menu">
                     <li><a href="{{ url('/dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
-                    <li><a><i class="fa fa-database"></i>Data Master<span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li class="{{ Request::is('user') ? 'active':null}}"><a href="{{ url('user') }}">User</a></li>
-                        <li class="{{ Request::is('pelanggan') ? 'active':null}}"><a href="{{ url('pelanggan') }}">Pelanggan</a></li>
-                        <li class="{{ Request::is('akun') ? 'active':null}}"><a href="{{ url('akun') }}">Akun</a></li>
-                        <li class="{{ Request::is('jenis-transaksi') ? 'active':null}}"><a href="{{ url('jenis-transaksi') }}">Jenis Transaksi</a></li>
-                      </ul>
-                    </li>
+                    <li class="{{ Request::is('nasabah') ? 'active':null}}"><a href="{{ url('nasabah') }}"><i class="fa fa-users"></i>Nasabah</a></li>
+                    <li class="{{ Request::is('simpan-tabungan') ? 'active':null}}"><a href="{{ url('simpan-tabungan') }}"><i class="fa fa-credit-card"></i>Simpan Tabungan</a></li>
                     <li><a><i class="fa fa-credit-card"></i>Transaksi<span class="fa fa-chevron-down"></span></a>
                       <ul class="nav child_menu">
                         <li class="{{ Request::is('transaksi-retribusi-sampah') ? 'active':null}} {{ request()->is('transaksi-retribusi-sampah*') ? 'active':null}}"><a href="{{ url('transaksi-retribusi-sampah') }}">Retribusi Sampah</a></li>

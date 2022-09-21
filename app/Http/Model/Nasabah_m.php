@@ -5,11 +5,11 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class User_m extends Model
+class Nasabah_m extends Model
 {
-	protected $table = 'm_user';
+	protected $table = 'm_nasabah';
 	protected $index_key = 'id';
-	protected $index_key2 = 'id_user';
+	protected $index_key2 = 'id_nasabah';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,17 +18,13 @@ class User_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'id_user' => 'required',
-				'nama' => 'required',
-				'username' => 'required',
-				'password' => 'required',
-				'jabatan' => 'required'
+                'id_nasabah' => "required|unique:{$this->table}",
+				'nama_nasabah' => 'required',
+				'alamat' => 'required',
             ],
 			'update' => [
-				'nama' => 'required',
-				'username' => 'required',
-				'password' => 'required',
-				'jabatan' => 'required'
+				'nama_nasabah' => 'required',
+				'alamat' => 'required',
             ],
         ];
 	}
@@ -45,7 +41,14 @@ class User_m extends Model
 
 	function get_one($id)
 	{
-		return self::where($this->index_key, $id)->first();
+		$query = self::join('m_user','m_user.id',"{$this->table}.user_id")
+						->where("{$this->table}.id", $id)
+						->select(
+							"{$this->table}.*",
+							'm_user.username',
+							'm_user.password'
+						);
+		return $query->first();
 	}
 
 	function get_by( $where )
@@ -72,11 +75,13 @@ class User_m extends Model
 	function gen_code( $format )
 	{
 		$max_number = self::all()->max($this->index_key2);
-		$noUrut = (int) substr($max_number, 1);
+		$noUrut = (int) substr($max_number, 2);
 		$noUrut++;
 		$code = $format;
 		$no_generate = $code . sprintf("%05s", $noUrut);
 
 		return (string) $no_generate;
 	}
+
+
 }

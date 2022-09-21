@@ -5,11 +5,10 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
-class User_m extends Model
+class Tabungan_m extends Model
 {
-	protected $table = 'm_user';
+	protected $table = 'm_tabungan';
 	protected $index_key = 'id';
-	protected $index_key2 = 'id_user';
     public $timestamps  = false;
 
 	public $rules;
@@ -18,24 +17,26 @@ class User_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'id_user' => 'required',
-				'nama' => 'required',
-				'username' => 'required',
-				'password' => 'required',
-				'jabatan' => 'required'
+                'no_rekening' => "required|unique:{$this->table}",
+				'nasabah_id' => 'required',
+				'tanggal_daftar' => 'required',
             ],
 			'update' => [
-				'nama' => 'required',
-				'username' => 'required',
-				'password' => 'required',
-				'jabatan' => 'required'
+				'nasabah_id' => 'required',
+				'tanggal_daftar' => 'required',
             ],
         ];
 	}
 
     function get_all()
     {
-        return self::get();
+		$query = self::join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+					->select(
+						'm_nasabah.*',
+						'm_tabungan.no_rekening',
+						'm_tabungan.saldo'
+					);
+        return $query->get();
     }
 
     function insert_data($data)
@@ -45,7 +46,7 @@ class User_m extends Model
 
 	function get_one($id)
 	{
-		return self::where($this->index_key, $id)->first();
+		return self::first();
 	}
 
 	function get_by( $where )
@@ -69,14 +70,20 @@ class User_m extends Model
 		return $query->update($data);
 	}
 
-	function gen_code( $format )
-	{
-		$max_number = self::all()->max($this->index_key2);
-		$noUrut = (int) substr($max_number, 1);
-		$noUrut++;
-		$code = $format;
-		$no_generate = $code . sprintf("%05s", $noUrut);
+	function gen_no_rek_tabungan( $format )
+	{	
+		$max_number = self::all()->max('no_rekening');
+		$noUrut = (int) substr($max_number, 8, 5);
 
+		$noUrut++;
+		$date = date('Y-m-d');
+		$month = date('m', strtotime($date));
+		$year = date('Y', strtotime($date));
+		$day = date('d', strtotime($date));
+		$code = $format;
+		$no_generate = $code.$day.$month.$year.sprintf("%05s", $noUrut);
+		
 		return (string) $no_generate;
 	}
+
 }

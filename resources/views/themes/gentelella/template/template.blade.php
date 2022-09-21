@@ -9,7 +9,7 @@
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
                         <div class="navbar nav_title" style="border: 0;">
-                            <a href="#" class="site_title" style="font-size: 16px!important;"><i class="fa fa-home" aria-hidden="true"></i> <span>{{ config('app.app_alias') }}</span></a>
+                            <a href="#" class="site_title" style="font-size: 20px!important;"><i class="fa fa-book" aria-hidden="true"></i> <span style="margin-left: 10px">{{ config('app.app_abbreviation') }}</span></a>
                         </div>
 
                         <div class="clearfix"></div>
@@ -18,7 +18,8 @@
                         <!-- menu profile quick info -->
                         <br />
                         <!-- sidebar menu -->
-                        @include('themes.gentelella.partials.sidebar.'.Helpers::getJabatan())
+                        {{-- @include('themes.gentelella.partials.sidebar.'.Helpers::getJabatan()) --}}
+                        @include('themes.gentelella.partials.sidebar.Admin')
                         <!-- sidebar menu -->
 
       

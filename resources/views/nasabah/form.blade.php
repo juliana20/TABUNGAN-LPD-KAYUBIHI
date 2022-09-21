@@ -1,15 +1,15 @@
 <form class="form-horizontal form-label-left" method="POST" action="{{ url($submit_url) }}" name="form_crud">
   {{ csrf_field() }}
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Kode Pelanggan *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">ID Nasabah *</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" class="form-control" name="f[kode]" id="kode" value="{{ @$item->kode }}" placeholder="Kode Pelanggan" required="" readonly>
+      <input type="text" class="form-control" name="f[id_nasabah]" id="id_nasabah" value="{{ @$item->id_nasabah }}" placeholder="ID Nasabah" required="" readonly>
     </div>
   </div>
   <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama Pelanggan *</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama Nasabah *</label>
       <div class="col-md-9 col-sm-9 col-xs-12">
-        <input type="text" class="form-control" name="f[nama]" id="nama" value="{{ @$item->nama }}" placeholder="Nama Pelanggan" required="">
+        <input type="text" class="form-control" name="f[nama_nasabah]" id="nama_nasabah" value="{{ @$item->nama_nasabah }}" placeholder="Nama Nasabah" required="">
       </div>
   </div>
   <div class="form-group">
@@ -32,7 +32,43 @@
   <div class="form-group">
     <label class="control-label col-md-3 col-sm-3 col-xs-12">Telepon *</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="f[no_telepon]" id="no_telepon" class="form-control" placeholder="Telepon" value="{{ @$item->no_telepon }}" required="">
+      <input type="text" name="f[telepon]" id="telepon" class="form-control" placeholder="Telepon" value="{{ @$item->telepon }}" required="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Pekerjaan *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <input type="text" name="f[pekerjaan]" id="pekerjaan" class="form-control" placeholder="Pekerjaan" value="{{ @$item->pekerjaan }}" required="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal Lahir *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <input type="date" name="f[tanggal_lahir]" id="tanggal_lahir" class="form-control" placeholder="Tanggal Lahir" value="{{ @$item->tanggal_lahir }}" required="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">No KTP *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <input type="text" name="f[no_ktp]" id="no_ktp" class="form-control" placeholder="No KTP" value="{{ @$item->no_ktp }}" required="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal Daftar *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <input type="date" name="f[tanggal_daftar]" id="tanggal_daftar" class="form-control" placeholder="Tanggal Daftar" value="{{ @$item->tanggal_daftar }}" required="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Username *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <input type="text" name="u[username]" class="form-control" placeholder="Username" value="{{ @$item->username }}" required="">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Password *</label>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+      <input type="password" name="u[password]" class="form-control" placeholder="Password" value="{{ @$item->password }}" required="">
     </div>
   </div>
   <div class="form-group">

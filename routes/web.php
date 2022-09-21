@@ -20,13 +20,27 @@ Route::get('/login','Login@login');
 Route::post('/auth','Login@auth');
 Route::get('/logout', 'Login@logout');
 
-Route::group(['middleware' => ['admin']], function () {
+// Route::group(['middleware' => ['admin']], function () {
 #USER
-Route::prefix('user')->group(function() {
-    Route::get('/', 'UserController@index');
-	Route::match(array('GET', 'POST'),'/datatables','UserController@datatables_collection');
-	Route::match(array('GET', 'POST'),'/create','UserController@create');
-	Route::match(array('GET', 'POST'),'/edit/{id}','UserController@edit');
+// Route::prefix('user')->group(function() {
+//     Route::get('/', 'UserController@index');
+// 	Route::match(array('GET', 'POST'),'/datatables','UserController@datatables_collection');
+// 	Route::match(array('GET', 'POST'),'/create','UserController@create');
+// 	Route::match(array('GET', 'POST'),'/edit/{id}','UserController@edit');
+// });
+#NASABAH
+Route::prefix('nasabah')->group(function() {
+    Route::get('/', 'NasabahController@index');
+	Route::match(array('GET', 'POST'),'/datatables','NasabahController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','NasabahController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','NasabahController@edit');
+});
+#SIMPAN TABUNGAN
+Route::prefix('simpan-tabungan')->group(function() {
+    Route::get('/', 'SimpanTabunganController@index');
+	Route::match(array('GET', 'POST'),'/datatables','SimpanTabunganController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','SimpanTabunganController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','SimpanTabunganController@edit');
 });
 #AKUN
 Route::prefix('akun')->group(function() {
@@ -166,6 +180,6 @@ Route::prefix('laporan')->group(function() {
 	Route::post('/perubahan-modal/print','Laporan@printPerubahanModal');
 });
 
-});
+// });
 
 ?>

@@ -17,11 +17,15 @@
             <thead>
               <tr>
                 <th class="no-sort">Aksi</th>
-                <th>Kode Pelanggan</th>
-                <th>Nama Pelanggan</th>
+                <th>ID Nasabah</th>
+                <th>Nama Nasabah</th>
                 <th>Jenis Kelamin</th>
+                <th>Tanggal Lahir</th>
+                <th>Pekerjaan</th>
                 <th>Alamat</th>
                 <th>Telepon</th>
+                <th>No KTP</th>
+                <th>Tanggal Daftar</th>
               </tr>
             </thead>
             <tbody>
@@ -72,13 +76,13 @@
                                   }
                               },
                           { 
-                                data: "kode", 
+                                data: "id_nasabah", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "nama", 
+                                data: "nama_nasabah", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
@@ -90,13 +94,37 @@
                                   }
                           },
                           { 
+                                data: "tanggal_lahir", 
+                                render: function ( val, type, row ){
+                                    return val
+                                  }
+                          },
+                          { 
+                                data: "pekerjaan", 
+                                render: function ( val, type, row ){
+                                    return val
+                                  }
+                          },
+                          { 
                                 data: "alamat", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "no_telepon", 
+                                data: "telepon", 
+                                render: function ( val, type, row ){
+                                    return val
+                                  }
+                          },
+                          { 
+                                data: "no_ktp", 
+                                render: function ( val, type, row ){
+                                    return val
+                                  }
+                          },
+                          { 
+                                data: "tanggal_daftar", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
