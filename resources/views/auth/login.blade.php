@@ -1,100 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-	<title>{{config('app.app_name')}} | Login</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="{{ url('') }}/themes/login/Login_v2/images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/fonts/iconic/css/material-design-iconic-font.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/vendor/animate/animate.css">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/vendor/animsition/css/animsition.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/vendor/select2/select2.min.css">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/vendor/daterangepicker/daterangepicker.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/css/util.css">
-	<link rel="stylesheet" type="text/css" href="{{ url('') }}/themes/login/Login_v2/css/main.css">
-<!--===============================================================================================-->
-<script src="{{url('themes/default/js/alert/sweetalert.min.js')}}"></script>
-<style>
-	.bgBody {
-        background: url('themes/login/images/bg.jpg') no-repeat center center fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;overflow: hidden;"
-    }
-</style>
-</head>
-<body>
-  @include('sweet::alert')
-	<div class="limiter">
-		<div class="container-login100 bgBody">
-			<div class="wrap-login100" style="padding: 40px 55px 33px 55px!important">
-				<div class="login-logo">
-					<img src="{{url('themes/default/images/logo_bumdes.jpeg')}}" width="280" style="margin-top: 0px;margin-bottom: 15px">
+  <head>
+  	<title>{{ config('app.app_name') }} | Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="{{ url('') }}/themes/login/login-form-18/css/style.css">
+	<!--===============================================================================================-->
+	<script src="{{url('themes/default/js/alert/sweetalert.min.js')}}"></script>
+	</head>
+	<body>
+	@include('sweet::alert')
+	<section class="ftco-section" style="padding: 3em 0!important;">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-4">
+					<h2 class="heading-section">Login Untuk Menggunakan Sistem</h2>
 				</div>
-				<form action="{{url('/auth')}}" method="post" class="login100-form validate-form">
-				{{ csrf_field() }}
-							<span class="login100-form-title p-b-40"  style="font-size: 17px!important">
-								BUMDESA SARINING WINANGUN DESA KUKUH - KERAMBITAN
-							</span>
-
-							<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
-					<input type="text" name="username" class="input100" required="" autofocus autocomplete="off">
-								<span class="focus-input100" data-placeholder="Username"></span>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-md-6 col-lg-5">
+					<div class="login-wrap p-4 p-md-5">
+						<div class="icon d-flex align-items-center justify-content-center">
+							<span class="fa fa-user-o"></span>
+						</div>
+						<br>
+						<form action="{{url('/auth')}}" method="post" class="login-form">
+							{{ csrf_field() }}
+							<div class="form-group">
+								<input type="text" class="form-control rounded-left" name="username" placeholder="Username"  required="" autofocus autocomplete="off">
 							</div>
-
-							<div class="wrap-input100 validate-input" data-validate="Enter password">
-								<span class="btn-show-pass">
-									<i class="zmdi zmdi-eye"></i>
-								</span>
-					<input type="password" name="password" id="password" class="input100" required="">
-								<span class="focus-input100" data-placeholder="Password"></span>
+							<div class="form-group d-flex">
+								<input type="password" class="form-control rounded-left" name="password" id="password" placeholder="Password" required>
 							</div>
-
-							<div class="container-login100-form-btn">
-								<div class="wrap-login100-form-btn">
-									<div class="login100-form-bgbtn"></div>
-									<button class="login100-form-btn">
-										Login
-									</button>
-								</div>
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary rounded submit p-3 px-5">LOGIN</button>
 							</div>
 						</form>
-					</div>
+	        		</div>
 				</div>
-	</div>
-	
+			</div>
+		</div>
+	</section>
 
-	<div id="dropDownSelect1"></div>
-	
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/bootstrap/js/popper.js"></script>
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/daterangepicker/moment.min.js"></script>
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/daterangepicker/daterangepicker.js"></script>
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/vendor/countdowntime/countdowntime.js"></script>
-<!--===============================================================================================-->
-	<script src="{{ url('') }}/themes/login/Login_v2/js/main.js"></script>
-</body>
+	<script src="{{ url('') }}/themes/login/login-form-18/js/jquery.min.js"></script>
+  	<script src="{{ url('') }}/themes/login/login-form-18/js/popper.js"></script>
+  	<script src="{{ url('') }}/themes/login/login-form-18/js/bootstrap.min.js"></script>
+  	<script src="{{ url('') }}/themes/login/login-form-18/js/main.js"></script>
+
+	</body>
 </html>
+

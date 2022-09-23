@@ -32,7 +32,18 @@ class Tabungan_m extends Model
     {
 		$query = self::join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
 					->select(
-						'm_nasabah.*',
+						'm_nasabah.id_nasabah',
+						'm_nasabah.nama_nasabah',
+						'm_nasabah.alamat',
+						'm_nasabah.jenis_kelamin',
+						'm_nasabah.telepon',
+						'm_nasabah.pekerjaan',
+						'm_nasabah.tanggal_lahir',
+						'm_nasabah.no_ktp',
+						'm_nasabah.user_id',
+						'm_nasabah.user_id',
+						'm_nasabah.tanggal_daftar',
+						'm_tabungan.id',
 						'm_tabungan.no_rekening',
 						'm_tabungan.saldo'
 					);
@@ -46,7 +57,25 @@ class Tabungan_m extends Model
 
 	function get_one($id)
 	{
-		return self::first();
+		$query = self::join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+					->where('m_tabungan.id', $id)
+					->select(
+						'm_nasabah.id_nasabah',
+						'm_nasabah.nama_nasabah',
+						'm_nasabah.alamat',
+						'm_nasabah.jenis_kelamin',
+						'm_nasabah.telepon',
+						'm_nasabah.pekerjaan',
+						'm_nasabah.tanggal_lahir',
+						'm_nasabah.no_ktp',
+						'm_nasabah.user_id',
+						'm_nasabah.user_id',
+						'm_nasabah.tanggal_daftar',
+						'm_tabungan.id',
+						'm_tabungan.no_rekening',
+						'm_tabungan.saldo as saldo_awal'
+					);
+		return $query->first();
 	}
 
 	function get_by( $where )

@@ -2,7 +2,7 @@
 <!-- menu profile quick info -->
 <div class="profile clearfix">
     <div class="profile_pic">
-        <img src="{{ url('themes/AdminLTE-2.4.3/dist/img/user2-160x160.jpg') }}" alt="..." class="img-circle profile_img">
+        <img src="{{ url('themes/default/images/user2-160x160.jpg') }}" alt="..." class="img-circle profile_img">
     </div>
     <div class="profile_info">
         <span>Halo, {{ Helpers::getJabatan() }}</span>

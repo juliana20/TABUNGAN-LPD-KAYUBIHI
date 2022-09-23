@@ -1,74 +1,49 @@
 <form class="form-horizontal form-label-left" method="POST" action="{{ url($submit_url) }}" name="form_crud">
   {{ csrf_field() }}
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">ID Nasabah *</label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" class="form-control" name="f[id_nasabah]" id="id_nasabah" value="{{ @$item->id_nasabah }}" placeholder="ID Nasabah" required="" readonly>
-    </div>
-  </div>
-  <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama Nasabah *</label>
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Nama Nasabah</label>
       <div class="col-md-9 col-sm-9 col-xs-12">
-        <input type="text" class="form-control" name="f[nama_nasabah]" id="nama_nasabah" value="{{ @$item->nama_nasabah }}" placeholder="Nama Nasabah" required="">
+        <input type="text" class="form-control" value="{{ @$item->nama_nasabah }}" readonly>
       </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Jenis Kelamin *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">No Rekening</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <select name="f[jenis_kelamin]" class="form-control" required="" id="jenis_kelamin">
-        <option value="" disabled="" selected="" hidden="">-- Pilih --</option>
-        <?php foreach(@$option_jenis_kelamin as $dt): ?>
-          <option value="<?php echo @$dt['id'] ?>" <?= @$dt['id'] == @$item->jenis_kelamin ? 'selected': null ?>><?php echo @$dt['desc'] ?></option>
-        <?php endforeach; ?>
-      </select>
+      <input type="text" class="form-control" value="{{ @$item->no_rekening }}" required="" readonly>
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Alamat *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Saldo</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <textarea name="f[alamat]" id="alamat" cols="30" rows="2" class="form-control" required>{{ @$item->alamat }}</textarea>
+      <input type="text" class="form-control mask-number" name="f[saldo_awal]" id="saldo_awal" value="{{ @$item->saldo_awal }}" required="" readonly>
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Telepon *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="f[telepon]" id="telepon" class="form-control" placeholder="Telepon" value="{{ @$item->telepon }}" required="">
+      <input type="date" name="f[tanggal]" id="tanggal" class="form-control" placeholder="Tanggal" value="{{ @$item->tanggal }}" required="">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Pekerjaan *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Nominal Setoran</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="f[pekerjaan]" id="pekerjaan" class="form-control" placeholder="Pekerjaan" value="{{ @$item->pekerjaan }}" required="">
+      <div class="input-group">
+        <div class="input-group-btn">
+          <span class="btn btn-default btn-flat">Rp</span>
+        </div>
+        <input type="text" name="f[nominal_setoran]" id="nominal_setoran" class="form-control mask-number" placeholder="Nominal Setoran" value="{{ @$item->nominal_setoran }}" required="">
+      </div>
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal Lahir *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Saldo Akhir</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="date" name="f[tanggal_lahir]" id="tanggal_lahir" class="form-control" placeholder="Tanggal Lahir" value="{{ @$item->tanggal_lahir }}" required="">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">No KTP *</label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="f[no_ktp]" id="no_ktp" class="form-control" placeholder="No KTP" value="{{ @$item->no_ktp }}" required="">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tanggal Daftar *</label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="date" name="f[tanggal_daftar]" id="tanggal_daftar" class="form-control" placeholder="Tanggal Daftar" value="{{ @$item->tanggal_daftar }}" required="">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Username *</label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="u[username]" class="form-control" placeholder="Username" value="{{ @$item->username }}" required="">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Password *</label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="password" name="u[password]" class="form-control" placeholder="Password" value="{{ @$item->password }}" required="">
+      <div class="input-group">
+        <div class="input-group-btn">
+          <span class="btn btn-default btn-flat">Rp</span>
+        </div>
+        <input type="text" name="f[saldo_akhir]" id="saldo_akhir" class="form-control mask-number" placeholder="Saldo Akhir" value="{{ @$item->saldo_akhir }}" required="" readonly>
+      </div>
     </div>
   </div>
   <div class="form-group">
@@ -81,20 +56,40 @@
       
 
 <script type="text/javascript">
+  $(document).on("keyup",'#nominal_setoran', calculate);
+
+  function calculate() {
+      var saldo_awal = mask_number.currency_remove($('#saldo_awal').val());
+          nominal_setoran = mask_number.currency_remove($('#nominal_setoran').val());
+          saldo_akhir = saldo_awal + nominal_setoran;
+          $("#saldo_akhir").val(mask_number.currency_add(saldo_akhir));
+  }
+  $(document).ready(function(){
+    calculate();
+    mask_number.init()
+  });
   $('form[name="form_crud"]').on('submit',function(e) {
     e.preventDefault();
 
     $('.btn-save').addClass('disabled', true);
     $(".spinner").css("display", "");
 
-    var data_post = new FormData($(this)[0]);
+    var data = {
+          'saldo_awal' : mask_number.currency_remove($("#saldo_awal").val()),
+          'nominal_setoran' : mask_number.currency_remove($("#nominal_setoran").val()),
+          'saldo_akhir' : mask_number.currency_remove($("#saldo_akhir").val()),
+          'tanggal' : $("#tanggal").val(),
+        }
+     data_post = {
+          "f" : data,
+        }
 
     $.ajax({
         url: $(this).prop('action'),
         type: 'POST',              
         data: data_post,
-        contentType : false,
-        processData : false,
+        // contentType : false,
+        // processData : false,
         success: function(response, status, xhr)
         {
           if( response.status == "error"){

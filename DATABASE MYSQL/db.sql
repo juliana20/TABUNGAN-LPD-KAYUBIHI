@@ -59,9 +59,12 @@ CREATE TABLE `m_pegawai` (
   PRIMARY KEY (`id`,`id_pegawai`),
   KEY `m_pegawai_fk1` (`user_id`),
   CONSTRAINT `m_pegawai_fk1` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_pegawai` */
+
+insert  into `m_pegawai`(`id`,`id_pegawai`,`nama_pegawai`,`tanggal_lahir`,`alamat`,`jenis_kelamin`,`telepon`,`user_id`) values 
+(1,'PG00001','I Wayan Agus','1990-02-20','Bangli','Laki-Laki','081999897565',7);
 
 /*Table structure for table `m_produk_tabungan` */
 
@@ -96,7 +99,7 @@ CREATE TABLE `m_tabungan` (
 /*Data for the table `m_tabungan` */
 
 insert  into `m_tabungan`(`id`,`no_rekening`,`nasabah_id`,`tanggal_daftar`,`saldo`) values 
-(9,'2109202200001',1,'2022-09-21',0),
+(9,'2109202200001',1,'2022-09-21',200000),
 (10,'2109202200002',6,'2022-09-20',0);
 
 /*Table structure for table `m_user` */
@@ -113,14 +116,15 @@ CREATE TABLE `m_user` (
   `password` varchar(255) DEFAULT NULL,
   `jabatan` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `m_user` */
 
 insert  into `m_user`(`id`,`id_user`,`nama`,`alamat`,`jenis_kelamin`,`username`,`password`,`jabatan`) values 
 (1,'U00001','Ni Nyoman Kari','Bangli','Perempuan','nasabah','$2y$10$43/EXZ8iN8duAzcXJtEaJO/wQFFhS7ZC.D2I/znpO9bq3CAE0c0y6','Nasabah'),
 (2,'U00002','I Wayan Jana Antara','Bangli','Laki-Laki','antara','$2y$10$oRdsQCWZJzAdN6aczCQ7S.OZmIpBxpNoJcHSxgab3LMx4xsh8PSLi','Nasabah'),
-(6,'U00003','I Wayan Jana Antara','Bangli','Laki-Laki','antara','$2y$10$/fr.6vIVqKFGhs0jePJ1L.ZevXC/CgP9Fxy8z/reQJuzwC9u9vBEy','Nasabah');
+(6,'U00003','I Wayan Jana Antara','Bangli','Laki-Laki','antara','$2y$10$/fr.6vIVqKFGhs0jePJ1L.ZevXC/CgP9Fxy8z/reQJuzwC9u9vBEy','Nasabah'),
+(7,'U00004','I Wayan Agus','Bangli','Laki-Laki','tatausaha','$2y$10$AiSks4Oy/zmplqlQudWaEedo5hZ3TOE3TzFlHrIwyL1Mec6AJCofq','Tata');
 
 /*Table structure for table `t_simpan_tabungan` */
 
@@ -128,18 +132,23 @@ DROP TABLE IF EXISTS `t_simpan_tabungan`;
 
 CREATE TABLE `t_simpan_tabungan` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `jumlah_simpanan` float DEFAULT NULL,
+  `nominal_setoran` float DEFAULT NULL,
   `tanggal` date DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `tabungan_id` int(11) DEFAULT NULL,
+  `saldo_awal` float DEFAULT NULL,
+  `saldo_akhir` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `t_simpan_tabungan_fk1` (`user_id`),
   KEY `t_simpan_tabungan_fk2` (`tabungan_id`),
   CONSTRAINT `t_simpan_tabungan_fk1` FOREIGN KEY (`user_id`) REFERENCES `m_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `t_simpan_tabungan_fk2` FOREIGN KEY (`tabungan_id`) REFERENCES `m_tabungan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `t_simpan_tabungan` */
+
+insert  into `t_simpan_tabungan`(`id`,`nominal_setoran`,`tanggal`,`user_id`,`tabungan_id`,`saldo_awal`,`saldo_akhir`) values 
+(2,200000,'2022-09-22',1,9,0,200000);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

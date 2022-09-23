@@ -9,7 +9,7 @@
         <ul class="nav navbar-nav navbar-right">
           <li class="">
             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{ url('themes/AdminLTE-2.4.3/dist/img/user2-160x160.jpg') }}" alt="">{{ Helpers::getNama() }}
+              <img src="{{ url('themes/default/images/user2-160x160.jpg') }}" alt="">{{ Helpers::getNama() }}
               <span class=" fa fa-angle-down"></span>
             </a>
             <ul class="dropdown-menu dropdown-usermenu pull-right">

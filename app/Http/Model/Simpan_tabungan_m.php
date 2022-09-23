@@ -7,7 +7,7 @@ use DB;
 
 class Simpan_tabungan_m extends Model
 {
-	protected $table = 'm_tabungan';
+	protected $table = 't_simpan_tabungan';
 	protected $index_key = 'id';
     public $timestamps  = false;
 
@@ -17,13 +17,20 @@ class Simpan_tabungan_m extends Model
 	{
         $this->rules = [
             'insert' => [
-                'no_rekening' => "required|unique:{$this->table}",
-				'nasabah_id' => 'required',
-				'tanggal_daftar' => 'required',
+                'nominal_setoran' => "required",
+				'tanggal' => 'required',
+				'user_id' => 'required',
+				'tabungan_id' => 'required',
+				'saldo_awal' => 'required',
+				'saldo_akhir' => 'required',
             ],
 			'update' => [
-				'nasabah_id' => 'required',
-				'tanggal_daftar' => 'required',
+				'nominal_setoran' => "required",
+				'tanggal' => 'required',
+				'user_id' => 'required',
+				'tabungan_id' => 'required',
+				'saldo_awal' => 'required',
+				'saldo_akhir' => 'required',
             ],
         ];
 	}

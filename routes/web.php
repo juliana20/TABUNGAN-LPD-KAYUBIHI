@@ -20,14 +20,7 @@ Route::get('/login','Login@login');
 Route::post('/auth','Login@auth');
 Route::get('/logout', 'Login@logout');
 
-// Route::group(['middleware' => ['admin']], function () {
-#USER
-// Route::prefix('user')->group(function() {
-//     Route::get('/', 'UserController@index');
-// 	Route::match(array('GET', 'POST'),'/datatables','UserController@datatables_collection');
-// 	Route::match(array('GET', 'POST'),'/create','UserController@create');
-// 	Route::match(array('GET', 'POST'),'/edit/{id}','UserController@edit');
-// });
+Route::group(['middleware' => ['admin']], function () {
 #NASABAH
 Route::prefix('nasabah')->group(function() {
     Route::get('/', 'NasabahController@index');
@@ -39,16 +32,14 @@ Route::prefix('nasabah')->group(function() {
 Route::prefix('simpan-tabungan')->group(function() {
     Route::get('/', 'SimpanTabunganController@index');
 	Route::match(array('GET', 'POST'),'/datatables','SimpanTabunganController@datatables_collection');
-	Route::match(array('GET', 'POST'),'/create','SimpanTabunganController@create');
 	Route::match(array('GET', 'POST'),'/edit/{id}','SimpanTabunganController@edit');
 });
-#AKUN
-Route::prefix('akun')->group(function() {
-    Route::get('/', 'AkunController@index');
-	Route::match(array('GET', 'POST'),'/datatables','AkunController@datatables_collection');
-	Route::match(array('GET', 'POST'),'/create','AkunController@create');
-	Route::match(array('GET', 'POST'),'/edit/{id}','AkunController@edit');
-	Route::match(array('GET', 'POST'),'/lookup_collection','AkunController@lookup_collection');
+#PEGAWAI
+Route::prefix('pegawai')->group(function() {
+    Route::get('/', 'PegawaiController@index');
+	Route::match(array('GET', 'POST'),'/datatables','PegawaiController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','PegawaiController@create');
+	Route::match(array('GET', 'POST'),'/edit/{id}','PegawaiController@edit');
 });
 #JENIS TRANSAKSI
 Route::prefix('jenis-transaksi')->group(function() {
@@ -180,6 +171,6 @@ Route::prefix('laporan')->group(function() {
 	Route::post('/perubahan-modal/print','Laporan@printPerubahanModal');
 });
 
-// });
+});
 
 ?>

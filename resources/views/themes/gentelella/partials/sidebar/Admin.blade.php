@@ -5,6 +5,7 @@
                   <ul class="nav side-menu">
                     <li><a href="{{ url('/dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
                     <li class="{{ Request::is('nasabah') ? 'active':null}}"><a href="{{ url('nasabah') }}"><i class="fa fa-users"></i>Nasabah</a></li>
+                    <li class="{{ Request::is('pegawai') ? 'active':null}}"><a href="{{ url('pegawai') }}"><i class="fa fa-user"></i>Pegawai</a></li>
                     <li class="{{ Request::is('simpan-tabungan') ? 'active':null}}"><a href="{{ url('simpan-tabungan') }}"><i class="fa fa-credit-card"></i>Simpan Tabungan</a></li>
                     <li><a><i class="fa fa-credit-card"></i>Transaksi<span class="fa fa-chevron-down"></span></a>
                       <ul class="nav child_menu">
