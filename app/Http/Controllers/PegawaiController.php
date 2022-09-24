@@ -13,7 +13,7 @@ use Response;
 class PegawaiController extends Controller
 {
     protected $jabatan = [
-        ['id' => 'Tata', 'desc' => 'Tata Usaha'],
+        ['id' => 'Admin', 'desc' => 'Admin'],
         ['id' => 'Kepala', 'desc' => 'Kepala'],
         ['id' => 'Kolektor', 'desc' => 'Kolektor'],
         ['id' => 'Nasabah', 'desc' => 'Nasabah']

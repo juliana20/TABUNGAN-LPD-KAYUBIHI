@@ -6,6 +6,7 @@ use App\Http\Model\Akun_m;
 use Illuminate\Http\Request;
 use Response;
 use DB;
+use Helpers;
 
 class Dashboard extends Controller
 {
@@ -40,6 +41,7 @@ class Dashboard extends Controller
             'bulan'     => $this->bulan
         ];
         return view('dashboard.dashboard', $data);
+ 
     }
 
     private function totalPengeluaran($bulan, $year)

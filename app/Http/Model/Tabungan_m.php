@@ -80,7 +80,25 @@ class Tabungan_m extends Model
 
 	function get_by( $where )
 	{
-		return self::where($where)->first();
+		$query = self::join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+					->where($where)
+					->select(
+						'm_nasabah.id_nasabah',
+						'm_nasabah.nama_nasabah',
+						'm_nasabah.alamat',
+						'm_nasabah.jenis_kelamin',
+						'm_nasabah.telepon',
+						'm_nasabah.pekerjaan',
+						'm_nasabah.tanggal_lahir',
+						'm_nasabah.no_ktp',
+						'm_nasabah.user_id',
+						'm_nasabah.user_id',
+						'm_nasabah.tanggal_daftar',
+						'm_tabungan.id',
+						'm_tabungan.no_rekening',
+						'm_tabungan.saldo as saldo_awal'
+					);
+		return $query->first();
 	}
 
 	function get_by_in( $where, $data )
@@ -102,15 +120,17 @@ class Tabungan_m extends Model
 	function gen_no_rek_tabungan( $format )
 	{	
 		$max_number = self::all()->max('no_rekening');
-		$noUrut = (int) substr($max_number, 8, 5);
+		// $noUrut = (int) substr($max_number, 8, 5);
+		$noUrut = (int) $max_number;
 
 		$noUrut++;
-		$date = date('Y-m-d');
-		$month = date('m', strtotime($date));
-		$year = date('Y', strtotime($date));
-		$day = date('d', strtotime($date));
-		$code = $format;
-		$no_generate = $code.$day.$month.$year.sprintf("%05s", $noUrut);
+		// $date = date('Y-m-d');
+		// $month = date('m', strtotime($date));
+		// $year = date('Y', strtotime($date));
+		// $day = date('d', strtotime($date));
+		// $code = $format;
+		// $no_generate = $code.$day.$month.$year.sprintf("%05s", $noUrut);
+		$no_generate = sprintf("%04s", $noUrut);
 		
 		return (string) $no_generate;
 	}

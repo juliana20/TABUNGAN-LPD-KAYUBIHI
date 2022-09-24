@@ -17,13 +17,10 @@
             <thead>
               <tr>
                 <th class="no-sort">Aksi</th>
-                <th>ID Pegawai</th>
-                <th>Nama Pegawai</th>
-                <th>Tanggal Lahir</th>
-                <th>Alamat</th>
-                <th>Jenis Kelamin</th>
-                <th>No Telepon</th>
-                <th>Jabatan</th>
+                <th>No Rekening</th>
+                <th>Nama Nasabah</th>
+                <th>Tanggal Daftar</th> 
+                <th>Saldo</th>
               </tr>
             </thead>
             <tbody>
@@ -34,7 +31,6 @@
       </div>
   </div>
 </div>
-
 <!-- DataTable -->
 <script type="text/javascript">
     let lookup = {
@@ -62,7 +58,6 @@
 
 										}
 								},
-                order:[ 1, 'asc'],
               columns: [
                         { 
                                 data: "id",
@@ -70,56 +65,38 @@
                                 className: "text-center",
                                 render: function ( val, type, row ){
                                     var buttons = '<div class="btn-group" role="group">';
-                                      buttons += '<a class=\"btn btn-info btn-xs modalEdit\"><i class=\"glyphicon glyphicon-pencil\"></i> Ubah</a>';
+                                      buttons += '<a class=\"btn btn-info btn-xs modalPilih\"><i class=\"fa fa-book\"></i> Pilih</a>';
                                       buttons += "</div>";
                                     return buttons
                                   }
                               },
                           { 
-                                data: "id_pegawai", 
+                                data: "no_rekening", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "nama_pegawai", 
+                                data: "nama_nasabah", 
                                 render: function ( val, type, row ){
                                     return val
                                   }
                           },
                           { 
-                                data: "tanggal_lahir", 
+                                data: "tanggal_daftar", 
                                 render: function ( val, type, row ){
-                                    return val
+                                    return moment(val).format('DD MMMM YYYY')
                                   }
                           },
                           { 
-                                data: "alamat", 
+                                data: "saldo", 
                                 render: function ( val, type, row ){
-                                    return val
-                                  }
-                          },
-                          { 
-                                data: "jenis_kelamin", 
-                                render: function ( val, type, row ){
-                                    return val
-                                  }
-                          },
-                          { 
-                                data: "telepon", 
-                                render: function ( val, type, row ){
-                                    return val
-                                  }
-                          },
-                          { 
-                                data: "jabatan", 
-                                render: function ( val, type, row ){
-                                    return val 
+                                    return mask_number.currency_add(val)
                                   }
                           },
                       ],
                       createdRow: function ( row, data, index ){		
-                        $( row ).on( "click", ".modalEdit",  function(e){
+                        $( row ).on( "click", ".modalPilih",  function(e){
                             e.preventDefault();
                             var id = data.id;
                             var _prop= {

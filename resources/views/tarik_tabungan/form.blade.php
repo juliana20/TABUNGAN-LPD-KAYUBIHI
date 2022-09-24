@@ -25,13 +25,13 @@
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Nominal Setoran</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Nominal Penarikan</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
       <div class="input-group">
         <div class="input-group-btn">
           <span class="btn btn-default btn-flat">Rp</span>
         </div>
-        <input type="text" name="f[nominal_setoran]" id="nominal_setoran" class="form-control mask-number" placeholder="Nominal Setoran" value="{{ @$item->nominal_setoran }}" required="">
+        <input type="text" name="f[nominal_penarikan]" id="nominal_penarikan" class="form-control mask-number" placeholder="Nominal Penarikan" value="{{ @$item->nominal_penarikan }}" required="">
       </div>
     </div>
   </div>
@@ -56,12 +56,18 @@
       
 
 <script type="text/javascript">
-  $(document).on("keyup",'#nominal_setoran', calculate);
+  $(document).on("keyup",'#nominal_penarikan', calculate);
 
   function calculate() {
-      var saldo_awal = mask_number.currency_remove($('#saldo_awal').val());
-          nominal_setoran = mask_number.currency_remove($('#nominal_setoran').val());
-          saldo_akhir = saldo_awal + nominal_setoran;
+      var saldo_awal = mask_number.currency_remove($('#saldo_awal').val()) || 0;
+          nominal_penarikan = mask_number.currency_remove($('#nominal_penarikan').val()) || 0;
+          saldo_akhir = saldo_awal - nominal_penarikan;
+          if(saldo_akhir < 0)
+          {
+            $.alert_warning('Nominal penarikan melebihi saldo!');
+            $('#nominal_penarikan').val('0')
+            return false;
+          }
           $("#saldo_akhir").val(mask_number.currency_add(saldo_akhir));
   }
   $(document).ready(function(){
@@ -76,7 +82,7 @@
 
     var data = {
           'saldo_awal' : mask_number.currency_remove($("#saldo_awal").val()),
-          'nominal_setoran' : mask_number.currency_remove($("#nominal_setoran").val()),
+          'nominal_penarikan' : mask_number.currency_remove($("#nominal_penarikan").val()),
           'saldo_akhir' : mask_number.currency_remove($("#saldo_akhir").val()),
           'tanggal' : $("#tanggal").val(),
         }

@@ -18,8 +18,8 @@
                         <!-- menu profile quick info -->
                         <br />
                         <!-- sidebar menu -->
-                        {{-- @include('themes.gentelella.partials.sidebar.'.Helpers::getJabatan()) --}}
-                        @include('themes.gentelella.partials.sidebar.Admin')
+                        @include('themes.gentelella.partials.sidebar.'.Helpers::getJabatan())
+                        {{-- @include('themes.gentelella.partials.sidebar.Admin') --}}
                         <!-- sidebar menu -->
 
       

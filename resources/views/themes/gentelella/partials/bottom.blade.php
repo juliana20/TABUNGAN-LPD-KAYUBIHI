@@ -73,7 +73,7 @@
 <script src="{{url('themes/default/js/tools.js')}}"></script>
 {{-- <script src="{{ url('themes/AdminLTE-2.4.3/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script> --}}
 <!-- Select2 -->
-<script src="{{ url('') }}/themes/AdminLTE-2.4.3/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="{{ url('') }}/themes/gentelella/vendors/select2/dist/js/select2.full.js"></script>
 <script>
   @if(Session::has('message'))
      var type="{{Session::get('alert-type','info')}}"

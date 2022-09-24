@@ -6,24 +6,19 @@
                     <li><a href="{{ url('/dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
                     <li class="{{ Request::is('nasabah') ? 'active':null}}"><a href="{{ url('nasabah') }}"><i class="fa fa-users"></i>Nasabah</a></li>
                     <li class="{{ Request::is('pegawai') ? 'active':null}}"><a href="{{ url('pegawai') }}"><i class="fa fa-user"></i>Pegawai</a></li>
-                    <li class="{{ Request::is('simpan-tabungan') ? 'active':null}}"><a href="{{ url('simpan-tabungan') }}"><i class="fa fa-credit-card"></i>Simpan Tabungan</a></li>
-                    <li><a><i class="fa fa-credit-card"></i>Transaksi<span class="fa fa-chevron-down"></span></a>
+                    <li class="{{ Request::is('simpan-tabungan') ? 'active':null}}"><a href="{{ url('simpan-tabungan') }}"><i class="fa fa-book"></i>Simpan Tabungan</a></li>
+                    <li class="{{ Request::is('tarik-tabungan') ? 'active':null}}"><a href="{{ url('tarik-tabungan') }}"><i class="fa fa-credit-card"></i>Tarik Tabungan</a></li>
+                    <li><a><i class="fa fa-file-text"></i>Laporan<span class="fa fa-chevron-down"></span></a>
                       <ul class="nav child_menu">
-                        <li class="{{ Request::is('transaksi-retribusi-sampah') ? 'active':null}} {{ request()->is('transaksi-retribusi-sampah*') ? 'active':null}}"><a href="{{ url('transaksi-retribusi-sampah') }}">Retribusi Sampah</a></li>
-                        <li class="{{ Request::is('transaksi-pembayaran-online') ? 'active':null}}"><a href="{{ url('transaksi-pembayaran-online') }}">Pembayaran Online</a></li>
-                        <li class="{{ Request::is('transaksi-samsat-kendaraan') ? 'active':null}}"><a href="{{ url('transaksi-samsat-kendaraan') }}">Samsat Kendaraan</a></li>
+                        <li class="{{ Request::is('laporan/transaksi-tabungan-harian') ? 'active':null}} {{ request()->is('laporan/transaksi-tabungan-harian') ? 'active':null}}"><a href="{{ url('laporan/transaksi-tabungan-harian') }}">Transaksi Harian</a></li>
+                        <li class="{{ Request::is('laporan/transaksi-tabungan-bulanan') ? 'active':null}} {{ request()->is('laporan/transaksi-tabungan-bulanan') ? 'active':null}}"><a href="{{ url('laporan/transaksi-tabungan-bulanan') }}">Transaksi Bulanan</a></li>
+                        <li class="{{ Request::is('laporan/simpanan-tabungan') ? 'active':null}} {{ request()->is('laporan/simpanan-tabungan') ? 'active':null}}"><a href="{{ url('laporan/simpanan-tabungan') }}">Simpanan Tabungan</a></li>
+                        <li class="{{ Request::is('laporan/penarikan-tabungan') ? 'active':null}} {{ request()->is('laporan/penarikan-tabungan') ? 'active':null}}"><a href="{{ url('laporan/penarikan-tabungan') }}">Penarikan Tabungan</a></li>
                       </ul>
                     </li>
-                    <li class="{{ Request::is('pengeluaran') ? 'active':null}}"><a href="{{ url('pengeluaran') }}"><i class="fa fa-money"></i>Pengeluaran</a></li>
                   </ul>
               </div>
 
-            <div class="menu_section">
-              <h3>SETTING</h3>
-              <ul class="nav side-menu">
-                <li class="{{ Request::is('setting-parameter') ? 'active':null}}"><a href="{{ url('setting-parameter') }}"><i class="glyphicon glyphicon-cog"></i> <span>Biaya Sampah</span></a></li>
-              </ul>
-            </div>
 
           </div>
           <!-- /sidebar menu -->

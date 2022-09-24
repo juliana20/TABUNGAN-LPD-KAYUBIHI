@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Model\Simpan_tabungan_m;
 use App\Http\Model\Tabungan_m;
+use App\Http\Model\Tarik_tabungan_m;
 use Validator;
 use DataTables;
 use Illuminate\Validation\Rule;
@@ -12,15 +12,15 @@ use DB;
 use Response;
 use Helpers;
 
-class SimpanTabunganController extends Controller
+class TarikTabunganController extends Controller
 {
     protected $model;
     protected $model_tabungan;
-    public function __construct(Simpan_tabungan_m $model, Tabungan_m $model_tabungan)
+    public function __construct(Tarik_tabungan_m $model, Tabungan_m $model_tabungan)
     {
         $this->model = $model;
         $this->model_tabungan = $model_tabungan;
-        $this->nameroutes = 'simpan-tabungan';
+        $this->nameroutes = 'tarik-tabungan';
     }
     /**
      * Display a listing of the resource.
@@ -31,14 +31,14 @@ class SimpanTabunganController extends Controller
    {
         $data = array(
             'nameroutes'        => $this->nameroutes,
-            'title'             => 'Simpan Tabungan',
-            'header'            => 'Data Simpan tabungan',
-            'breadcrumb'        => 'List Data Simpan Tabungan',
-            'headerModalEdit'   => 'SIMPAN TABUNGAN',
-            'urlDatatables'     => 'simpan-tabungan/datatables',
-            'idDatatables'      => 'dt_simpan_tabungan'
+            'title'             => 'Tarik Tabungan',
+            'header'            => 'Data Tarik Tabungan',
+            'breadcrumb'        => 'List Data Tarik Tabungan',
+            'headerModalEdit'   => 'TARIK TABUNGAN',
+            'urlDatatables'     => 'tarik-tabungan/datatables',
+            'idDatatables'      => 'dt_tarik_tabungan'
         );
-        return view('simpan_tabungan.datatable',$data);
+        return view('tarik_tabungan.datatable', $data);
     }
     /**
      * Show the form for editing the specified resource.
@@ -83,7 +83,7 @@ class SimpanTabunganController extends Controller
                 DB::commit();
 
                 $response = [
-                    "message" => 'Data setoran tabungan berhasil tersimpan',
+                    "message" => 'Data penarikan tabungan berhasil tersimpan',
                     'status' => 'success',
                     'code' => 200,
                 ];
@@ -100,7 +100,7 @@ class SimpanTabunganController extends Controller
             return Response::json($response); 
         }
         
-        return view('simpan_tabungan.form', $data);
+        return view('tarik_tabungan.form', $data);
     }
 
     public function datatables_collection()
