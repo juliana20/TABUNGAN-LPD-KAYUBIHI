@@ -16,7 +16,7 @@
     </h3>
     <h4 align="center">
       {{ @$title }} <br>
-      Periode : {{ date('d-m-Y', strtotime($params->date_start)) ." s/d ". date('d-m-Y', strtotime($params->date_end)) }}
+      Periode : {{ date('d-m-Y', strtotime($params->batas_awal)) ." s/d ". date('d-m-Y', strtotime($params->batas_akhir)) }}
     </h4>
     <div class="container">
         <table width="100%">

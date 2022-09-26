@@ -76,15 +76,19 @@ Route::prefix('dashboard')->group(function() {
 #LAPORAN
 Route::prefix('laporan')->group(function() {
 	Route::get('/transaksi-tabungan-harian','Laporan@transaksiTabunganHarian');
+	Route::match(array('GET', 'POST'),'transaksi-tabungan-harian/datatables','Laporan@transaksiTabunganHarianDatatables');
 	Route::post('/transaksi-tabungan-harian/print','Laporan@printTransaksiTabunganHarian');
 
 	Route::get('/transaksi-tabungan-bulanan','Laporan@transaksiTabunganBulanan');
+	Route::match(array('GET', 'POST'),'transaksi-tabungan-bulanan/datatables','Laporan@transaksiTabunganBulananDatatables');
 	Route::post('/transaksi-tabungan-bulanan/print','Laporan@printTransaksiTabunganBulanan');
 
 	Route::get('/simpanan-tabungan','Laporan@simpananTabungan');
+	Route::match(array('GET', 'POST'),'simpanan-tabungan/datatables','Laporan@simpananTabunganDatatables');
 	Route::post('/simpanan-tabungan/print','Laporan@printSimpananTabungan');
 
 	Route::get('/penarikan-tabungan','Laporan@penarikanTabungan');
+	Route::match(array('GET', 'POST'),'penarikan-tabungan/datatables','Laporan@penarikanTabunganDatatables');
 	Route::post('/penarikan-tabungan/print','Laporan@printPenarikanTabungan');
 
 });

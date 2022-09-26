@@ -5,14 +5,13 @@
         <div class="nav toggle">
           <a id="menu_toggle"><i class="fa fa-bars"></i></a>
         </div>
-
         <ul class="nav navbar-nav navbar-right">
           <li class="">
-            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{ url('themes/default/images/user2-160x160.jpg') }}" alt="">{{ Helpers::getNama() }}
-              <span class=" fa fa-angle-down"></span>
+            <a href="javascript:;" data-toggle="modal" data-target="#modalLogout" data-id="{{ Helpers::getId() }}" class="user-profile"  aria-expanded="false">
+              {{-- <img src="{{ url('themes/default/images/user2-160x160.jpg') }}" alt="">{{ Helpers::getNama() }} --}}
+              LOG OUT <span class="fa fa-sign-out fa-lg"></span>
             </a>
-            <ul class="dropdown-menu dropdown-usermenu pull-right">
+            {{-- <ul class="dropdown-menu dropdown-usermenu pull-right">
               <li>
                 <a href="" title="Keluar" data-toggle="modal" data-target="#modalLogout" data-id="{{ Helpers::getId() }}">
                   {{ __('Logout') }}
@@ -21,7 +20,7 @@
 
                 </form>
               </li>
-            </ul>
+            </ul> --}}
           </li>
         </ul>
       </nav>

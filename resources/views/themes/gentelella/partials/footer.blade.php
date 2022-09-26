@@ -1,7 +1,7 @@
 <!-- footer content -->
 <footer>
-    <div class="pull-right">
-        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+    <div class="pull-right" style="color: #fff">
+       LPD Desa Adat Kayubihi
     </div>
     <div class="clearfix"></div>
 </footer>

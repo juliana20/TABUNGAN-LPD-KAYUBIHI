@@ -16,7 +16,8 @@
     </h3>
     <h4 align="center">
       {{ @$title }} <br>
-      Tanggal : {{ date('d-m-Y', strtotime($params->date)) }}
+      {{ !empty($kolektor->nama) ? 'Kolektor : ' . $kolektor->nama : 'Semua Kolektor' }} <br>
+      {{ !empty($params->tanggal) ? 'Tanggal ' . date('d-m-Y', strtotime($params->tanggal)) : 'Semua Tanggal' }}
     </h4>
     <div class="container">
         <table width="100%">

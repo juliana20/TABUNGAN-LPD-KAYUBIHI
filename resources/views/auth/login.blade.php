@@ -15,7 +15,7 @@
 	</head>
 	<body>
 	@include('sweet::alert')
-	<section class="ftco-section" style="padding: 3em 0!important;">
+	<section class="ftco-section" style="padding: 6em 0!important;">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-6 text-center mb-4">

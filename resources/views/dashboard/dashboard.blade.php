@@ -10,26 +10,28 @@
       <div class="x_content">
         <ul class="list-unstyled timeline">
           <li>
-            <div class="block">
-              <div class="tags">
+            <div class="">
+              {{-- <div class="tags">
                 <a href="" class="tag">
                   <span>VISI</span>
                 </a>
-              </div>
+              </div> --}}
+              {{-- <strong>VISI</strong> --}}
               <div class="block_content">
                 <p class="excerpt">
-                  Meningkatkan kesejahteraan dan perekonomian krama desa adat dan kemandirian desa adat dengan LPD yang sehat, kuat dan produktif.
+                  Visi LPD Desa Adat Kayubihi adalah meningkatkan kesejahteraan dan perekonomian krama desa adat dan kemandirian desa adat dengan LPD yang sehat, kuat dan produktif.
                 </p>
               </div>
             </div>
-          </li>
+          </li><br>
           <li>
-            <div class="block">
-              <div class="tags">
+            <div class="">
+              {{-- <div class="tags">
                 <a href="" class="tag">
                   <span>MISI</span>
                 </a>
-              </div>
+              </div> --}}
+              <strong>MISI</strong>
               <div class="block_content">
                 <p class="excerpt">
                   1. Meningkatkan keimanan dalam mengurus dan mengelola LPD melalui pemahaman ajaran Agama dan etika kerja, sehingga terwujud pengurus, pengelola, dan pengawas LPD yang profesional berdasarkan pengabdian tulus iklas untuk tetap lestarinya Desa Adat.

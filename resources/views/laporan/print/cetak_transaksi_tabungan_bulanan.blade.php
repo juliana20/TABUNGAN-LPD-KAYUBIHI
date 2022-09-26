@@ -16,7 +16,9 @@
     </h3>
     <h4 align="center">
       {{ @$title }} <br>
-      Periode : {{ date('d-m-Y', strtotime($params->date_start)) ." s/d ". date('d-m-Y', strtotime($params->date_end)) }}
+      {{ !empty($kolektor->nama) ? 'Kolektor : ' . $kolektor->nama : 'Semua Kolektor' }} <br>
+      {{ !empty($params->bulan) ? 'Bulan ' . DateTime::createFromFormat('!m', $params->bulan)->format('F') : 'Semua Bulan' }}<br>
+      {{ !empty($params->tahun) ? 'Tahun ' . date('Y', strtotime($params->tahun)) : 'Semua Tahun' }}
     </h4>
     <div class="container">
         <table width="100%">
