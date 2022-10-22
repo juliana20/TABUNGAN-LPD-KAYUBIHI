@@ -60,18 +60,22 @@
     footer {
         background: #1a96ef!important;
     }
-    .nav-md .container.body .col-md-3.left_col {
+    /* .nav-md .container.body .col-md-3.left_col {
         min-height: auto!important;
-    }
+    } */
     @media (min-width: 992px)
     {
         footer {
             margin-left: 0px!important;
         }
     }
-    .nav-sm .container.body .col-md-3.left_col {
-        min-height: auto!important;
+
+    .nav-md .container.body .col-md-3.left_col {
+        position: relative!important;
     }
+    /* .nav-sm .container.body .col-md-3.left_col {
+        min-height: auto!important;
+    } */
        
 
 </style>

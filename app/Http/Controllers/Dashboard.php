@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Model\Akun_m;
+use App\Http\Model\Nasabah_m;
+use App\Http\Model\Simpan_tabungan_m;
+use App\Http\Model\Tarik_tabungan_m;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use Illuminate\Http\Request;
 use Response;
 use DB;
@@ -44,100 +49,78 @@ class Dashboard extends Controller
  
     }
 
-    private function totalPengeluaran($bulan, $year)
+    private function totalSimpanan($bulan, $year)
     {
         
-        $pengeluaran = Akun_m::join('t_jurnal_umum','t_jurnal_umum.akun_id','m_akun.id')
-                        ->where([
-                            'm_akun.golongan' => 'Biaya',
-                            't_jurnal_umum.status_batal' => 0
-                        ])
-                        ->where(DB::raw('YEAR(t_jurnal_umum.tanggal)'), $year)
-                        ->where(DB::raw('MONTH(t_jurnal_umum.tanggal)'), $bulan)
-                        ->select(DB::raw('sum(t_jurnal_umum.debet) as total'))
+        $simpanan = Simpan_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
+                        ->where(DB::raw('MONTH(tanggal)'), $bulan)
+                        ->select(DB::raw('sum(nominal_setoran) as total'))
                         ->first();
 
-        $total = $pengeluaran->total;
+        $total = $simpanan->total;
         return ($total > 0) ? $total : 0;
     } 
 
-    private function totalPembayaranOnline($bulan, $year)
+    private function totalPenarikan($bulan, $year)
     {
         
-        $pemasukan = Akun_m::join('t_jurnal_umum','t_jurnal_umum.akun_id','m_akun.id')
-                        ->where([
-                            'm_akun.id' => '6',
-                            't_jurnal_umum.status_batal' => 0
-                        ])
-                        ->where(DB::raw('YEAR(t_jurnal_umum.tanggal)'), $year)
-                        ->where(DB::raw('MONTH(t_jurnal_umum.tanggal)'), $bulan)
-                        ->select(DB::raw('sum(t_jurnal_umum.kredit) as total'))
+        $penarikan = Tarik_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
+                        ->where(DB::raw('MONTH(tanggal)'), $bulan)
+                        ->select(DB::raw('sum(nominal_penarikan) as total'))
                         ->first();
 
-        $total = $pemasukan->total;
+        $total = $penarikan->total;
         return ($total > 0) ? $total : 0;
     } 
 
-    private function totalPembayaranSampah($bulan, $year)
+    private function totalSimpananHarian($day, $bulan, $year)
     {
         
-        $pemasukan = Akun_m::join('t_jurnal_umum','t_jurnal_umum.akun_id','m_akun.id')
-                        ->where([
-                            'm_akun.id' => '5',
-                            't_jurnal_umum.status_batal' => 0
-                        ])
-                        ->where(DB::raw('YEAR(t_jurnal_umum.tanggal)'), $year)
-                        ->where(DB::raw('MONTH(t_jurnal_umum.tanggal)'), $bulan)
-                        ->select(DB::raw('sum(t_jurnal_umum.kredit) as total'))
+        $simpanan = Simpan_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
+                        ->where(DB::raw('DAY(tanggal)'), $day)
+                        ->where(DB::raw('MONTH(tanggal)'), $bulan)
+                        ->select(DB::raw('sum(nominal_setoran) as total'))
                         ->first();
 
-        $total = $pemasukan->total;
+        $total = $simpanan->total;
         return ($total > 0) ? $total : 0;
     } 
 
-    private function totalPembayaranSamsat($bulan, $year)
+    private function totalPenarikanHarian($day, $bulan, $year)
     {
         
-        $pemasukan = Akun_m::join('t_jurnal_umum','t_jurnal_umum.akun_id','m_akun.id')
-                        ->where([
-                            'm_akun.id' => '7',
-                            't_jurnal_umum.status_batal' => 0
-                        ])
-                        ->where(DB::raw('YEAR(t_jurnal_umum.tanggal)'), $year)
-                        ->where(DB::raw('MONTH(t_jurnal_umum.tanggal)'), $bulan)
-                        ->select(DB::raw('sum(t_jurnal_umum.kredit) as total'))
+        $penarikan = Tarik_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
+                        ->where(DB::raw('DAY(tanggal)'), $day)
+                        ->where(DB::raw('MONTH(tanggal)'), $bulan)
+                        ->select(DB::raw('sum(nominal_penarikan) as total'))
                         ->first();
 
-        $total = $pemasukan->total;
+        $total = $penarikan->total;
+        return ($total > 0) ? $total : 0;
+    } 
+
+    private function totalNasabah($bulan, $year)
+    {
+        
+        $query = Nasabah_m::where(DB::raw('YEAR(tanggal_daftar)'), $year)
+                        ->where(DB::raw('MONTH(tanggal_daftar)'), $bulan);
+
+        $total = $query->count();
         return ($total > 0) ? $total : 0;
     } 
 
 
-    public function chartPengeluaran(Request $request)
+    public function chartSimpanan(Request $request)
     {
         $params = $request->post('header');
-        $months = array(
-            ['id' => 1,'bulan' => 'Januari'], 
-            ['id' => 2,'bulan' => 'Februari'], 
-            ['id' => 3,'bulan' => 'Maret'], 
-            ['id' => 4,'bulan' => 'April'], 
-            ['id' => 5,'bulan' => 'Mei'], 
-            ['id' => 6,'bulan' => 'Juni'], 
-            ['id' => 7,'bulan' => 'Juli'], 
-            ['id' => 8,'bulan' => 'Agustus'], 
-            ['id' => 9,'bulan' => 'September'], 
-            ['id' => 10,'bulan' => 'Oktober'], 
-            ['id' => 11,'bulan' => 'November'], 
-            ['id' => 12,'bulan' => 'Desember'], 
-        );
 
         $grafik = [];
-        $total_pengeluaran = 0;
-        foreach($months as $bln):
-            $total_pengeluaran += self::totalPengeluaran($bln['id'], $params['year_pengeluaran']);
+        $total = 0;
+        foreach($this->bulan as $bln):
+            $total += self::totalSimpanan($bln['id'], $params['year_simpanan']);
             $grafik[] = [
-                'Bulan' => $bln['bulan'],
-                'Pengeluaran' => self::totalPengeluaran($bln['id'], $params['year_pengeluaran']),
+                'Bulan' => $bln['desc'],
+                'Simpanan' => self::totalSimpanan($bln['id'], $params['year_simpanan']),
             ];
         endforeach;
 
@@ -145,39 +128,23 @@ class Dashboard extends Controller
             "data" => $grafik,
             "status" => "success",
             "message" => 'Grafik',
-            "total_pengeluaran" => "Rp.". number_format($total_pengeluaran, 2),
+            "total_simpanan" => "Rp.". number_format($total, 2),
             "code" => "200",
         );
         return Response::json($response);
     }
 
-    public function chartPemasukan(Request $request)
+    public function chartPenarikan(Request $request)
     {
         $params = $request->post('header');
-        $months = array(
-            ['id' => 1,'bulan' => 'Januari'], 
-            ['id' => 2,'bulan' => 'Februari'], 
-            ['id' => 3,'bulan' => 'Maret'], 
-            ['id' => 4,'bulan' => 'April'], 
-            ['id' => 5,'bulan' => 'Mei'], 
-            ['id' => 6,'bulan' => 'Juni'], 
-            ['id' => 7,'bulan' => 'Juli'], 
-            ['id' => 8,'bulan' => 'Agustus'], 
-            ['id' => 9,'bulan' => 'September'], 
-            ['id' => 10,'bulan' => 'Oktober'], 
-            ['id' => 11,'bulan' => 'November'], 
-            ['id' => 12,'bulan' => 'Desember'], 
-        );
 
         $grafik = [];
-        $total_pemasukan = 0;
-        foreach($months as $bln):
-            $total_pemasukan += self::totalPembayaranOnline($bln['id'], $params['year_pemasukan']) + self::totalPembayaranSamsat($bln['id'], $params['year_pemasukan']) + self::totalPembayaranSampah($bln['id'], $params['year_pemasukan']);
+        $total = 0;
+        foreach($this->bulan as $bln):
+            $total += self::totalPenarikan($bln['id'], $params['year_penarikan']);
             $grafik[] = [
-                'Bulan' => $bln['bulan'],
-                'Online' => self::totalPembayaranOnline($bln['id'], $params['year_pemasukan']),
-                'Samsat' => self::totalPembayaranSamsat($bln['id'], $params['year_pemasukan']),
-                'Sampah' => self::totalPembayaranSampah($bln['id'], $params['year_pemasukan']),
+                'Bulan' => $bln['desc'],
+                'Penarikan' => self::totalPenarikan($bln['id'], $params['year_penarikan']),
             ];
         endforeach;
 
@@ -185,7 +152,67 @@ class Dashboard extends Controller
             "data" => $grafik,
             "status" => "success",
             "message" => 'Grafik',
-            "total_pemasukan" => "Rp.". number_format($total_pemasukan, 2),
+            "total_penarikan" => "Rp.". number_format($total, 2),
+            "code" => "200",
+        );
+        return Response::json($response);
+    }
+
+    public function chartTransaksiHarian(Request $request)
+    {
+        $params = $request->post('header');
+
+        $start  = new DateTime(date("Y-{$params['month_transaksi']}-d"));
+        $start->modify('first day of this month');
+        $end    = new DateTime(date("Y-{$params['month_transaksi']}-d"));
+        $end->modify('last day of this month');
+
+        $interval = DateInterval::createFromDateString('1 day');
+        $period   = new DatePeriod($start, $interval, $end);
+
+        $grafik = [];
+        $total_simpanan = 0;
+        $total_penarikan = 0;
+        foreach ($period as $dt) {
+            $total_simpanan += self::totalSimpananHarian($dt->format("d"), $params['month_transaksi'], date('Y'));
+            $total_penarikan += self::totalPenarikanHarian($dt->format("d"), $params['month_transaksi'], date('Y'));
+            $grafik[] = [
+                'Day' => $dt->format("d"),
+                'Simpanan' => self::totalSimpananHarian($dt->format("d"), $params['month_transaksi'], date('Y')),
+                'Penarikan' => self::totalPenarikanHarian($dt->format("d"), $params['month_transaksi'], date('Y')),
+            ];
+        }
+
+        $response = array(
+            "data" => $grafik,
+            "status" => "success",
+            "message" => 'Grafik',
+            "total_transaksi_harian_simpanan" => "Rp.". number_format($total_simpanan, 2),
+            "total_transaksi_harian_penarikan" => "Rp.". number_format($total_penarikan, 2),
+            "code" => "200",
+        );
+        return Response::json($response);
+    }
+
+    public function chartNasabah(Request $request)
+    {
+        $params = $request->post('header');
+
+        $grafik = [];
+        $total = 0;
+        foreach($this->bulan as $bln):
+            $total += self::totalNasabah($bln['id'], $params['year_nasabah']);
+            $grafik[] = [
+                'Bulan' => $bln['desc'],
+                'Nasabah' => self::totalNasabah($bln['id'], $params['year_nasabah']),
+            ];
+        endforeach;
+
+        $response = array(
+            "data" => $grafik,
+            "status" => "success",
+            "message" => 'Grafik',
+            "total_nasabah" => $total,
             "code" => "200",
         );
         return Response::json($response);

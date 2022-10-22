@@ -68,8 +68,10 @@ Route::prefix('riwayat-transaksi-nasabah')->group(function() {
 #DASHBOARD
 Route::prefix('dashboard')->group(function() {
 	Route::get('/','Dashboard@index');
-	Route::post('/chart-pengeluaran','Dashboard@chartPengeluaran');
-	Route::post('/chart-pemasukan','Dashboard@chartPemasukan');
+	Route::post('/chart-simpanan','Dashboard@chartSimpanan');
+	Route::post('/chart-penarikan','Dashboard@chartPenarikan');
+	Route::post('/chart-transaksi-harian','Dashboard@chartTransaksiHarian');
+	Route::post('/chart-nasabah','Dashboard@chartNasabah');
 });
 
 
