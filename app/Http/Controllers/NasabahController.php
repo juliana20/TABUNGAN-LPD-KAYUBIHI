@@ -11,6 +11,7 @@ use DataTables;
 use Illuminate\Validation\Rule;
 use DB;
 use Response;
+use Helpers;
 
 class NasabahController extends Controller
 {
@@ -44,7 +45,8 @@ class NasabahController extends Controller
             'headerModalTambah' => 'TAMBAH DATA NASABAH',
             'headerModalEdit'   => 'UBAH DATA NASABAH',
             'urlDatatables'     => 'nasabah/datatables',
-            'idDatatables'      => 'dt_nasabah'
+            'idDatatables'      => 'dt_nasabah',
+            'is_kepala'         => (Helpers::getJabatan() == 'Kepala')
         );
         return view('nasabah.datatable',$data);
     }
@@ -169,8 +171,12 @@ class NasabahController extends Controller
             }
             //validasi dari model
             $validator = Validator::make( $header, [
-                'id_nasabah' => [Rule::unique('m_nasabah')->ignore($get_data->id_nasabah, 'id_nasabah')],
+                // 'id_nasabah' => [Rule::unique('m_nasabah')->ignore($get_data->id_nasabah, 'id_nasabah')],
+                'nama_nasabah' => 'required',
+				'alamat' => 'required',
+				'no_ktp' => 'required|digits_between:16,16|numeric'
             ]);
+            
             if ($validator->fails()) {
                 $response = [
                     'message' => $validator->errors()->first(),
@@ -242,9 +248,10 @@ class NasabahController extends Controller
         return view('nasabah.form', $data);
     }
 
-    public function datatables_collection()
+    public function datatables_collection(Request $request)
     {
-        $data = $this->model->get_all();
+        $params = $request->all();
+        $data = $this->model->get_all($params);
         return Datatables::of($data)->make(true);
     }
 

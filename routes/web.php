@@ -72,6 +72,7 @@ Route::prefix('dashboard')->group(function() {
 	Route::post('/chart-penarikan','Dashboard@chartPenarikan');
 	Route::post('/chart-transaksi-harian','Dashboard@chartTransaksiHarian');
 	Route::post('/chart-nasabah','Dashboard@chartNasabah');
+	Route::post('/chart-nasabah-tabungan-terbanyak','Dashboard@chartNasabahTabunganTerbanyak');
 });
 
 

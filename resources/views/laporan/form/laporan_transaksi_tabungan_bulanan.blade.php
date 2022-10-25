@@ -67,6 +67,7 @@
               <thead>
                 <tr>
                   <th class="no-sort">No</th>
+                  <th>Tanggal Transaksi</th>
                   <th>ID Nasabah</th>
                   <th>Nama Nasabah</th>
                   <th>Simpanan</th>
@@ -79,7 +80,7 @@
             </tbody>
             <tfoot>
               <tr>
-                  <th colspan="3" style="text-align:right">Total</th>
+                  <th colspan="4" style="text-align:right">Total</th>
                   <th></th>
                   <th></th>
                   <th></th>
@@ -117,7 +118,13 @@
                                 orderable: false,
                                 render: function ( val, type, row, meta ){
                                       return meta.row + meta.settings._iDisplayStart + 1;
-                          }
+                            }
+                          },
+                          { 
+                                data: "tanggal", 
+                                render: function ( val, type, row ){
+                                    return moment(val).format('DD/MM/YYYY')
+                                  }
                           },
                           { 
                                 data: "id_nasabah", 

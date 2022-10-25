@@ -16,15 +16,16 @@
     </h3>
     <h4 align="center">
       {{ @$title }} <br>
-      {{ !empty($kolektor->nama) ? 'Kolektor : ' . $kolektor->nama : 'Semua Kolektor' }} <br>
-      {{ !empty($params->bulan) ? 'Bulan ' . DateTime::createFromFormat('!m', $params->bulan)->format('F') : 'Semua Bulan' }}<br>
-      {{ !empty($params->tahun) ? 'Tahun ' . date('Y', strtotime($params->tahun)) : 'Semua Tahun' }}
+      {{ !empty($kolektor->nama) ? 'Kolektor : ' . $kolektor->nama : '' }} <br>
+      {{ !empty($params->bulan) ? 'Bulan ' . DateTime::createFromFormat('!m', $params->bulan)->format('F') : '' }}<br>
+      {{ !empty($params->tahun) ? 'Tahun ' . date('Y', strtotime($params->tahun)) : '' }}
     </h4>
     <div class="container">
         <table width="100%">
           <thead>
             <tr>
               <th style="text-align: center!important">No</th>
+              <th>Tanggal Transaksi</th>
               <th>ID Nasabah</th>
               <th>Nama Nasabah</th>
               <th>Simpanan</th>
@@ -44,6 +45,7 @@
               @endphp
                 <tr>
                   <td align="center">{{ $no++ }}</td>
+                  <td>{{ date('d-m-Y', strtotime($row['tanggal'])) }}</td>
                   <td>{{ $row['id_nasabah'] }}</td>
                   <td>{{ $row['nama_nasabah'] }}</td>
                   <td align="right">Rp. {{ number_format($nominal_setoran, 2) }}</td>
@@ -53,19 +55,40 @@
               @endforeach
             @else
               <tr>
-                <td colspan="6" align="center">Tidak terdapat data</td>
+                <td colspan="7" align="center">Tidak terdapat data</td>
               </tr>
             @endif
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3" align="right"><b>Total</b></td>
+              <td colspan="4" align="right"><b>Total</b></td>
               <td align="right"><b>Rp. {{ number_format($jumlah_setoran, 2) }}</b></td>
               <td align="right"><b>Rp. {{ number_format($jumlah_penarikan, 2) }}</b></td>
               <td></td>
             </tr>
           </tfoot>
 
+        </table>
+        <br>
+
+        <table style="border: 0px!important">
+          <tr> 
+            <td width="33%" align="center" style="border: 0px!important">
+              <p style="margin-bottom: 70px" align="center">Petugas Tabungan</p>
+
+              <p align="center">( ............................... )</p>
+            </td>
+            <td width="33%" align="center" style="border: 0px!important">
+              <p style="margin-bottom: 70px" align="center">Kasir LPD</p>
+
+              <p align="center">( ............................... )</p>
+            </td>
+            <td width="33%" align="center" style="border: 0px!important">
+              <p style="margin-bottom: 70px" align="center">Kepala LPD</p>
+
+              <p align="center">( ............................... )</p>
+            </td>
+          </tr>
         </table>
       </div>
     <p style="z-index: 100;position: absolute;bottom: 0px;float: right;font-size: 11px;"><i>Tanggal Cetak : <?php echo date('d-m-Y') ?></i></p>

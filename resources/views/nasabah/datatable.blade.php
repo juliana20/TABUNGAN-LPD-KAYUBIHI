@@ -6,17 +6,39 @@
       <div class="x_title">
         <h2>{{ @$header }}</h2>
         <ul class="nav navbar-right panel_toolbox">
-          <li class="dropdown">
-            <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
-          </li>
+          @if(!@$is_kepala)
+            <li class="dropdown">
+              <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
+            </li>
+          @endif
         </ul>
         <div class="clearfix"></div>
       </div>
       <div class="x_content">
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" style="background:#ffffff">
+          <div class="panel-body">
+              <div class="row">
+                  <div class="col-md-2 ">
+                    <div class="form-group">
+                      <label class="control-label">Periode Daftar</label>
+                      <input type="date" name="periode_awal" class="form-control" id="periode_awal">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label class="control-label">&nbsp;</label>
+                      <input type="date" name="periode_akhir" class="form-control" id="periode_akhir">
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
         <table class="table table-hover" id="{{ $idDatatables }}" width="100%">   
             <thead>
               <tr>
-                <th class="no-sort">Aksi</th>
+                @if(!@$is_kepala)
+                  <th class="no-sort">Aksi</th>
+                @endif
                 <th>ID Nasabah</th>
                 <th>Nama Nasabah</th>
                 <th>Jenis Kelamin</th>
@@ -60,10 +82,12 @@
 								url: "{{ url("{$urlDatatables}") }}",
 								type: "POST",
 								data: function(params){
-
-										}
+                      params.periode_awal = $('#periode_awal').val();
+                      params.periode_akhir = $('#periode_akhir').val();
+									}
 								},
               columns: [
+                        @if(!@$is_kepala)
                         { 
                                 data: "id",
                                 orderable: false,
@@ -75,6 +99,7 @@
                                     return buttons
                                   }
                               },
+                          @endif
                           { 
                                 data: "id_nasabah", 
                                 render: function ( val, type, row ){
@@ -154,6 +179,10 @@
 $(document).ready(function() {
     _datatables_show.dt__datatables_show();
     lookup.lookup_modal_create();
+    $('#periode_awal,#periode_akhir').on('change', function(e){
+        e.preventDefault();
+        _datatable.ajax.reload();
+    });
 });
 </script>
 @endsection

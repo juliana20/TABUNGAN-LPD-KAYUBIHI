@@ -25,11 +25,11 @@
                         <div class="row">
                             <div class="col-md-3">
                               <div class="form-group">
-                                <label class="control-label">Kolektor</label>
-                                <select name="kolektor" class="form-control" id="kolektor">
+                                <label class="control-label">Nasabah</label>
+                                <select name="nasabah" class="form-control" id="nasabah">
                                     <option value="" selected="selected">-- Semua --</option>
-                                    <?php foreach(@$kolektor as $dt): ?>
-                                      <option value="<?php echo @$dt->id ?>"><?php echo @$dt->nama ?></option>
+                                    <?php foreach(@$nasabah as $dt): ?>
+                                      <option value="<?php echo @$dt->id ?>"><?php echo @$dt->nama_nasabah ?></option>
                                     <?php endforeach; ?>
                                 </select>
                               </div>
@@ -92,7 +92,7 @@
 								url: "{{ url("{$urlDatatables}") }}",
 								type: "POST",
 								data: function(params){
-                      params.kolektor = $('#kolektor').val();
+                      params.nasabah = $('#nasabah').val();
                       params.batas_awal = $('#batas_awal').val();
                       params.batas_akhir = $('#batas_akhir').val();
 										}
@@ -188,7 +188,7 @@
 
 $(document).ready(function() {
     _datatables_show.dt__datatables_show();
-    $('#kolektor,#batas_awal,#batas_akhir').on('change', function(e){
+    $('#nasabah,#batas_awal,#batas_akhir').on('change', function(e){
         e.preventDefault();
         _datatable.ajax.reload();
     });

@@ -21,17 +21,25 @@ class Nasabah_m extends Model
                 'id_nasabah' => "required|unique:{$this->table}",
 				'nama_nasabah' => 'required',
 				'alamat' => 'required',
+				'no_ktp' => 'required|min:16|max:16'
             ],
 			'update' => [
 				'nama_nasabah' => 'required',
 				'alamat' => 'required',
+				'no_ktp' => 'required|min:16|max:16'
             ],
         ];
 	}
 
-    function get_all()
+    function get_all($params = [])
     {
-        return self::get();
+        $query = self::select('*');
+
+		if(!empty($params['periode_awal']) && !empty($params['periode_akhir'])){
+            $query->whereBetween('tanggal_daftar',[$params['periode_awal'], $params['periode_akhir']]);
+        }  
+
+		return  $query->get();
     }
 
     function insert_data($data)

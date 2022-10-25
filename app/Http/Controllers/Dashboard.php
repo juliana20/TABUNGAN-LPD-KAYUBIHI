@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Model\Nasabah_m;
 use App\Http\Model\Simpan_tabungan_m;
+use App\Http\Model\Tabungan_m;
 use App\Http\Model\Tarik_tabungan_m;
 use DateInterval;
 use DatePeriod;
@@ -45,57 +46,100 @@ class Dashboard extends Controller
             'title'     => 'Beranda',
             'bulan'     => $this->bulan
         ];
-        return view('dashboard.dashboard', $data);
+
+        if(Helpers::getJabatan() == 'Nasabah')
+        {
+            return view('dashboard.dashboard_nasabah', $data);
+        }else{
+            return view('dashboard.dashboard', $data);
+        }
+
  
     }
 
     private function totalSimpanan($bulan, $year)
     {
-        
+        if(Helpers::getJabatan() == 'Nasabah')
+        {
+            $get_nasabah = Nasabah_m::join('m_tabungan','m_tabungan.nasabah_id','m_nasabah.id')
+                            ->where('user_id', Helpers::getId())
+                            ->select('m_nasabah.*','m_tabungan.id as tabungan_id')
+                            ->first();
+        }
         $simpanan = Simpan_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
                         ->where(DB::raw('MONTH(tanggal)'), $bulan)
-                        ->select(DB::raw('sum(nominal_setoran) as total'))
-                        ->first();
+                        ->select(DB::raw('sum(nominal_setoran) as total'));
 
-        $total = $simpanan->total;
+        if(!empty($get_nasabah)){
+            $simpanan->where('tabungan_id', $get_nasabah->tabungan_id);
+        }
+
+        $total = $simpanan->first()->total;
         return ($total > 0) ? $total : 0;
     } 
 
     private function totalPenarikan($bulan, $year)
     {
-        
+        if(Helpers::getJabatan() == 'Nasabah')
+        {
+            $get_nasabah = Nasabah_m::join('m_tabungan','m_tabungan.nasabah_id','m_nasabah.id')
+                            ->where('user_id', Helpers::getId())
+                            ->select('m_nasabah.*','m_tabungan.id as tabungan_id')
+                            ->first();
+        }
+
         $penarikan = Tarik_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
                         ->where(DB::raw('MONTH(tanggal)'), $bulan)
-                        ->select(DB::raw('sum(nominal_penarikan) as total'))
-                        ->first();
+                        ->select(DB::raw('sum(nominal_penarikan) as total'));
 
-        $total = $penarikan->total;
+        if(!empty($get_nasabah)){
+            $penarikan->where('tabungan_id', $get_nasabah->tabungan_id);
+        }
+
+        $total = $penarikan->first()->total;
         return ($total > 0) ? $total : 0;
     } 
 
     private function totalSimpananHarian($day, $bulan, $year)
     {
-        
+        if(Helpers::getJabatan() == 'Nasabah')
+        {
+            $get_nasabah = Nasabah_m::join('m_tabungan','m_tabungan.nasabah_id','m_nasabah.id')
+                            ->where('user_id', Helpers::getId())
+                            ->select('m_nasabah.*','m_tabungan.id as tabungan_id')
+                            ->first();
+        }
+
         $simpanan = Simpan_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
                         ->where(DB::raw('DAY(tanggal)'), $day)
                         ->where(DB::raw('MONTH(tanggal)'), $bulan)
-                        ->select(DB::raw('sum(nominal_setoran) as total'))
-                        ->first();
+                        ->select(DB::raw('sum(nominal_setoran) as total'));
 
-        $total = $simpanan->total;
+        if(!empty($get_nasabah)){
+            $simpanan->where('tabungan_id', $get_nasabah->tabungan_id);
+        }
+        $total = $simpanan->first()->total;
         return ($total > 0) ? $total : 0;
     } 
 
     private function totalPenarikanHarian($day, $bulan, $year)
     {
-        
+        if(Helpers::getJabatan() == 'Nasabah')
+        {
+            $get_nasabah = Nasabah_m::join('m_tabungan','m_tabungan.nasabah_id','m_nasabah.id')
+                            ->where('user_id', Helpers::getId())
+                            ->select('m_nasabah.*','m_tabungan.id as tabungan_id')
+                            ->first();
+        }
         $penarikan = Tarik_tabungan_m::where(DB::raw('YEAR(tanggal)'), $year)
                         ->where(DB::raw('DAY(tanggal)'), $day)
                         ->where(DB::raw('MONTH(tanggal)'), $bulan)
-                        ->select(DB::raw('sum(nominal_penarikan) as total'))
-                        ->first();
+                        ->select(DB::raw('sum(nominal_penarikan) as total'));
 
-        $total = $penarikan->total;
+        if(!empty($get_nasabah)){
+            $penarikan->where('tabungan_id', $get_nasabah->tabungan_id);
+        }
+        $total = $penarikan->first()->total;
         return ($total > 0) ? $total : 0;
     } 
 
@@ -213,6 +257,40 @@ class Dashboard extends Controller
             "status" => "success",
             "message" => 'Grafik',
             "total_nasabah" => $total,
+            "code" => "200",
+        );
+        return Response::json($response);
+    }
+
+    private function totalTabunganNasabah($nasabah_id)
+    {
+        $query = Tabungan_m::where('nasabah_id', $nasabah_id);
+        $total = $query->first()->saldo;
+        return ($total > 0) ? $total : 0;
+    } 
+
+    public function chartNasabahTabunganTerbanyak(Request $request)
+    {
+        $nasabah = Nasabah_m::join('m_tabungan','m_nasabah.id','m_tabungan.nasabah_id')
+                    ->select('m_nasabah.*','m_tabungan.nasabah_id','m_tabungan.no_rekening')
+                    ->take(10)
+                    ->get();
+
+        $grafik = [];
+        $total = 0;
+        foreach($nasabah as $row):
+            $total += self::totalTabunganNasabah($row->id);
+            $grafik[] = [
+                'Nasabah' => $row->nama_nasabah,
+                'Tabungan' => self::totalTabunganNasabah($row->id),
+            ];
+        endforeach;
+
+        $response = array(
+            "data" => $grafik,
+            "status" => "success",
+            "message" => 'Grafik',
+            "total" => 'Rp.' . number_format($total,2),
             "code" => "200",
         );
         return Response::json($response);

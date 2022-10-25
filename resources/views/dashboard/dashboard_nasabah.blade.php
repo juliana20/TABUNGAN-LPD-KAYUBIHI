@@ -116,7 +116,6 @@
             </div>
           </div>
         </div>
-        
         <div class="col-md-12 col-sm-12 ">
           <div class="tile_count">
             <div class="col-md-12 col-sm-12  tile_stats_count">
@@ -145,55 +144,6 @@
             </div>
           </div>
         </div>
-
-        <div class="col-md-6 col-sm-6 ">
-          <div class="tile_count">
-            <div class="col-md-12 col-sm-12  tile_stats_count">
-              <span class="count_top"><i class="fa fa-users"></i> Grafik Nasabah</span>
-                <div id="totalNasabah" class="count green" style="font-size: 20px!important;line-height: 25px!important;">0</div>
-            </div>
-            
-          </div>
-          <div class="x_panel">
-            <div class="x_title">
-              <h2>Grafik Pendaftaran Nasabah</h2>
-              <ul class="nav navbar-right panel_toolbox">
-                <li class="dropdown">
-                  <select name="year_nasabah" id="select_year_nasabah" class="form-control">
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022" selected>2022</option>
-                  </select>
-                </li>
-              </ul>
-              <div class="clearfix"></div>
-            </div>
-            <div class="x_content" id="x_content_nasabah">  
-                <div id="chartNasabah" class="chartNasabah" style="width:100%; height:280px;"></div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-sm-6 ">
-          <div class="tile_count">
-            <div class="col-md-12 col-sm-12  tile_stats_count">
-              <span class="count_top"><i class="fa fa-users"></i> Grafik Tabungan Nasabah</span>
-                <div id="totalTabungan" class="count green" style="font-size: 20px!important;line-height: 25px!important;">0</div>
-            </div>
-            
-          </div>
-          <div class="x_panel">
-            <div class="x_title">
-              <h2>Grafik 10 Nasabah Dengan Tabungan Terbanyak</h2>
-              <div class="clearfix"></div>
-            </div>
-            <div class="x_content" id="x_content_nasabah">  
-                <div id="chartNasabahTabunganTerbanyak" class="chartNasabahTabunganTerbanyak" style="width:100%; height:280px;"></div>
-            </div>
-          </div>
-        </div>
-
-
       </div>
     </div>
   </div>
@@ -362,112 +312,6 @@
         
     });
 
-    $.fn.extend({
-      functionGraphNasabah: { 
-        init:function(){
-              var post_data = {};
-                  post_data.header = {
-                    'year_nasabah':$('#select_year_nasabah').val()
-                  }
-                  $.post( "{{ url('dashboard/chart-nasabah') }}", post_data, function( response, status, xhr ){
-                      if ( response.status == 'error')
-                      {
-                        return false;
-                      }
-                      $( "#totalNasabah" ).html('Total : ' +response.total_nasabah + ' Nasabah');
-                      $.fn.functionGraphNasabah.chart(response.data);    
-                  });												
-            $('#select_year_nasabah').on( "change",  function(e){
-              $('#chartNasabah').remove();
-              var post_data = {};
-                  post_data.header = {
-                    'year_nasabah':$('#select_year_nasabah').val()
-                  }
-              $.post( "{{ url('dashboard/chart-nasabah') }}", post_data, function( response, status, xhr ){
-                  if ( response.status == 'error')
-                  {
-                    return false;
-                  }
-                  $( "#x_content_nasabah" ).append( "<div class=\"chartNasabah\" id=\"chartNasabah\" style=\"width:100%; height:280px;\"></div>" );
-                  $( "#totalNasabah" ).html('Total : ' +response.total_nasabah + ' Nasabah');
-                  $.fn.functionGraphNasabah.chart(response.data);    
-                });												
-            });
-        },
-      chart: function(data)
-          {
-            var bar = new Morris.Bar({
-                barSizeRatio:0.8,
-                element: 'chartNasabah',
-                resize: true,
-                data: data,
-                barColors: ['#26B99A'],
-                xkey: 'Bulan',
-                ykeys: ['Nasabah'],
-                labels: ['Total Nasabah'],
-                hideHover: 'auto',
-                xLabelAngle: 50,
-            });
-
-          },
-        },
-
-        
-    });
-
-    $.fn.extend({
-      functionGraphNasabahTabunganTerbanyak: { 
-        init:function(){
-              var post_data = {};
-                  post_data.header = {
-                    'year_nasabah_tabungan':$('#select_year_nasabah_tabungan').val()
-                  }
-                  $.post( "{{ url('dashboard/chart-nasabah-tabungan-terbanyak') }}", post_data, function( response, status, xhr ){
-                      if ( response.status == 'error')
-                      {
-                        return false;
-                      }
-                      $( "#totalTabungan" ).html('Total : ' +response.total);
-                      $.fn.functionGraphNasabahTabunganTerbanyak.chart(response.data);    
-                  });												
-            $('#select_year_nasabah_tabungan').on( "change",  function(e){
-              $('#chartNasabahTabunganTerbanyak').remove();
-              var post_data = {};
-                  post_data.header = {
-                    'year_nasabah_tabungan':$('#select_year_nasabah_tabungan').val()
-                  }
-              $.post( "{{ url('dashboard/chart-nasabah-tabungan-terbanyak') }}", post_data, function( response, status, xhr ){
-                  if ( response.status == 'error')
-                  {
-                    return false;
-                  }
-                  $( "#x_content_nasabah" ).append( "<div class=\"chartNasabahTabunganTerbanyak\" id=\"chartNasabahTabunganTerbanyak\" style=\"width:100%; height:280px;\"></div>" );
-                  $( "#totalTabungan" ).html('Total : ' +response.total);
-                  $.fn.functionGraphNasabahTabunganTerbanyak.chart(response.data);    
-                });												
-            });
-        },
-      chart: function(data)
-          {
-            var bar = new Morris.Bar({
-                barSizeRatio:0.8,
-                element: 'chartNasabahTabunganTerbanyak',
-                resize: true,
-                data: data,
-                barColors: ['#0e64e5'],
-                xkey: 'Nasabah',
-                ykeys: ['Tabungan'],
-                labels: ['Total Tabungan'],
-                hideHover: 'auto',
-                xLabelAngle: 50,
-            });
-
-          },
-        },
-
-        
-    });
-    
 
 
     $(document).ready(function(){
@@ -482,14 +326,6 @@
         if ($('#chartTransaksiHarian').length )
         { 
           $.fn.functionGraphTransaksiHarian.init();
-        }
-        if ($('#chartNasabah').length )
-        { 
-          $.fn.functionGraphNasabah.init();
-        }
-        if ($('#chartNasabahTabunganTerbanyak').length )
-        { 
-          $.fn.functionGraphNasabahTabunganTerbanyak.init();
         }
     });
   }); 

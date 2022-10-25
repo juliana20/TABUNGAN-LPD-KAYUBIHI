@@ -64,6 +64,27 @@
           </tfoot>
 
         </table>
+        <br>
+
+        <table style="border: 0px!important">
+          <tr> 
+            <td width="33%" align="center" style="border: 0px!important">
+              <p style="margin-bottom: 70px" align="center">Petugas Tabungan</p>
+
+              <p align="center">( ............................... )</p>
+            </td>
+            <td width="33%" align="center" style="border: 0px!important">
+              <p style="margin-bottom: 70px" align="center">Kasir LPD</p>
+
+              <p align="center">( ............................... )</p>
+            </td>
+            <td width="33%" align="center" style="border: 0px!important">
+              <p style="margin-bottom: 70px" align="center">Kepala LPD</p>
+
+              <p align="center">( ............................... )</p>
+            </td>
+          </tr>
+        </table>
       </div>
     <p style="z-index: 100;position: absolute;bottom: 0px;float: right;font-size: 11px;"><i>Tanggal Cetak : <?php echo date('d-m-Y') ?></i></p>
 </body>

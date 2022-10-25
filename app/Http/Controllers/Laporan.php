@@ -7,7 +7,9 @@ use App\Http\Model\Transaksi_online_m;
 use App\Http\Model\Transaksi_sampah_m;
 use App\Http\Model\Transaksi_samsat_m;
 use App\Http\Model\Jurnal_umum_m;
+use App\Http\Model\Nasabah_m;
 use App\Http\Model\Simpan_tabungan_m;
+use App\Http\Model\Tabungan_m;
 use App\Http\Model\Tarik_tabungan_m;
 use App\Http\Model\User_m;
 use Illuminate\Http\Request;
@@ -50,7 +52,7 @@ class Laporan extends Controller
             'item'              => (object) $item,
             'title'             => 'Laporan Transaksi Tabungan Harian',
             'url_print'         => 'laporan/transaksi-tabungan-harian/print',
-            'kolektor'   => User_m::where('jabatan', 'Kolektor')->get(),
+            'kolektor'          => User_m::whereIn('jabatan', ['Kolektor', 'Admin'])->get(),
             'title'             => 'Laporan Harian',
             'header'            => 'Laporan Harian Tabungan LPD Desa Adat Kayubihi',
             'urlDatatables'     => 'laporan/transaksi-tabungan-harian/datatables',
@@ -71,6 +73,7 @@ class Laporan extends Controller
                         'm_nasabah.nama_nasabah',
                         'm_tabungan.no_rekening',
                         't_simpan_tabungan.nominal_setoran',
+                        't_simpan_tabungan.tanggal',
                         'm_user.nama as kolektor'
                     )
                     ->addSelect(\DB::raw("'0' as nominal_penarikan"));
@@ -90,6 +93,7 @@ class Laporan extends Controller
                         'm_nasabah.nama_nasabah',
                         'm_tabungan.no_rekening',
                         't_tarik_tabungan.nominal_penarikan',
+                        't_tarik_tabungan.tanggal',
                         'm_user.nama as kolektor'
                     )
                     ->addSelect(\DB::raw("'0' as nominal_setoran"));
@@ -116,6 +120,7 @@ class Laporan extends Controller
                         'm_nasabah.nama_nasabah',
                         'm_tabungan.no_rekening',
                         't_simpan_tabungan.nominal_setoran',
+                        't_simpan_tabungan.tanggal',
                         'm_user.nama as kolektor'
                     )
                     ->addSelect(\DB::raw("'0' as nominal_penarikan"));
@@ -136,6 +141,7 @@ class Laporan extends Controller
                         'm_nasabah.nama_nasabah',
                         'm_tabungan.no_rekening',
                         't_tarik_tabungan.nominal_penarikan',
+                        't_tarik_tabungan.tanggal',
                         'm_user.nama as kolektor'
                     )
                     ->addSelect(\DB::raw("'0' as nominal_setoran"));
@@ -171,7 +177,7 @@ class Laporan extends Controller
             'item'              => (object) $item,
             'title'             => 'Laporan Transaksi Tabungan Bulanan',
             'url_print'         => 'laporan/transaksi-tabungan-bulanan/print',
-            'kolektor'          => User_m::where('jabatan', 'Kolektor')->get(),
+            'kolektor'          => User_m::whereIn('jabatan', ['Kolektor', 'Admin'])->get(),
             'title'             => 'Laporan Bulanan',
             'header'            => 'Laporan Bulanan Tabungan LPD Desa Adat Kayubihi',
             'urlDatatables'     => 'laporan/transaksi-tabungan-bulanan/datatables',
@@ -193,6 +199,7 @@ class Laporan extends Controller
                          'm_nasabah.nama_nasabah',
                          'm_tabungan.no_rekening',
                          't_simpan_tabungan.nominal_setoran',
+                         't_simpan_tabungan.tanggal',
                          'm_user.nama as kolektor'
                      )
                      ->addSelect(\DB::raw("'0' as nominal_penarikan"));
@@ -215,6 +222,7 @@ class Laporan extends Controller
                          'm_nasabah.nama_nasabah',
                          'm_tabungan.no_rekening',
                          't_tarik_tabungan.nominal_penarikan',
+                         't_tarik_tabungan.tanggal',
                          'm_user.nama as kolektor'
                      )
                      ->addSelect(\DB::raw("'0' as nominal_setoran"));
@@ -306,7 +314,7 @@ class Laporan extends Controller
             'item'              => (object) $item,
             'title'             => 'Laporan Simpanan Tabungan',
             'url_print'         => 'laporan/simpanan-tabungan/print',
-            'kolektor'          => User_m::where('jabatan', 'Kolektor')->get(),
+            'nasabah'          => Nasabah_m::get(),
             'title'             => 'Laporan Simpanan Tabungan',
             'header'            => 'Laporan Simpanan Tabungan LPD Desa Adat Kayubihi',
             'urlDatatables'     => 'laporan/simpanan-tabungan/datatables',
@@ -331,8 +339,9 @@ class Laporan extends Controller
              'm_user.nama as kolektor'
          );
 
-        if(!empty($params['kolektor'])){
-            $simpanan->where('t_simpan_tabungan.user_id', $params['kolektor']);
+        if(!empty($params['nasabah'])){
+            $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
+            $simpanan->where('t_simpan_tabungan.tabungan_id', $get_tabungan->id);
         }  
         if(!empty($params['batas_awal']) && !empty($params['batas_akhir'])){
             $simpanan->whereBetween('t_simpan_tabungan.tanggal',[$params['batas_awal'], $params['batas_akhir']]);
@@ -357,8 +366,9 @@ class Laporan extends Controller
                          'm_user.nama as kolektor'
                      );
 
-        if(!empty($params['kolektor'])){
-            $simpanan->where('t_simpan_tabungan.user_id', $params['kolektor']);
+        if(!empty($params['nasabah'])){
+            $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
+            $simpanan->where('t_simpan_tabungan.tabungan_id', $get_tabungan->id);
         }  
         if(!empty($params['batas_awal']) && !empty($params['batas_akhir'])){
             $simpanan->whereBetween('t_simpan_tabungan.tanggal',[$params['batas_awal'], $params['batas_akhir']]);
@@ -384,7 +394,7 @@ class Laporan extends Controller
             'item'              => (object) $item,
             'title'             => 'Laporan Penarikan Tabungan',
             'url_print'         => 'laporan/penarikan-tabungan/print',
-            'kolektor'          => User_m::where('jabatan', 'Kolektor')->get(),
+            'nasabah'           => Nasabah_m::get(),
             'title'             => 'Laporan Penarikan Tabungan',
             'header'            => 'Laporan Penarikan Tabungan LPD Desa Adat Kayubihi',
             'urlDatatables'     => 'laporan/penarikan-tabungan/datatables',
@@ -409,8 +419,9 @@ class Laporan extends Controller
                         'm_user.nama as kolektor'
                     );
 
-       if(!empty($params['kolektor'])){
-           $penarikan->where('t_tarik_tabungan.user_id', $params['kolektor']);
+       if(!empty($params['nasabah'])){
+            $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
+            $penarikan->where('t_tarik_tabungan.tabungan_id', $get_tabungan->id);
        }  
        if(!empty($params['batas_awal']) && !empty($params['batas_akhir'])){
            $penarikan->whereBetween('t_tarik_tabungan.tanggal',[$params['batas_awal'], $params['batas_akhir']]);
@@ -434,8 +445,9 @@ class Laporan extends Controller
                          'm_user.nama as kolektor'
                      );
 
-        if(!empty($params['kolektor'])){
-            $penarikan->where('t_tarik_tabungan.user_id', $params['kolektor']);
+        if(!empty($params['nasabah'])){
+            $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
+            $penarikan->where('t_tarik_tabungan.tabungan_id', $get_tabungan->id);
         }  
         if(!empty($params['batas_awal']) && !empty($params['batas_akhir'])){
             $penarikan->whereBetween('t_tarik_tabungan.tanggal',[$params['batas_awal'], $params['batas_akhir']]);

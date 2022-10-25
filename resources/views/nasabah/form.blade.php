@@ -50,7 +50,7 @@
   <div class="form-group">
     <label class="control-label col-md-3 col-sm-3 col-xs-12">No KTP *</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="f[no_ktp]" id="no_ktp" class="form-control" placeholder="No KTP" value="{{ @$item->no_ktp }}" required="">
+      <input type="text" name="f[no_ktp]" id="no_ktp" class="form-control" placeholder="No KTP" data-inputmask="&quot;mask&quot;: &quot;9999999999999999&quot;" data-mask="" value="{{ @$item->no_ktp }}" required="">
     </div>
   </div>
   <div class="form-group">
@@ -81,6 +81,9 @@
       
 
 <script type="text/javascript">
+  $(document).ready(function() {
+      $('[data-mask]').inputmask();
+  });
   $('form[name="form_crud"]').on('submit',function(e) {
     e.preventDefault();
 
