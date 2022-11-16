@@ -49,6 +49,8 @@ class Dashboard extends Controller
 
         if(Helpers::getJabatan() == 'Nasabah')
         {
+            $nasabah = Nasabah_m::where('user_id', Helpers::getId())->first();
+            $data['get_saldo'] = Tabungan_m::where('nasabah_id', $nasabah->id)->first()->saldo;
             return view('dashboard.dashboard_nasabah', $data);
         }else{
             return view('dashboard.dashboard', $data);
@@ -206,9 +208,9 @@ class Dashboard extends Controller
     {
         $params = $request->post('header');
 
-        $start  = new DateTime(date("Y-{$params['month_transaksi']}-d"));
+        $start  = new DateTime(date("{$params['year_harian']}-{$params['month_transaksi']}-d"));
         $start->modify('first day of this month');
-        $end    = new DateTime(date("Y-{$params['month_transaksi']}-d"));
+        $end    = new DateTime(date("{$params['year_harian']}-{$params['month_transaksi']}-d"));
         $end->modify('last day of this month');
 
         $interval = DateInterval::createFromDateString('1 day');
@@ -218,12 +220,12 @@ class Dashboard extends Controller
         $total_simpanan = 0;
         $total_penarikan = 0;
         foreach ($period as $dt) {
-            $total_simpanan += self::totalSimpananHarian($dt->format("d"), $params['month_transaksi'], date('Y'));
-            $total_penarikan += self::totalPenarikanHarian($dt->format("d"), $params['month_transaksi'], date('Y'));
+            $total_simpanan += self::totalSimpananHarian($dt->format("d"), $params['month_transaksi'], $params['year_harian']);
+            $total_penarikan += self::totalPenarikanHarian($dt->format("d"), $params['month_transaksi'], $params['year_harian']);
             $grafik[] = [
                 'Day' => $dt->format("d"),
-                'Simpanan' => self::totalSimpananHarian($dt->format("d"), $params['month_transaksi'], date('Y')),
-                'Penarikan' => self::totalPenarikanHarian($dt->format("d"), $params['month_transaksi'], date('Y')),
+                'Simpanan' => self::totalSimpananHarian($dt->format("d"), $params['month_transaksi'], $params['year_harian']),
+                'Penarikan' => self::totalPenarikanHarian($dt->format("d"), $params['month_transaksi'], $params['year_harian']),
             ];
         }
 

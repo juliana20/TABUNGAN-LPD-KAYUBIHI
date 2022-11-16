@@ -61,6 +61,9 @@
 
       </div>
 
+      <div class="x_content" style="margin-top: 30px">
+        <strong><span class="label label-default" style="font-size: 18px">Total Saldo Saat Ini : Rp. {{ number_format(@$get_saldo, 2) }}</span></strong>
+      </div>
       <div class="x_content">
         <div class="col-md-6 col-sm-6 ">
           <div class="tile_count">
@@ -134,6 +137,14 @@
                     <?php foreach(@$bulan as $dt): ?>
                       <option value="<?php echo @$dt['id'] ?>" <?= @$dt['id'] == now()->month ? 'selected': null ?>><?php echo @$dt['desc'] ?></option>
                     <?php endforeach; ?>
+                  </select>
+                </li>
+                <li class="dropdown" style="margin-left: 5px">
+                  <select name="year_harian" id="select_year_harian" class="form-control">
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022" selected>2022</option>
                   </select>
                 </li>
               </ul>
@@ -262,7 +273,8 @@
         init:function(){
               var post_data = {};
                   post_data.header = {
-                    'month_transaksi':$('#select_month_transaksi').val()
+                    'month_transaksi':$('#select_month_transaksi').val(),
+                    'year_harian':$('#select_year_harian').val()
                   }
                   $.post( "{{ url('dashboard/chart-transaksi-harian') }}", post_data, function( response, status, xhr ){
                       if ( response.status == 'error')
@@ -273,11 +285,12 @@
                       $( "#totalTransaksiHarianPenarikan" ).html('Penarikan : ' +response.total_transaksi_harian_penarikan);
                       $.fn.functionGraphTransaksiHarian.chart(response.data);    
                   });												
-            $('#select_month_transaksi').on( "change",  function(e){
+            $('#select_month_transaksi,#select_year_harian').on( "change",  function(e){
               $('#chartTransaksiHarian').remove();
               var post_data = {};
                   post_data.header = {
-                    'month_transaksi':$('#select_month_transaksi').val()
+                    'month_transaksi':$('#select_month_transaksi').val(),
+                    'year_harian':$('#select_year_harian').val()
                   }
               $.post( "{{ url('dashboard/chart-transaksi-harian') }}", post_data, function( response, status, xhr ){
                   if ( response.status == 'error')

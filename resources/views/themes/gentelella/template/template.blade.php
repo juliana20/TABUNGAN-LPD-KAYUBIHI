@@ -86,7 +86,10 @@
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
                         <div class="navbar nav_title" style="border: 0;">
-                            <a href="#" class="site_title" style="font-size: 13px!important;font-weight: 600!important;padding-left: 6px!important"><i class="fa fa-book" aria-hidden="true"></i> <span style="margin-left: 2px">{{ config('app.app_abbreviation') }}</span></a>
+                            <a href="{{ url('/') }}" class="site_title" style="font-size: 13px!important;font-weight: 600!important;padding-left: 6px!important">
+                                <img src="{{url('themes/login/images/logo.png')}}" width="30" style="margin-bottom: 10px">
+                                <span style="margin-left: 2px;">{{ config('app.app_abbreviation') }}</span>
+                            </a>
                         </div>
 
                         <div class="clearfix"></div>

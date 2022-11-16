@@ -25,8 +25,9 @@
 			<div class="row justify-content-center">
 				<div class="col-md-6 col-lg-5">
 					<div class="login-wrap p-4 p-md-5">
-						<div class="icon d-flex align-items-center justify-content-center">
-							<span class="fa fa-user-o"></span>
+						<div class="d-flex align-items-center justify-content-center">
+							<img src="{{url('themes/login/images/logo.png')}}" width="120" style="margin-top: 0px;margin-bottom: 15px">
+							{{-- <span class="fa fa-user-o"></span> --}}
 						</div>
 						<br>
 						<form action="{{url('/auth')}}" method="post" class="login-form">

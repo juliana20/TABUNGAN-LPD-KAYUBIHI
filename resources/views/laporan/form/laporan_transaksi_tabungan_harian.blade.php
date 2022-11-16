@@ -157,13 +157,13 @@
               
                           // Total over all pages
                           simpanan = api
-                              .column(3)
+                              .column(4)
                               .data()
                               .reduce(function (a, b) {
                                   return intVal(a) + intVal(b);
                               }, 0);
                           penarikan = api
-                              .column(4)
+                              .column(5)
                               .data()
                               .reduce(function (a, b) {
                                   return intVal(a) + intVal(b);
@@ -178,8 +178,8 @@
               
                           // // Update footer
                           // $(api.column(4).footer()).html('$' + pageTotal + ' ( $' + total + ' total)');
-                          $(api.column(3).footer()).html('Rp. ' + mask_number.currency_add(simpanan || 0));
-                          $(api.column(4).footer()).html('Rp. ' + mask_number.currency_add(penarikan || 0));
+                          $(api.column(4).footer()).html('Rp. ' + mask_number.currency_add(simpanan || 0));
+                          $(api.column(5).footer()).html('Rp. ' + mask_number.currency_add(penarikan || 0));
                       },
 
                       createdRow: function ( row, data, index ){		
