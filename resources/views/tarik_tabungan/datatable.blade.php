@@ -6,9 +6,11 @@
       <div class="x_title">
         <h2>{{ @$header }}</h2>
         <ul class="nav navbar-right panel_toolbox">
-          <li class="dropdown">
-            <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
-          </li>
+          @if(!Helpers::isAdmin())
+            <li class="dropdown">
+              <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
+            </li>
+          @endif
         </ul>
         <div class="clearfix"></div>
       </div>

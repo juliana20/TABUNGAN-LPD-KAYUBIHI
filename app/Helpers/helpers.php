@@ -4,6 +4,7 @@ use Session;
 use App\Http\Model\Jabatan_m;
 use App\Http\Model\Nasabah_m;
 use App\Http\Model\Config_m;
+use App\Http\Model\User_m;
 
 class Helpers{
 
@@ -45,11 +46,11 @@ class Helpers{
         return $query->nama_nasabah;
     }
 
-    public static function isKepalaSekolah()
+    public static function isAdmin()
     {
-        $model_jabatan = New Jabatan_m;
-        $query = $model_jabatan->get_one(Session::get('jabatan'));
-        return ($query->jabatan == 'Kepala Sekolah');
+        $model_user = New User_m;
+        $query = $model_user->get_one(Session::get('id'));
+        return ($query->jabatan == 'Admin');
     }
     public static function isKetuaYayasan()
     {
