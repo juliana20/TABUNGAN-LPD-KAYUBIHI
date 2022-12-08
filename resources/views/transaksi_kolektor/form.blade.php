@@ -74,6 +74,22 @@
 </div>
 
 <script type="text/javascript">
+$(document).ready(function(){
+  $( "#nominal_setoran" ).keyup(function() {
+    if($(this).val() != 0){
+      $('#nominal_penarikan').prop('disabled', true);
+    }else{
+      $('#nominal_penarikan').prop('disabled', false);
+    }
+  });
+  $( "#nominal_penarikan" ).keyup(function() {
+    if($(this).val() != 0){
+      $('#nominal_setoran').prop('disabled', true);
+    }else{
+      $('#nominal_setoran').prop('disabled', false);
+    }
+  });
+})
   $('form[name="form_proses_transaksi"]').on('submit',function(e) {
     e.preventDefault();
 
