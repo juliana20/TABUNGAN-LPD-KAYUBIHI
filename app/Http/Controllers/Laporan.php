@@ -337,7 +337,8 @@ class Laporan extends Controller
              'm_tabungan.no_rekening',
              't_simpan_tabungan.nominal_setoran',
              'm_user.nama as kolektor'
-         );
+         )
+         ->orderBy('t_simpan_tabungan.tanggal','asc');
 
         if(!empty($params['nasabah'])){
             $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
@@ -364,7 +365,8 @@ class Laporan extends Controller
                          'm_tabungan.no_rekening',
                          't_simpan_tabungan.nominal_setoran',
                          'm_user.nama as kolektor'
-                     );
+                     )
+                     ->orderBy('t_simpan_tabungan.tanggal','asc');
 
         if(!empty($params['nasabah'])){
             $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
@@ -417,7 +419,8 @@ class Laporan extends Controller
                         'm_tabungan.no_rekening',
                         't_tarik_tabungan.nominal_penarikan',
                         'm_user.nama as kolektor'
-                    );
+                    )
+                    ->orderBy('t_tarik_tabungan.tanggal','asc');
 
        if(!empty($params['nasabah'])){
             $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
@@ -443,7 +446,8 @@ class Laporan extends Controller
                          'm_tabungan.no_rekening',
                          't_tarik_tabungan.nominal_penarikan',
                          'm_user.nama as kolektor'
-                     );
+                     )
+                     ->orderBy('t_tarik_tabungan.tanggal','asc');
 
         if(!empty($params['nasabah'])){
             $get_tabungan = Tabungan_m::where('nasabah_id', $params['nasabah'])->first();
