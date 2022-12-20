@@ -12,6 +12,8 @@ use Illuminate\Validation\Rule;
 use DB;
 use Response;
 use Helpers;
+use File;
+use Illuminate\Support\Str;
 
 class NasabahController extends Controller
 {
@@ -159,16 +161,44 @@ class NasabahController extends Controller
         //jika form sumbit
         if($request->post())
         {
-            //request dari view
             $header = $request->input('f');
             $user = $request->input('u');
+            if($request->file('foto_ktp')){
+                $file = $request->file('foto_ktp');
+                #validasi image upload
+                $validate = \Validator::make($request->all(), [
+                    'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:10000',
+                ]);
+                if ($validate->fails()) {
+                    $response = [
+                        'success'   => false,
+                        'status'    => 'error',
+                        'message'   => $validate->errors()->first(),
+                    ];
+                    return response()->json($response);
+                }
+                #upload image
+                $filename = date('YmdHi').'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
+                $header['foto_ktp'] = $filename;
+                #hapus file sebelumnya
+                $path = public_path('ktp/'.$get_data->foto_ktp);
+                if (!file_exists(public_path('ktp'))) {
+                    File::makeDirectory(public_path('ktp'), $mode = 0777, true, true);
+                }
+                if (file_exists($path) && !empty($get_data->foto_ktp)) {
+                    unlink($path);
+                }
+                $file->move(public_path('ktp'), $filename);
+            }
+            //request dari view
+
             $user['nama'] = $header['nama_nasabah'];
             $user['alamat'] = $header['alamat'];
             $user['jenis_kelamin'] = $header['jenis_kelamin'];
-            if($user['password'] != $get_data->password)
-            {
-                $user['password'] = bcrypt($user['password']);
-            }
+            // if($user['password'] != $get_data->password)
+            // {
+            //     $user['password'] = bcrypt($user['password']);
+            // }
             //validasi dari model
             $validator = Validator::make( $header, [
                 // 'id_nasabah' => [Rule::unique('m_nasabah')->ignore($get_data->id_nasabah, 'id_nasabah')],
@@ -185,7 +215,7 @@ class NasabahController extends Controller
                 ];
                 return Response::json($response);
             }
-                      
+                   
             //insert data
             DB::beginTransaction();
             try {

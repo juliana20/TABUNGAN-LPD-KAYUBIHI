@@ -74,6 +74,15 @@ class SimpanTabunganController extends Controller
                 ];
                 return Response::json($response);
             }
+
+            if(!empty($header['nominal_setoran']) && $header['nominal_setoran'] < 10000){
+                $response = [
+                    'message' => 'Nominal setoran minimal Rp10.000',
+                    'status' => 'error',
+                    'code' => 500,
+                ];
+                return Response::json($response);
+            }
                       
             //insert data
             DB::beginTransaction();

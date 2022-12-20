@@ -60,17 +60,27 @@
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Username *</label>
+    <label class="control-label col-md-3 col-sm-3 col-xs-12">Foto KTP *</label>
     <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="text" name="u[username]" class="form-control" placeholder="Username" value="{{ @$item->username }}" required="">
+      <input type="hidden" id="image_name" class="form-control" value="{{ @$item->foto_ktp }}" name="f[foto_ktp]">
+      <input type="file" id="input-file" class="form-control image uploader" name="foto_ktp" value="{{ @$item->foto_ktp }}">
+      <img id="newavatar" src="@if($is_edit) {{url('ktp/'.@$item->foto_ktp)}}  @else @endif" class="profile-img-tag" style="width: 100px;margin-bottom: 6px"/>
     </div>
   </div>
-  <div class="form-group">
-    <label class="control-label col-md-3 col-sm-3 col-xs-12">Password *</label>
-    <div class="col-md-9 col-sm-9 col-xs-12">
-      <input type="password" name="u[password]" class="form-control" placeholder="Password" value="{{ @$item->password }}" required="">
+  @if(!@$is_edit)
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Username *</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
+        <input type="text" name="u[username]" class="form-control" placeholder="Username" value="{{ @$item->username }}" required="">
+      </div>
     </div>
-  </div>
+    <div class="form-group">
+      <label class="control-label col-md-3 col-sm-3 col-xs-12">Password *</label>
+      <div class="col-md-9 col-sm-9 col-xs-12">
+        <input type="password" name="u[password]" class="form-control" placeholder="Password" value="{{ @$item->password }}" required="">
+      </div>
+    </div>
+  @endif
   <div class="form-group">
       <div class="col-lg-offset-3 col-lg-9">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
@@ -81,6 +91,20 @@
       
 
 <script type="text/javascript">
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+            $('.profile-img-tag').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+    }
+    $(".image").change(function(){
+        readURL(this);
+    });
+    
   $(document).ready(function() {
       $('[data-mask]').inputmask();
   });

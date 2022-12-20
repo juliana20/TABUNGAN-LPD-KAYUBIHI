@@ -82,6 +82,7 @@ $(document).ready(function(){
       $('#nominal_penarikan').prop('disabled', false);
     }
   });
+
   $( "#nominal_penarikan" ).keyup(function() {
     if($(this).val() != 0){
       $('#nominal_setoran').prop('disabled', true);

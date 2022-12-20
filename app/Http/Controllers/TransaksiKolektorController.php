@@ -80,6 +80,23 @@ class TransaksiKolektorController extends Controller
             ];
             return Response::json($response);
         }
+
+        if(!empty($header['nominal_setoran']) && $header['nominal_setoran'] < 10000){
+            $response = [
+                'message' => 'Nominal setoran minimal Rp10.000',
+                'status' => 'error',
+                'code' => 500,
+            ];
+            return Response::json($response);
+        }
+        if(!empty($header['nominal_penarikan']) && $header['nominal_penarikan'] < 10000){
+            $response = [
+                'message' => 'Nominal penarikan minimal Rp10.000',
+                'status' => 'error',
+                'code' => 500,
+            ];
+            return Response::json($response);
+        }
         if((!empty($header['nominal_penarikan']) && $header['nominal_penarikan'] > 0) && (!empty($header['nominal_setoran']) && $header['nominal_setoran'] > 0)){
             $response = [
                 'message' => 'Tidak dapat melakukan transaksi setoran dan penarikan secara bersamaan!',

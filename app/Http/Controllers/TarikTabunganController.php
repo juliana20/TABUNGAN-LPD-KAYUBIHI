@@ -74,6 +74,15 @@ class TarikTabunganController extends Controller
                 ];
                 return Response::json($response);
             }
+
+            if(!empty($header['nominal_penarikan']) && $header['nominal_penarikan'] < 10000){
+                $response = [
+                    'message' => 'Nominal penarikan minimal Rp10.000',
+                    'status' => 'error',
+                    'code' => 500,
+                ];
+                return Response::json($response);
+            }
                       
             //insert data
             DB::beginTransaction();
