@@ -35,10 +35,14 @@ class Pegawai_m extends Model
         ];
 	}
 
-    function get_all()
+    function get_all($params = [])
     {
 		$query = self::join('m_user','m_user.id','m_pegawai.user_id')
 					->select('m_pegawai.*','m_user.nama as nama_user','m_user.jabatan');
+
+		if(!empty($params['jabatan'])){
+			$query->where('m_user.jabatan', $params['jabatan']);
+		}  
         return $query->get();
     }
 

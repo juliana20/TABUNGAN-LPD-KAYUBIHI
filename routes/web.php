@@ -27,6 +27,7 @@ Route::prefix('nasabah')->group(function() {
 	Route::match(array('GET', 'POST'),'/datatables','NasabahController@datatables_collection');
 	Route::match(array('GET', 'POST'),'/create','NasabahController@create');
 	Route::match(array('GET', 'POST'),'/edit/{id}','NasabahController@edit');
+	Route::match(array('GET', 'POST'),'/reset-password/{id}','NasabahController@resetPassword');
 });
 #SIMPAN TABUNGAN
 Route::prefix('simpan-tabungan')->group(function() {
@@ -64,6 +65,24 @@ Route::prefix('riwayat-transaksi-nasabah')->group(function() {
 	// Route::match(array('GET', 'POST'),'/proses-transaksi/{no_rekening}','TransaksiKolektorController@prosesTransaksi');
 });
 
+#VALIDASI SETORAN
+Route::prefix('validasi-setoran')->group(function() {
+    Route::get('/', 'ValidasiSetoranController@index');
+	Route::match(array('GET', 'POST'),'/datatables','ValidasiSetoranController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','ValidasiSetoranController@create');
+	Route::match(array('GET', 'POST'),'/get-detail','ValidasiSetoranController@getDetail');
+	Route::match(array('GET', 'POST'),'/delete/{id}','ValidasiSetoranController@delete');
+});
+
+#TUTUP BUKU
+Route::prefix('tutup-buku')->group(function() {
+    Route::get('/', 'TutupBukuController@index');
+	Route::match(array('GET', 'POST'),'/datatables','TutupBukuController@datatables_collection');
+	Route::match(array('GET', 'POST'),'/create','TutupBukuController@create');
+	Route::match(array('GET', 'POST'),'/get-detail','TutupBukuController@getDetail');
+	Route::match(array('GET', 'POST'),'/delete/{id}','TutupBukuController@delete');
+});
+
 
 #DASHBOARD
 Route::prefix('dashboard')->group(function() {
@@ -93,6 +112,8 @@ Route::prefix('laporan')->group(function() {
 	Route::get('/penarikan-tabungan','Laporan@penarikanTabungan');
 	Route::match(array('GET', 'POST'),'penarikan-tabungan/datatables','Laporan@penarikanTabunganDatatables');
 	Route::post('/penarikan-tabungan/print','Laporan@printPenarikanTabungan');
+
+	Route::get('/cetak-buku-tabungan','Laporan@cetakBukuTabungan');
 
 });
 

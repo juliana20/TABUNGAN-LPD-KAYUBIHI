@@ -94,6 +94,7 @@
                                 className: "text-center",
                                 render: function ( val, type, row ){
                                     var buttons = '<div class="btn-group" role="group">';
+                                      buttons += '<a class=\"btn btn-warning btn-xs modalResetPassword\"><i class=\"fa fa-cog\"></i> Reset Password</a>';
                                       buttons += '<a class=\"btn btn-info btn-xs modalEdit\"><i class=\"glyphicon glyphicon-pencil\"></i> Ubah</a>';
                                       buttons += "</div>";
                                     return buttons
@@ -167,6 +168,24 @@
                             }
                             ajax_modal.show(_prop);											
                         })
+                        $( row ).on( "click", ".modalResetPassword",  function(e){
+                            e.preventDefault();
+                            if( confirm( "Apakah anda yakin mereset password nasabah ini?" ) ){
+                              $.get("{{ url("$nameroutes") }}/reset-password/" + data.id, function(response, status, xhr) {
+                              if( response.status == "error"){
+                                  $.alert_warning(response.message);
+                                      return false
+                                  }
+                                  $.alert_success(response.message);
+                                      setTimeout(function(){
+                                        location.reload();   
+                                      }, 500);  
+                              }).catch(error => {
+                                    $.alert_error(error);
+                                    return false
+                              });
+                            }										
+                        })	
 
                       }
                                                   

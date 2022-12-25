@@ -215,9 +215,10 @@ class PegawaiController extends Controller
         return view('pegawai.form', $data);
     }
 
-    public function datatables_collection()
+    public function datatables_collection(Request $request)
     {
-        $data = $this->model->get_all();
+        $params = $request->all();
+        $data = $this->model->get_all($params);
         return Datatables::of($data)->make(true);
     }
 

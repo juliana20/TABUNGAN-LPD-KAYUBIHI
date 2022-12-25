@@ -285,5 +285,33 @@ class NasabahController extends Controller
         return Datatables::of($data)->make(true);
     }
 
+    public function resetPassword($id)
+    {
+        $get_nasabah = Nasabah_m::where('id', $id)->first();
+        DB::beginTransaction();
+        try {
+            $this->model_user->update_data([
+                'password' => bcrypt('lpdkayubihi12345')
+            ], $get_nasabah->user_id);
+            DB::commit();
+
+            $response = [
+                "message" => 'Password nasabah berhasil di reset',
+                'status' => 'success',
+                'code' => 200,
+            ];
+        } catch (\Exception $e) {
+            DB::rollback();
+            $response = [
+                "message" => $e->getMessage(),
+                'status' => 'error',
+                'code' => 500,
+                
+            ];
+        }
+        return Response::json($response); 
+
+    }
+
 
 }

@@ -467,5 +467,15 @@ class Laporan extends Controller
          return $pdf->stream($params['batas_awal'].$params['batas_akhir'].'laporan_penarikan_tabungan.pdf'); 
      }
 
+     public function cetakBukuTabungan()
+    {
+        $data = array(
+            'title'             => 'Buku Tabungan Nasabah',
+            'url_print'         => 'laporan/cetak-buku-tabungan/print',
+            'header'            => 'Cetak Buku Tabungan Nasabah',
+        );
+        return view('laporan.form.cetak_tabungan', $data);
+     }
+
   
 }
