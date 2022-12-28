@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Model\Pegawai_m;
 use App\Http\Model\Simpan_tabungan_m;
 use App\Http\Model\Tarik_tabungan_m;
 use App\Http\Model\Tutup_buku_m;
-use App\Http\Model\User_m;
 use Illuminate\Http\Request;
-use App\Http\Model\Validasi_setoran_m;
 use Validator;
 use DataTables;
 use DB;
@@ -47,8 +44,8 @@ class TutupBukuController extends Controller
             'tanggal' => date('Y-m-d')
         ];
         $data = array(
-            'title'             => 'Validasi Setoran',
-            'header'            => 'Validasi Setoran',
+            'title'             => 'Tutup Buku',
+            'header'            => 'Tutup Buku',
             'item'              => (object) $item,
             'submit_url'        => url()->current(),
             'is_edit'           => FALSE,
@@ -59,27 +56,27 @@ class TutupBukuController extends Controller
         if($request->post())
         {
             $header = $request->input('f');
-            $last_tutup_buku = Tutup_buku_m::all('tanggal')->max('tanggal');
-            if($header['tanggal'] <= $last_tutup_buku)
+            $cek_tutup_buku = Tutup_buku_m::where('tanggal', $header['tanggal'])->first();
+            if(!empty($cek_tutup_buku))
             {
                 $response = [
                     'success' => false,
-                    'message' => "Tutup buku terakhir sudah dilakukan pada tanggal $last_tutup_buku",
+                    'message' => "Tutup buku sudah dilakukan pada tanggal $cek_tutup_buku->tanggal",
                     'status' => 'error',
                     'code' => 500,
                 ];
                 return Response::json($response);
             }
-            if($header['tanggal'] > date('Y-m-d'))
-            {
-                $response = [
-                    'success' => false,
-                    'message' => "Tutup buku tidak dapat dilakukan karena tanggal tidak sesuai",
-                    'status' => 'error',
-                    'code' => 500,
-                ];
-                return Response::json($response);
-            }
+            // if($header['tanggal'] > date('Y-m-d'))
+            // {
+            //     $response = [
+            //         'success' => false,
+            //         'message' => "Tutup buku tidak dapat dilakukan karena tanggal tidak sesuai",
+            //         'status' => 'error',
+            //         'code' => 500,
+            //     ];
+            //     return Response::json($response);
+            // }
             $header['user_id'] = Helpers::getId();
             $validator = Validator::make( $header, $this->model->rules['insert']);
             if ($validator->fails()) {
@@ -94,8 +91,8 @@ class TutupBukuController extends Controller
 
             DB::beginTransaction();
             try {
-                $get_setoran = Simpan_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '<=', $header['tanggal'])->get();
-                $get_penarikan = Tarik_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '<=', $header['tanggal'])->get();
+                $get_setoran = Simpan_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '=', $header['tanggal'])->get();
+                $get_penarikan = Tarik_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '=', $header['tanggal'])->get();
     
                 if(!empty($get_setoran))
                 {
@@ -142,8 +139,8 @@ class TutupBukuController extends Controller
     public function getDetail(Request $request)
     {
         $params = $request->all();
-        $total_setoran = Simpan_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '<=', $params['tanggal'])->sum('nominal_setoran');
-        $total_penarikan = Tarik_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '<=', $params['tanggal'])->sum('nominal_penarikan');
+        $total_setoran = Simpan_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '=', $params['tanggal'])->sum('nominal_setoran');
+        $total_penarikan = Tarik_tabungan_m::where('tutup_buku', 0)->whereDate('tanggal', '=', $params['tanggal'])->sum('nominal_penarikan');
 
         return response()->json([
             'success' => true,
@@ -155,16 +152,18 @@ class TutupBukuController extends Controller
     public function delete($id)
     {
         $get_item = Tutup_buku_m::where('id', $id)->first();
-        $date_min = Tutup_buku_m::whereDate('tanggal', '<', $get_item->tanggal)->first();
-        if(!empty($date_min))
-        {
-            $get_setoran = Simpan_tabungan_m::whereBetween('tanggal',[$date_min->tanggal, $get_item->tanggal])->get();
-            $get_penarikan = Tarik_tabungan_m::whereBetween('tanggal',[$date_min->tanggal, $get_item->tanggal])->get();
-        }
-        else{
-            $get_setoran = Simpan_tabungan_m::whereDate('tanggal', '<=', $get_item->tanggal)->get();
-            $get_penarikan = Tarik_tabungan_m::whereDate('tanggal', '<=', $get_item->tanggal)->get();
-        }
+        // $date_min = Tutup_buku_m::whereDate('tanggal', '<', $get_item->tanggal)->first();
+        // if(!empty($date_min))
+        // {
+        //     $get_setoran = Simpan_tabungan_m::whereBetween('tanggal',[$date_min->tanggal, $get_item->tanggal])->get();
+        //     $get_penarikan = Tarik_tabungan_m::whereBetween('tanggal',[$date_min->tanggal, $get_item->tanggal])->get();
+        // }
+        // else{
+        //     $get_setoran = Simpan_tabungan_m::whereDate('tanggal', '<=', $get_item->tanggal)->get();
+        //     $get_penarikan = Tarik_tabungan_m::whereDate('tanggal', '<=', $get_item->tanggal)->get();
+        // }
+        $get_setoran = Simpan_tabungan_m::whereDate('tanggal', '=', $get_item->tanggal)->get();
+        $get_penarikan = Tarik_tabungan_m::whereDate('tanggal', '=', $get_item->tanggal)->get();
 
         DB::beginTransaction();
         try {

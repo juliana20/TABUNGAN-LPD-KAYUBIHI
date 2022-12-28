@@ -16,7 +16,7 @@
         <table class="table table-hover" id="{{ $idDatatables }}" width="100%">   
             <thead>
               <tr>
-                <th class="no-sort">Aksi</th>
+                {{-- <th class="no-sort">Aksi</th> --}}
                 <th>Tanggal</th>
                 <th>Total Setoran</th>
                 <th>Total Penarikan</th> 
@@ -45,17 +45,17 @@
 										}
 								},
               columns: [
-                        { 
-                                data: "id",
-                                orderable: false,
-                                className: "text-center",
-                                render: function ( val, type, row ){
-                                    var buttons = '<div class="btn-group" role="group">';
-                                      buttons += '<a class=\"btn btn-danger btn-xs modalCancel\"><i class=\"fa fa-trash\"></i> Batalkan</a>';
-                                      buttons += "</div>";
-                                    return buttons
-                                  }
-                              },
+                        // { 
+                        //         data: "id",
+                        //         orderable: false,
+                        //         className: "text-center",
+                        //         render: function ( val, type, row ){
+                        //             var buttons = '<div class="btn-group" role="group">';
+                        //               buttons += '<a class=\"btn btn-danger btn-xs modalCancel\"><i class=\"fa fa-trash\"></i> Batalkan</a>';
+                        //               buttons += "</div>";
+                        //             return buttons
+                        //           }
+                        //       },
                           { 
                                 data: "tanggal", 
                                 render: function ( val, type, row ){

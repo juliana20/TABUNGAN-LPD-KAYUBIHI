@@ -81,6 +81,30 @@ class NasabahController extends Controller
             $user['password'] = bcrypt($user['password']);
             $user['jabatan'] = 'Nasabah';
 
+            if($request->file('foto_ktp')){
+                $file = $request->file('foto_ktp');
+                #validasi image upload
+                $validate = \Validator::make($request->all(), [
+                    'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:10000',
+                ]);
+                if ($validate->fails()) {
+                    $response = [
+                        'success'   => false,
+                        'status'    => 'error',
+                        'message'   => $validate->errors()->first(),
+                    ];
+                    return response()->json($response);
+                }
+                #upload image
+                $filename = date('YmdHi').'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
+                $header['foto_ktp'] = $filename;
+                #hapus file sebelumnya
+                if (!file_exists(public_path('ktp'))) {
+                    File::makeDirectory(public_path('ktp'), $mode = 0777, true, true);
+                }
+                $file->move(public_path('ktp'), $filename);
+            }
+
             
 
             DB::beginTransaction();

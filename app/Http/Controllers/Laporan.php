@@ -477,5 +477,147 @@ class Laporan extends Controller
         return view('laporan.form.cetak_tabungan', $data);
      }
 
+     public function printBukuTabungan(Request $request)
+     {
+        $params = $request->input();
+        if(empty($params['nasabah_id'])){
+            alert()->error('Perhatian', 'Silahkan pilih nasabah terlebih dahulu!');
+            return redirect()->back();     
+        }
+         
+        $simpanan = Simpan_tabungan_m::join('m_user','m_user.id','t_simpan_tabungan.user_id')
+                    ->join('m_tabungan','m_tabungan.id','t_simpan_tabungan.tabungan_id')
+                    ->join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+                    ->select(
+                        'm_nasabah.id',
+                        'm_nasabah.id_nasabah',
+                        'm_nasabah.nama_nasabah',
+                        'm_tabungan.no_rekening',
+                        't_simpan_tabungan.nominal_setoran',
+                        't_simpan_tabungan.tanggal',
+                        'm_user.nama as kolektor',
+                        't_simpan_tabungan.saldo_akhir'
+
+                    )
+                    ->addSelect(
+                        \DB::raw("'0' as nominal_penarikan"),
+                        \DB::raw("'0' as bunga")
+                    );
+
+        if(!empty($params['nasabah_id'])){
+            $simpanan->where('m_nasabah.id', $params['nasabah_id']);
+        }
+
+        $penarikan = Tarik_tabungan_m::join('m_user','m_user.id','t_tarik_tabungan.user_id')
+                    ->join('m_tabungan','m_tabungan.id','t_tarik_tabungan.tabungan_id')
+                    ->join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+                    ->select(
+                        'm_nasabah.id',
+                        'm_nasabah.id_nasabah',
+                        'm_nasabah.nama_nasabah',
+                        'm_tabungan.no_rekening',
+                        't_tarik_tabungan.nominal_penarikan',
+                        't_tarik_tabungan.tanggal',
+                        'm_user.nama as kolektor',
+                        't_tarik_tabungan.saldo_akhir'
+                    )
+                    ->addSelect(
+                        \DB::raw("'0' as nominal_setoran"),
+                        \DB::raw("'0' as bunga")
+                    );
+
+        if(!empty($params['nasabah_id'])){
+            $penarikan->where('m_nasabah.id', $params['nasabah_id']);
+        }
+
+        $bunga = Simpan_tabungan_m::join('m_user','m_user.id','t_simpan_tabungan.user_id')
+                ->join('m_tabungan','m_tabungan.id','t_simpan_tabungan.tabungan_id')
+                ->join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+                ->select(
+                    'm_nasabah.id',
+                    'm_nasabah.id_nasabah',
+                    'm_nasabah.nama_nasabah',
+                    'm_tabungan.no_rekening',
+                    't_simpan_tabungan.tanggal'
+                )
+                ->groupBy(
+                    'm_nasabah.id',
+                    'm_nasabah.id_nasabah',
+                    'm_nasabah.nama_nasabah',
+                    'm_tabungan.no_rekening',
+                    't_simpan_tabungan.tanggal'
+                )
+                ->addSelect(
+                    \DB::raw("'0' as nominal_setoran"),
+                    \DB::raw("'0' as nominal_penarikan"),
+                    \DB::raw("'' as kolektor"),
+                    \DB::raw("'0' as saldo_akhir"),
+                    \DB::raw("'0' as bunga")
+                );
+
+        if(!empty($params['nasabah_id'])){
+            $bunga->where('m_nasabah.id', $params['nasabah_id']);
+        }
+
+        $collection_bunga = [];
+        foreach($bunga->get() as $row)
+        {
+            $collection_bunga[] = [
+                'id' => $row->id,
+                'id_nasabah' => $row->id_nasabah,
+                'nama_nasabah' => $row->nama_nasabah,
+                'no_rekening' => $row->no_rekening,
+                'tanggal' => $row->tanggal,
+                'nominal_setoran' => $row->nominal_setoran,
+                'nominal_penarikan' => $row->nominal_penarikan,
+                'kolektor' => $row->kolektor,
+                'saldo_akhir' => self::getSaldoAkhir($row),
+                'bunga' => self::getTotalBunga($row)
+            ];
+        }
+
+    
+        $result = array_merge($simpanan->get()->toArray(), $penarikan->get()->toArray());
+        $result2 = collect(array_merge($result, $collection_bunga))->sortby('tanggal');
+
+        $data = [
+            'params'            => (object) $params,
+            'item'              => $result2,
+            'title'             => 'Buku Tabungan',
+        ];
+        $pdf = PDF::loadView('laporan.print.print_buku_tabungan', $data, $params)->setPaper('a4', 'portait');
+        return $pdf->stream($params['nama_nasabah'].'buku_tabungan.pdf'); 
+     }
+
+     private function getTotalBunga($data)
+     {
+        $bunga = Simpan_tabungan_m::join('m_user','m_user.id','t_simpan_tabungan.user_id')
+                    ->join('m_tabungan','m_tabungan.id','t_simpan_tabungan.tabungan_id')
+                    ->join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+                    ->where('m_tabungan.no_rekening', $data->no_rekening)
+                    ->where('t_simpan_tabungan.tanggal', $data->tanggal)
+                    ->select('t_simpan_tabungan.saldo_akhir')
+                    ->orderBy('t_simpan_tabungan.tanggal','desc')
+                    ->orderBy('t_simpan_tabungan.id','desc')
+                    ->first();
+
+        return ($bunga->saldo_akhir * 0.5) / 100;
+     }
+
+     private function getSaldoAkhir($data)
+     {
+        $saldo = Simpan_tabungan_m::join('m_user','m_user.id','t_simpan_tabungan.user_id')
+                    ->join('m_tabungan','m_tabungan.id','t_simpan_tabungan.tabungan_id')
+                    ->join('m_nasabah','m_nasabah.id','m_tabungan.nasabah_id')
+                    ->where('m_tabungan.no_rekening', $data->no_rekening)
+                    ->where('t_simpan_tabungan.tanggal', $data->tanggal)
+                    ->select('t_simpan_tabungan.saldo_akhir')
+                    ->orderBy('t_simpan_tabungan.tanggal','desc')
+                    ->orderBy('t_simpan_tabungan.id','desc')
+                    ->first();
+
+        return $saldo->saldo_akhir;
+     }
+
   
 }

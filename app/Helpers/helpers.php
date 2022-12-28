@@ -19,6 +19,13 @@ class Helpers{
 
     }
 
+    public static function getIdNasabah()
+    {
+        $nasabah = Nasabah_m::where('user_id', Session::get('id'))->first();
+        return $nasabah->id;
+
+    }
+
     public static function getNama()
     {
         return (Session::get('nama'));

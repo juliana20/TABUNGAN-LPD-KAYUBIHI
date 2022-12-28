@@ -114,6 +114,7 @@ Route::prefix('laporan')->group(function() {
 	Route::post('/penarikan-tabungan/print','Laporan@printPenarikanTabungan');
 
 	Route::get('/cetak-buku-tabungan','Laporan@cetakBukuTabungan');
+	Route::post('/cetak-buku-tabungan/print','Laporan@printBukuTabungan');
 
 });
 

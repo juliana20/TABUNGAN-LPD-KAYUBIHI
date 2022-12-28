@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Model\Tabungan_m;
 use App\Http\Model\Tarik_tabungan_m;
+use App\Http\Model\Tutup_buku_m;
 use Validator;
 use DataTables;
 use Illuminate\Validation\Rule;
@@ -64,6 +65,18 @@ class TarikTabunganController extends Controller
             $header = $request->input('f');
             $header['user_id'] = Helpers::getId(); 
             $header['tabungan_id'] = $id;
+
+            $last_tutup_buku = Tutup_buku_m::all('tanggal')->max('tanggal');
+            if($header['tanggal'] <= $last_tutup_buku)
+            {
+                $response = [
+                    'success' => false,
+                    'message' => "Tidak dapat melakukan transaksi karena sudah dilakukan tutup buku pada tanggal $last_tutup_buku",
+                    'status' => 'error',
+                    'code' => 500,
+                ];
+                return Response::json($response);
+            }
             //validasi dari model
             $validator = Validator::make( $header, $this->model->rules['insert']);
             if ($validator->fails()) {

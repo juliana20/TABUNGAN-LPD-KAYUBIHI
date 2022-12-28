@@ -15,20 +15,25 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Nasabah</label>
               <div class="col-md-9">
-                <div class="input-group data_collect_wrapper">
-                  <input type="hidden" id="nasabah_id" name="f[nasabah_id]" required>
-                  <input type="text" name="nama_nasabah" id="nama_nasabah" value="" class="form-control" placeholder="Nama Nasabah" required readonly>
-                  <div class="input-group-btn">
-                    <a href="javascript:;" id="lookup_nasabah" class="btn btn-info btn-flat data_collect_btn"><i class="fa fa-search"></i> Cari</a>
+                @if(Helpers::getJabatan() == 'Nasabah')
+                    <input type="hidden" id="nasabah_id" name="nasabah_id" required value="{{ Helpers::getIdNasabah() }}">
+                    <input type="text" name="nama_nasabah" id="nama_nasabah" value="{{ Helpers::getNama() }}" class="form-control" placeholder="Nama Nasabah" required readonly>
+                @else
+                  <div class="input-group data_collect_wrapper">
+                    <input type="hidden" id="nasabah_id" name="nasabah_id" required>
+                    <input type="text" name="nama_nasabah" id="nama_nasabah" value="" class="form-control" placeholder="Nama Nasabah" required readonly>
+                    <div class="input-group-btn">
+                      <a href="javascript:;" id="lookup_nasabah" class="btn btn-info btn-flat data_collect_btn"><i class="fa fa-search"></i> Cari</a>
+                    </div>
                   </div>
-                </div>
+                @endif
               </div>
             </div>
             
             <div class="form-group">
                 <label for="name" class="col-sm-3 control-label"></label>
                 <div class="col-md-9">
-                    <button type="sumbit" formtarget="_blank" class="btn btn-success btn-block" data-dismiss="modal"><i class="fa fa-print" aria-hidden="true"></i> Cetak Buku Tabungan</button>
+                    <button type="sumbit" formtarget="_blank" class="btn btn-success btn-block"><i class="fa fa-print" aria-hidden="true"></i> Cetak Buku Tabungan</button>
                 </div>
             </div>
         </form>

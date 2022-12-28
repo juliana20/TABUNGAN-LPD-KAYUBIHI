@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Model\Simpan_tabungan_m;
 use App\Http\Model\Tabungan_m;
 use App\Http\Model\Tarik_tabungan_m;
+use App\Http\Model\Tutup_buku_m;
 use Validator;
 use DataTables;
 use Illuminate\Validation\Rule;
@@ -72,6 +73,19 @@ class TransaksiKolektorController extends Controller
         //request dari view
         $get_tabungan = $this->model_tabungan->get_by(['m_tabungan.no_rekening' => $no_rekening]);
         $header = $request->input('f');
+
+        $last_tutup_buku = Tutup_buku_m::all('tanggal')->max('tanggal');
+        if($header['tanggal'] <= $last_tutup_buku)
+        {
+            $response = [
+                'success' => false,
+                'message' => "Tidak dapat melakukan transaksi karena sudah dilakukan tutup buku pada tanggal $last_tutup_buku",
+                'status' => 'error',
+                'code' => 500,
+            ];
+            return Response::json($response);
+        }
+
         if($header['nominal_penarikan'] == 0 && $header['nominal_setoran'] == 0){
             $response = [
                 'message' => 'Silahkan masukkan nominal transaksi, setoran / penarikan!',
