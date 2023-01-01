@@ -28,6 +28,7 @@ Route::prefix('nasabah')->group(function() {
 	Route::match(array('GET', 'POST'),'/create','NasabahController@create');
 	Route::match(array('GET', 'POST'),'/edit/{id}','NasabahController@edit');
 	Route::match(array('GET', 'POST'),'/reset-password/{id}','NasabahController@resetPassword');
+	Route::match(array('GET', 'POST'),'/generate-bunga','NasabahController@generateBunga');
 });
 #SIMPAN TABUNGAN
 Route::prefix('simpan-tabungan')->group(function() {
@@ -114,7 +115,9 @@ Route::prefix('laporan')->group(function() {
 	Route::post('/penarikan-tabungan/print','Laporan@printPenarikanTabungan');
 
 	Route::get('/cetak-buku-tabungan','Laporan@cetakBukuTabungan');
-	Route::post('/cetak-buku-tabungan/print','Laporan@printBukuTabungan');
+	Route::post('/cetak-buku-tabungan/print','Laporan@previewBukuTabungan');
+	Route::post('/cetak-buku-tabungan/cetak','Laporan@printBukuTabungan');
+	Route::match(array('GET', 'POST'),'/cetak-buku-tabungan/preview','Laporan@collectionPreviewBukuTabungan');
 
 });
 

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Model\Bunga_tabungan_m;
 use Illuminate\Http\Request;
 use App\Http\Model\Nasabah_m;
+use App\Http\Model\Simpan_tabungan_m;
 use App\Http\Model\Tabungan_m;
+use App\Http\Model\Tarik_tabungan_m;
 use App\Http\Model\User_m;
 use Validator;
 use DataTables;
@@ -335,6 +338,72 @@ class NasabahController extends Controller
         }
         return Response::json($response); 
 
+    }
+
+    public function generateBunga()
+    {
+        $get_setoran = Simpan_tabungan_m::select(
+            'tabungan_id',
+            'tanggal',
+            DB::raw('MONTH(tanggal) periode_bunga_bulan'),
+            DB::raw('YEAR(tanggal) periode_bunga_tahun'),
+            DB::raw('MAX(tanggal) as tanggal'),
+            DB::raw('MAX(saldo_akhir) as saldo_akhir')
+        )
+        ->groupby('tabungan_id','tanggal','periode_bunga_bulan','periode_bunga_tahun')
+        ->get();
+        
+        DB::beginTransaction();
+        try {
+            foreach($get_setoran as $row)
+            {
+                $collection = [
+                    'tabungan_id' => $row->tabungan_id,
+                    'tanggal' => $row->tanggal,
+                    'periode_bunga_bulan' => $row->periode_bunga_bulan,
+                    'periode_bunga_tahun' => $row->periode_bunga_tahun,
+                    'saldo_akhir' => $row->saldo_akhir,
+                    'nominal_bunga' => (0.5 *  $row->saldo_akhir) / 100,
+                ];
+
+                $check_exist = Bunga_tabungan_m::where([
+                    'tabungan_id' => $row->tabungan_id,
+                    'tanggal' => $row->tanggal,
+                    'periode_bunga_bulan' => $row->periode_bunga_bulan,
+                    'periode_bunga_tahun' => $row->periode_bunga_tahun
+                ])->first();
+                if(!empty($check_exist))
+                {
+                    Bunga_tabungan_m::where('id', $check_exist->id)->update([
+                        'tanggal' => $row->tanggal,
+                        'saldo_akhir' => $row->saldo_akhir,
+                        'nominal_bunga' => (0.5 *  $row->saldo_akhir) / 100
+                    ]);
+                }else{
+                    Bunga_tabungan_m::insert($collection);
+                }
+            }
+
+            DB::commit();
+
+            $response = [
+                'success' => true,
+                'message' => 'Generate bunga tabungan berhasil',
+                'status' => 'success',
+                'code' => 200,
+            ];
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+            $response = [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'status' => 'error',
+                'code' => 500,
+                
+            ];
+        }
+        return Response::json($response); 
     }
 
 

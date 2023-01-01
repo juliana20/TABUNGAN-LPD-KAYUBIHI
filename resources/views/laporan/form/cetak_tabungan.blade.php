@@ -33,7 +33,7 @@
             <div class="form-group">
                 <label for="name" class="col-sm-3 control-label"></label>
                 <div class="col-md-9">
-                    <button type="sumbit" formtarget="_blank" class="btn btn-success btn-block"><i class="fa fa-print" aria-hidden="true"></i> Cetak Buku Tabungan</button>
+                    <button type="sumbit" class="btn btn-success btn-block"><i class="fa fa-print" aria-hidden="true"></i> Cetak Buku Tabungan</button>
                 </div>
             </div>
         </form>

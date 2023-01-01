@@ -37,7 +37,7 @@
               @php 
                 $nominal_setoran = !empty($row['nominal_setoran']) ? $row['nominal_setoran'] : 0;
                 $nominal_penarikan = !empty($row['nominal_penarikan']) ? $row['nominal_penarikan'] : 0;
-                $bunga +=  $row['bunga'];
+                $bunga +=  $row['nominal_bunga'];
                 $saldo_akhir = $row['saldo_akhir'];
                 if($loop->last):
                   $saldo = $row['saldo_akhir'];
@@ -45,12 +45,12 @@
               @endphp
                 <tr>
                   <td align="center">{{ $no++ }}</td>
-                  @if($row['bunga'] > 0 )
-                    <td colspan="5">{{ $row['bunga'] > 0 ? 'Bunga : '. 'Rp.'. number_format($row['bunga'], 2) : date('d-m-Y', strtotime($row['tanggal'])) }}</td>
+                  @if($row['nominal_bunga'] > 0 )
+                    <td colspan="5">{{ $row['nominal_bunga'] > 0 ? 'Bunga : '. 'Rp.'. number_format($row['nominal_bunga'], 2) : date('d-m-Y', strtotime($row['tanggal'])) }}</td>
                   @else
-                    <td>{{ $row['bunga'] > 0 ? 'Bunga' : date('d-m-Y', strtotime($row['tanggal'])) }}</td>
-                    <td align="right">{{ $row['bunga'] > 0 ? '' : 'Rp.'. number_format($nominal_setoran, 2) }}</td>
-                    <td align="right" style="color: rgb(247, 4, 4)">{{ $row['bunga'] > 0 ? '' : 'Rp.'. number_format($nominal_penarikan, 2) }}</td>
+                    <td>{{ $row['nominal_bunga'] > 0 ? 'Bunga' : date('d-m-Y', strtotime($row['tanggal'])) }}</td>
+                    <td align="right">{{ $row['nominal_bunga'] > 0 ? '' : 'Rp.'. number_format($nominal_setoran, 2) }}</td>
+                    <td align="right" style="color: rgb(247, 4, 4)">{{ $row['nominal_bunga'] > 0 ? '' : 'Rp.'. number_format($nominal_penarikan, 2) }}</td>
                     <td align="right">Rp. {{ number_format($saldo_akhir, 2) }}</td>
                     <td>{{ $row['kolektor'] }}</td>
                   @endif

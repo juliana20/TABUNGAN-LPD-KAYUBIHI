@@ -6,6 +6,9 @@
       <div class="x_title">
         <h2>{{ @$header }}</h2>
         <ul class="nav navbar-right panel_toolbox">
+          <li class="dropdown">
+            <button class="btn btn-info btn-sm" id="modalGenerateBunga"><i class="fa fa-american-sign-language-interpreting" aria-hidden="true"></i> Generate Bunga</button>
+          </li>
           @if(!@$is_kepala)
             <li class="dropdown">
               <button class="btn btn-success btn-sm" id="modalCreate"><i class="fa fa-plus-circle" aria-hidden="true"></i> {{ __('global.label_create') }}</button>
@@ -202,6 +205,26 @@ $(document).ready(function() {
         e.preventDefault();
         _datatable.ajax.reload();
     });
+
+
+    $('#modalGenerateBunga').on( "click", function(e){
+        e.preventDefault();
+        if( confirm( "Apakah anda yakin generate bunga tabungan?" ) ){
+          $.get("{{ url("$nameroutes") }}/generate-bunga", function(response, status, xhr) {
+          if( response.status == "error"){
+              $.alert_warning(response.message);
+                  return false
+              }
+              $.alert_success(response.message);
+              setTimeout(function(){
+                location.reload();   
+              }, 500);  
+          }).catch(error => {
+                $.alert_error(error);
+                return false
+          });
+        }										
+    })
 });
 </script>
 @endsection
