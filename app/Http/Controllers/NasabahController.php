@@ -344,28 +344,53 @@ class NasabahController extends Controller
     {
         $get_setoran = Simpan_tabungan_m::select(
             'tabungan_id',
-            'tanggal',
             DB::raw('MONTH(tanggal) periode_bunga_bulan'),
             DB::raw('YEAR(tanggal) periode_bunga_tahun'),
             DB::raw('MAX(tanggal) as tanggal'),
-            DB::raw('MAX(saldo_akhir) as saldo_akhir')
+            DB::raw('MIN(saldo_akhir) as saldo_akhir')
         )
-        ->groupby('tabungan_id','tanggal','periode_bunga_bulan','periode_bunga_tahun')
+        ->groupby('tabungan_id','periode_bunga_bulan','periode_bunga_tahun')
         ->get();
         
         DB::beginTransaction();
         try {
             foreach($get_setoran as $row)
             {
+                $get_penarikan = Tarik_tabungan_m::select(
+                    'tabungan_id',
+                    DB::raw('MONTH(tanggal) periode_bunga_bulan'),
+                    DB::raw('YEAR(tanggal) periode_bunga_tahun'),
+                    DB::raw('MAX(tanggal) as tanggal'),
+                    DB::raw('MIN(saldo_akhir) as saldo_akhir')
+                )
+                ->where('tabungan_id', $row->tabungan_id)
+                ->whereMonth('tanggal', $row->periode_bunga_bulan)
+                ->whereYear('tanggal', $row->periode_bunga_tahun)
+                ->groupby('tabungan_id','periode_bunga_bulan','periode_bunga_tahun')
+                ->first();  
+    
+                $saldo_akhir_min = $row->saldo_akhir;
+                $saldo_akhir_max = $row->saldo_akhir;
+                if(!empty($get_penarikan))
+                {
+                    if($get_penarikan->saldo_akhir < $row->saldo_akhir)
+                    {
+                        $saldo_akhir_min = $get_penarikan->saldo_akhir;
+                    }
+                    if($get_penarikan->saldo_akhir > $row->saldo_akhir){
+                        $saldo_akhir_max = $get_penarikan->saldo_akhir;
+                    }
+                }
+    
                 $collection = [
                     'tabungan_id' => $row->tabungan_id,
                     'tanggal' => $row->tanggal,
                     'periode_bunga_bulan' => $row->periode_bunga_bulan,
                     'periode_bunga_tahun' => $row->periode_bunga_tahun,
-                    'saldo_akhir' => $row->saldo_akhir,
-                    'nominal_bunga' => (0.5 *  $row->saldo_akhir) / 100,
+                    'saldo_akhir' => $saldo_akhir_max,
+                    'nominal_bunga' => (0.5 *  $saldo_akhir_min) / 100,
                 ];
-
+                
                 $check_exist = Bunga_tabungan_m::where([
                     'tabungan_id' => $row->tabungan_id,
                     'tanggal' => $row->tanggal,
@@ -376,14 +401,13 @@ class NasabahController extends Controller
                 {
                     Bunga_tabungan_m::where('id', $check_exist->id)->update([
                         'tanggal' => $row->tanggal,
-                        'saldo_akhir' => $row->saldo_akhir,
-                        'nominal_bunga' => (0.5 *  $row->saldo_akhir) / 100
+                        'saldo_akhir' => $saldo_akhir_max,
+                        'nominal_bunga' => (0.5 *  $saldo_akhir_min) / 100
                     ]);
                 }else{
                     Bunga_tabungan_m::insert($collection);
                 }
             }
-
             DB::commit();
 
             $response = [

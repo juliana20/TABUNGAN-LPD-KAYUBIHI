@@ -210,18 +210,26 @@ $(document).ready(function() {
     $('#modalGenerateBunga').on( "click", function(e){
         e.preventDefault();
         if( confirm( "Apakah anda yakin generate bunga tabungan?" ) ){
-          $.get("{{ url("$nameroutes") }}/generate-bunga", function(response, status, xhr) {
-          if( response.status == "error"){
-              $.alert_warning(response.message);
+          $.ajax({
+              url: "{{ url("$nameroutes") }}/generate-bunga",
+              type: 'GET',              
+              success: function(response, status, xhr)
+              {
+                if( response.status == "error"){
+                  $.alert_warning(response.message);
                   return false
               }
+                  
               $.alert_success(response.message);
-              setTimeout(function(){
-                location.reload();   
-              }, 500);  
-          }).catch(error => {
+                setTimeout(function(){
+                  location.reload();   
+                }, 500);
+              },
+              error: function(error)
+              {
                 $.alert_error(error);
                 return false
+              }
           });
         }										
     })
